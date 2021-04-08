@@ -1,10 +1,10 @@
 compat: v0
-id: hello-world
+id: nginx
 version: 0.1.0
-title: hello-world
+title: Embassy Pages
 description:
-  short: "A simple, minimal project to serve as a template for creating an app for the Embassy."
-  long: "Hello World is a simple, minimal project to serve as a template for creating an app for the Embassy."
+  short: "A Webserver"
+  long: "Embassy Pages is a webserver you can use to turn a directory in your Filebrowser service into a website."
 release-notes: Initial release.
 ports:
   - internal: 80
@@ -17,3 +17,8 @@ os-version-required: ">=0.2.4"
 os-version-recommended: ">=0.2.4"
 assets: []
 hidden-service-version: v3
+dependencies:
+  filebrowser:
+    version: "^2.14.1.1"
+    description: Used to upload files to serve.
+    mount-public: true

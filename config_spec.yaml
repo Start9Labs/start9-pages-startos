@@ -1,1 +1,26 @@
-{}
+sites:
+  type: list
+  subtype: object
+  name: Sites
+  description: The websites you want to serve
+  default: []
+  range: '[0, *)'
+  spec:
+    type: object
+    displayAs: '{{subdomain}}'
+    uniqueBy: subdomain
+    spec:
+      subdomain:
+        type: string
+        name: Subdomain
+        description: The subdomain of your .onion address to server the website on.
+        pattern: '^[a-z-]+$'
+        patternDescription: Must contain only lowercase characters and hyphens.
+        nullable: false
+      directory:
+        type: string
+        name: Directory
+        description: The directory within filebrowser you wish to serve as your website.
+        pattern: '^(\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\.*)+)(\/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|\/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\.*)+)*\/?$'
+        patternDescription: Must be a valid relative file path
+        nullable: false

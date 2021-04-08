@@ -1,9 +1,11 @@
-FROM alpine:3.12
+FROM alpine:3.13
 
 RUN apk update
 RUN apk add tini
+RUN apk add bash nginx yq
 
-ADD ./hello-world/target/armv7-unknown-linux-musleabihf/release/hello-world /usr/local/bin/hello-world
+RUN mkdir /run/nginx
+
 ADD ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh
 RUN chmod a+x /usr/local/bin/docker_entrypoint.sh
 
