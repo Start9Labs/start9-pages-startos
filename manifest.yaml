@@ -1,10 +1,10 @@
 compat: v0
-id: nginx
+id: embassy-pages
 version: 0.1.0
 title: Embassy Pages
 description:
-  short: "A Webserver"
-  long: "Embassy Pages is a webserver you can use to turn a directory in your Filebrowser service into a website."
+  short: A simple static site host
+  long: Embassy Pages is a webserver you can use to turn a directory in your Filebrowser service into a website.
 release-notes: Initial release.
 ports:
   - internal: 80
@@ -13,8 +13,8 @@ image:
   type: tar
 mount: /root
 has-instructions: true
-os-version-required: ">=0.2.4"
-os-version-recommended: ">=0.2.4"
+os-version-required: ">=0.2.12"
+os-version-recommended: ">=0.2.12"
 assets: []
 hidden-service-version: v3
 dependencies:

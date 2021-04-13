@@ -1,6 +1,6 @@
-# Wrapper for nginx
+# Wrapper for embassy-pages
 
-`nginx` is a simple, minimal project to serve as a template for creating an app for the Embassy.
+`embassy-pages` is a simple, minimal project to serve as a template for creating a static website for the Embassy.
 
 ## Dependencies
 
@@ -12,11 +12,11 @@
 
 ## Cloning
 
-Clone the project locally. Note the submodule link to the original project(s). 
+Clone the project locally. Note the submodule link to the original project(s).
 
 ```
-git clone https://github.com/Start9Labs/nginx-wrapper.git
-cd nginx-wrapper
+git clone https://github.com/Start9Labs/embassy-pages-wrapper.git
+cd embassy-pages-wrapper
 ```
 
 ## Building
@@ -34,5 +34,5 @@ SSH into an Embassy device.
 Run the following command to determine successful install:
 
 ```
-sudo appmgr install nginx.s9pk
+sudo appmgr install embassy-pages.s9pk
 ```
