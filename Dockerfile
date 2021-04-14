@@ -1,5 +1,6 @@
 FROM alpine:3.13
 
+RUN echo https://dl-cdn.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories
 RUN apk update
 RUN apk add tini
 RUN apk add bash nginx yq

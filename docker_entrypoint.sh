@@ -2,8 +2,23 @@
 
 export HOST_IP=$(ip -4 route list match 0/0 | awk '{print $3}')
 
-subdomains=($(yq r start9/config.yaml 'sites.*.subdomain'))
-directories=($(yq r start9/config.yaml 'sites.*.directory'))
+subdomains=($(yq e '.sites.[].subdomain' start9/config.yaml))
+directories=($(yq e '.sites.[].directory' start9/config.yaml))
+
+read -r -d "" build_site_desc <<EOT
+{
+    "description": "Subdomain link for the site " + .,
+    "masked": false,
+    "copyable": true,
+    "qr": false,
+    "type": "string",
+    "value": . + ".$TOR_ADDRESS"
+}
+EOT
+
+yq e ".sites.[].subdomain | {.: $build_site_desc}" start9/config.yaml > start9/stats.yaml
+yq e -i '{"data": .}' start9/stats.yaml
+yq e -i '.version = 2' start9/stats.yaml
 
 bucket_size=64
 for subdomain in "${subdomains[@]}"; do
