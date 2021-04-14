@@ -13,14 +13,14 @@ sites:
       subdomain:
         type: string
         name: Subdomain
-        description: The subdomain of your .onion address to server the website on.
+        description: The subdomain of your Embassy Pages .onion address to host the website on. For example, a value of "me" would produce a website hosted at http://me.myaddress.onion.
         pattern: '^[a-z-]+$'
-        patternDescription: Must contain only lowercase characters and hyphens.
+        patternDescription: May contain only lowercase characters and hyphens.
         nullable: false
       directory:
         type: string
         name: Directory
-        description: The directory within filebrowser you wish to serve as your website.
+        description: The directory in File Browser that contains the static files of your website. For example, a value of "websites/resume_site" would tell Embassy Pages to look for that directory in File Browser.
         pattern: '^(\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\.*)+)(\/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|\/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\.*)+)*\/?$'
         patternDescription: Must be a valid relative file path
         nullable: false
