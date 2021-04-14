@@ -12,5 +12,5 @@ Embassy Pages relies on File Browser to store its website directories. All your 
    - Choose your desired subdomain. For example: `me`
    - Provide the path to the directory in File Browser. For example: `websites/my_resume`
 1. Click save, then start Embassy Pages. It will restart automatically if it was already running.
-1. Your site will now be hosted at http://me.myaddress.onion, visible from any Tor-enabled browser.
+1. Your site will now be hosted at `http://me.myaddress.onion`, visible from any Tor-enabled browser.
 1. You can view and access all your saved websites inside Properties.
