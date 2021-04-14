@@ -1,6 +1,6 @@
 # Wrapper for embassy-pages
 
-`embassy-pages` is a simple, minimal project to serve as a template for creating a static website for the Embassy.
+This project wraps `Embassy Pages` for EmbassyOS. It has a dependency on File Browser.
 
 ## Dependencies
 
@@ -12,7 +12,7 @@
 
 ## Cloning
 
-Clone the project locally. Note the submodule link to the original project(s).
+Clone the project locally.
 
 ```
 git clone https://github.com/Start9Labs/embassy-pages-wrapper.git
