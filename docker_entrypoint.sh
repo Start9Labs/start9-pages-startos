@@ -22,6 +22,9 @@ EOT
 yq e ".sites.[].subdomain | {.: $build_site_desc}" start9/config.yaml > start9/stats.yaml
 yq e -i '{"data": .}' start9/stats.yaml
 yq e -i '.version = 2' start9/stats.yaml
+if [ ! -s start9/stats.yaml ] ; then
+    rm start9/stats.yaml
+fi
 
 bucket_size=64
 for subdomain in "${subdomains[@]}"; do
