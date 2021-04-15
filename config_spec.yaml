@@ -14,6 +14,7 @@ homepage:
       fuck-off: Fuck Off
   variants:
     welcome: {}
+    index: {}
     filebrowser:
       subdomain:
         type: string

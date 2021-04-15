@@ -8,6 +8,7 @@ RUN apk add bash nginx yq
 RUN mkdir /run/nginx
 
 ADD ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh
+ADD www /var/www
 RUN chmod a+x /usr/local/bin/docker_entrypoint.sh
 
 WORKDIR /root
