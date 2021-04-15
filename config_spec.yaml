@@ -1,6 +1,8 @@
 homepage:
   name: Homepage
   description: subdomain
+  type: union
+  default: welcome
   tag:
     id: type
     name: Type
@@ -47,6 +49,7 @@ subdomains:
     type: union
     displayAs: '{{subdomain}}'
     uniqueBy: subdomain
+    default: filebrowser
     tag:
       id: type
       name: Type
