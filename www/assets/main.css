@@ -1,0 +1,63 @@
+html, body {
+    max-width: 100vw;
+    overflow-x: hidden;
+}
+
+body {
+    background: #313131;
+    color: #FFE8FF;
+    font-family: Verdana;
+    letter-spacing: 1.2px;
+    text-align: center;
+    padding: 1em;
+    font-size: 1.5em;
+}
+
+h1, h2, h3, h4 {
+    color: #eb9ff7;
+    font-weight: 400;
+    letter-spacing: 4px;
+    font-variant: small-caps;
+}
+
+h1 {
+    font-size: xxx-large;
+}
+
+a {
+    text-decoration: none;
+    color: #FFE8FF;
+}
+
+a:hover {
+    opacity: 50%;
+}
+
+a:before {
+    content: " - ";
+}
+
+@media(hover: hover) and (pointer: fine) {
+    a:hover {
+        opacity: 50%;
+    }
+}
+
+li {
+    list-style-type: none;
+    padding-bottom: 7px;
+}
+
+.large {
+    font-size: 72px;
+}
+
+.sites-list {
+    text-align: left;
+}
+
+.list-box {
+    width: 20em;
+    margin-left: auto;
+    margin-right: auto;
+}
