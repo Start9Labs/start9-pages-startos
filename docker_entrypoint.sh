@@ -37,7 +37,7 @@ done
 if [[ $home_type = "index" ]] && [ ${#subdomains} -ne 0 ]; then
     cp /var/www/index/index-prefix.html /var/www/index/index.html
     for subdomain in "${subdomains[@]}"; do
-        echo "      <li><a href=\"http://${subdomain}.${TOR_ADDRESS}\">${subdomain}</a></li>" >> /var/www/home/index.html
+        echo "      <li><a href=\"http://${subdomain}.${TOR_ADDRESS}\">${subdomain}</a></li>" >> /var/www/index/index.html
     done
     cat /var/www/index/index-suffix.html >> /var/www/index/index.html
 fi
