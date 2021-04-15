@@ -65,7 +65,6 @@ server {
   root "/root/start9/public/filebrowser/${directory}";
 }
 EOT
-fi
 else
     cat >> /etc/nginx/conf.d/default.conf <<EOT
 server {
