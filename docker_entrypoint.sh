@@ -77,9 +77,9 @@ EOT
 fi
 
 for subdomain in "${subdomains[@]}"; do
-    subdomain_type=$(yq e ".subdomains.[] | select(.subdomain == \"$subdomain\") | .type")
+    subdomain_type=$(yq e ".subdomains.[] | select(.subdomain == \"$subdomain\") | .type" start9/config.yaml)
     if [[ $subdomain_type == "filebrowser" ]]; then
-        directory="$(yq e ".subdomains.[] | select(.subdomain == \"$subdomain\") | .directory")"
+        directory="$(yq e ".subdomains.[] | select(.subdomain == \"$subdomain\") | .directory" start9/config.yaml)"
         cat >> /etc/nginx/conf.d/default.conf <<EOT
 server {
   autoindex on;
@@ -90,7 +90,7 @@ server {
 }
 EOT
     elif [[ $home_type = "redirect" ]]; then
-        if [ "$(yq e ".subdomains.[] | select(.subdomain == \"$subdomain\") | .target") == ~" = "true"]; then
+        if [ "$(yq e ".subdomains.[] | select(.subdomain == \"$subdomain\") | .target == ~" start9/config.yaml)" = "true"]; then
             cat >> /etc/nginx/conf.d/default.conf <<EOT
 server {
   listen 80;
@@ -100,7 +100,7 @@ server {
 }
 EOT
         else
-            target="$(yq e ".subdomains.[] | select(.subdomain == \"$subdomain\") | .target")"
+            target="$(yq e ".subdomains.[] | select(.subdomain == \"$subdomain\") | .target" start9/config.yaml)"
             cat >> /etc/nginx/conf.d/default.conf <<EOT
 server {
   listen 80;
