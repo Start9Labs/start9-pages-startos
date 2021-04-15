@@ -5,8 +5,8 @@ export HOST_IP=$(ip -4 route list match 0/0 | awk '{print $3}')
 echo start9/public > .backupignore
 echo start9/shared >> .backupignore
 
-subdomains=($(yq e '.sites.[].subdomain' start9/config.yaml))
-directories=($(yq e '.sites.[].directory' start9/config.yaml))
+home_type=$(yq e '.homepage.type' start9/config.yaml)
+subdomains=($(yq e '.subdomains.[].subdomain' start9/config.yaml))
 
 read -r -d "" build_site_desc <<EOT
 {
@@ -19,7 +19,7 @@ read -r -d "" build_site_desc <<EOT
 }
 EOT
 
-yq e ".sites.[].subdomain | {.: $build_site_desc}" start9/config.yaml > start9/stats.yaml
+yq e ".subdomains.[].subdomain | {.: $build_site_desc}" start9/config.yaml > start9/stats.yaml
 yq e -i '{"data": .}' start9/stats.yaml
 yq e -i '.version = 2' start9/stats.yaml
 if [ ! -s start9/stats.yaml ] ; then
@@ -34,51 +34,85 @@ for subdomain in "${subdomains[@]}"; do
     fi
 done
 
-mkdir -p /root/landing
-if [ ${#subdomains} -eq 0 ]; then
-    echo "<html>" > /root/landing/index.html
-    echo "  <head>" >> /root/landing/index.html
-    echo "    <title>Embassy Pages</title>" >> /root/landing/index.html
-    echo "  </head>" >> /root/landing/index.html
-    echo "  <body>" >> /root/landing/index.html
-    echo "    <h1>Welcome to Embassy Pages</h1>" >> /root/landing/index.html
-    echo "    <p>Looks like you don't have any sites yet. Start by adding a site to your config.</p>" >> /root/landing/index.html
-    echo "  </body>" >> /root/landing/index.html
-    echo "</html>" >> /root/landing/index.html
-else
-    echo "<html>" > /root/landing/index.html
-    echo "  <head>" >> /root/landing/index.html
-    echo "    <title>Embassy Pages</title>" >> /root/landing/index.html
-    echo "  </head>" >> /root/landing/index.html
-    echo "  <body>" >> /root/landing/index.html
-    echo "    <h1>Available Sites</h1>" >> /root/landing/index.html
-    echo "    <ul>" >> /root/landing/index.html
+if [ $home_type = "index" ] && [ ${#subdomains} -ne 0 ]; then
+    cp /var/www/index/index-prefix.html /var/www/index/index.html
     for subdomain in "${subdomains[@]}"; do
-        echo "      <li><a href=\"http://$subdomain.$TOR_ADDRESS\">$subdomain</a></li>" >> /root/landing/index.html
-    done
-    echo "    </ul>" >> /root/landing/index.html
-    echo "  </body>" >> /root/landing/index.html
-    echo "</html>" >> /root/landing/index.html
+            echo "      <li><a href=\"http://${subdomain}.${TOR_ADDRESS}\">${subdomain}</a></li>" >> /var/www/home/index.html
+        done
+        cat /var/www/index/index-suffix.html >> /var/www/index/index.html
+    fi
 fi
 
 echo "server_names_hash_bucket_size ${bucket_size};" > /etc/nginx/conf.d/default.conf
-echo "server {" >> /etc/nginx/conf.d/default.conf
-echo "  listen 80;" >> /etc/nginx/conf.d/default.conf
-echo "  listen [::]:80;" >> /etc/nginx/conf.d/default.conf
-echo "  server_name $TOR_ADDRESS;" >> /etc/nginx/conf.d/default.conf
-echo "  root \"/root/landing\";" >> /etc/nginx/conf.d/default.conf
-echo "}" >> /etc/nginx/conf.d/default.conf
 
-for ((i=0; i<${#subdomains[@]}; i++)); do
-    subdomain=${subdomains[$i]}
-    directory=${directories[$i]}
-    echo "server {" >> /etc/nginx/conf.d/default.conf
-    echo "  autoindex on;" >> /etc/nginx/conf.d/default.conf
-    echo "  listen 80;" >> /etc/nginx/conf.d/default.conf
-    echo "  listen [::]:80;" >> /etc/nginx/conf.d/default.conf
-    echo "  server_name $subdomain.$TOR_ADDRESS;" >> /etc/nginx/conf.d/default.conf
-    echo "  root \"/root/start9/public/filebrowser/$directory\";" >> /etc/nginx/conf.d/default.conf
-    echo "}" >> /etc/nginx/conf.d/default.conf
+if [ $home_type = "redirect" ]; then
+    target=$(yq e '.homepage.target' start9/config.yaml)
+    cat >> /etc/nginx/conf.d/default.conf <<EOT
+server {
+  listen 80;
+  listen [::]:80;
+  server_name ${TOR_ADDRESS};
+  return 301 http://${target}.${TOR_ADDRESS}$request_uri;
+}
+EOT
+elif [ $home_type = "filebrowser" ]; then
+    directory=$(yq e '.homepage.directory' start9/config.yaml)
+    cat >> /etc/nginx/conf.d/default.conf <<EOT
+server {
+  autoindex on;
+  listen 80;
+  listen [::]:80;
+  server_name ${TOR_ADDRESS};
+  root "/root/start9/public/filebrowser/${directory}";
+}
+EOT
+fi
+else
+    cat >> /etc/nginx/conf.d/default.conf <<EOT
+server {
+  listen 80;
+  listen [::]:80;
+  server_name ${TOR_ADDRESS};
+  root "/var/www/${home_type}";
+}
+EOT
+fi
+
+for subdomain in "${subdomains[@]}"; do
+    subdomain_type=$(yq e ".subdomains.[] | select(.subdomain == \"$subdomain\") | .type")
+    if [ $subdomain_type == "filebrowser" ]; then
+        directory="$(yq e ".subdomains.[] | select(.subdomain == \"$subdomain\") | .directory")"
+        cat >> /etc/nginx/conf.d/default.conf <<EOT
+server {
+  autoindex on;
+  listen 80;
+  listen [::]:80;
+  server_name ${subdomain}.${TOR_ADDRESS};
+  root "/root/start9/public/filebrowser/${directory}";
+}
+EOT
+    elif [ $home_type = "redirect" ]; then
+        if [ "$(yq e ".subdomains.[] | select(.subdomain == \"$subdomain\") | .target") == ~" = "true"]; then
+            cat >> /etc/nginx/conf.d/default.conf <<EOT
+server {
+  listen 80;
+  listen [::]:80;
+  server_name ${subdomain}.${TOR_ADDRESS};
+  return 301 http://${TOR_ADDRESS}$request_uri;
+}
+EOT
+        else
+            target="$(yq e ".subdomains.[] | select(.subdomain == \"$subdomain\") | .target")"
+            cat >> /etc/nginx/conf.d/default.conf <<EOT
+server {
+  listen 80;
+  listen [::]:80;
+  server_name ${subdomain}.${TOR_ADDRESS};
+  return 301 http://${target}.${TOR_ADDRESS}$request_uri;
+}
+EOT
+        fi
+    fi
 done
 
 exec tini -- nginx -g "daemon off;"
