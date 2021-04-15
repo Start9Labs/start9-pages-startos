@@ -29,12 +29,12 @@ fi
 bucket_size=64
 for subdomain in "${subdomains[@]}"; do
     len=$(( 62 + ${#subdomain} ))
-    if [ $len -ge $bucket_size ]; then
+    if [[ $len -ge $bucket_size ]]; then
         bucket_size=$(( $bucket_size * 2 ))
     fi
 done
 
-if [ $home_type = "index" ] && [ ${#subdomains} -ne 0 ]; then
+if [[ $home_type = "index" ]] && [ ${#subdomains} -ne 0 ]; then
     cp /var/www/index/index-prefix.html /var/www/index/index.html
     for subdomain in "${subdomains[@]}"; do
         echo "      <li><a href=\"http://${subdomain}.${TOR_ADDRESS}\">${subdomain}</a></li>" >> /var/www/home/index.html
@@ -44,7 +44,7 @@ fi
 
 echo "server_names_hash_bucket_size ${bucket_size};" > /etc/nginx/conf.d/default.conf
 
-if [ $home_type = "redirect" ]; then
+if [[ $home_type = "redirect" ]]; then
     target=$(yq e '.homepage.target' start9/config.yaml)
     cat >> /etc/nginx/conf.d/default.conf <<EOT
 server {
@@ -54,7 +54,7 @@ server {
   return 301 http://${target}.${TOR_ADDRESS}$request_uri;
 }
 EOT
-elif [ $home_type = "filebrowser" ]; then
+elif [[ $home_type = "filebrowser" ]]; then
     directory=$(yq e '.homepage.directory' start9/config.yaml)
     cat >> /etc/nginx/conf.d/default.conf <<EOT
 server {
@@ -78,7 +78,7 @@ fi
 
 for subdomain in "${subdomains[@]}"; do
     subdomain_type=$(yq e ".subdomains.[] | select(.subdomain == \"$subdomain\") | .type")
-    if [ $subdomain_type == "filebrowser" ]; then
+    if [[ $subdomain_type == "filebrowser" ]]; then
         directory="$(yq e ".subdomains.[] | select(.subdomain == \"$subdomain\") | .directory")"
         cat >> /etc/nginx/conf.d/default.conf <<EOT
 server {
@@ -89,7 +89,7 @@ server {
   root "/root/start9/public/filebrowser/${directory}";
 }
 EOT
-    elif [ $home_type = "redirect" ]; then
+    elif [[ $home_type = "redirect" ]]; then
         if [ "$(yq e ".subdomains.[] | select(.subdomain == \"$subdomain\") | .target") == ~" = "true"]; then
             cat >> /etc/nginx/conf.d/default.conf <<EOT
 server {

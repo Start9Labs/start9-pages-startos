@@ -1,6 +1,6 @@
 homepage:
   name: Homepage
-  description: subdomain
+  description: The page that will be displayed when your Embassy Pages .onion address is visited. Since this page is technically publicly accessible, you can choose to which type of page to display.
   type: union
   default: welcome
   tag:
