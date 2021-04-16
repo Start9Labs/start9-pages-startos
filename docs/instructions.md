@@ -16,7 +16,7 @@ Embassy Pages relies on File Browser to store its website directories. All your 
 1. Your site will now be hosted at `http://me.myaddress.onion`, visible from any Tor-enabled browser.
 1. You can view and access all your saved websites inside Properties.
 
-## Changing Welcome Page
+## Changing the Homepage
 
 Keep in mind that if you expose the URL of a subdomained Embassy Pages' website, the default Embassy Pages' website will also be exposed (and can be accessed by deleting the subdomained portion of the URL).
 
