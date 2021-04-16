@@ -3,7 +3,7 @@ id: embassy-pages
 version: 0.1.0
 title: Embassy Pages
 description:
-  short: A simple static site host
+  short: Create Tor websites, hosted on your Embassy.
   long: Embassy Pages is a simple web server that uses directories inside File Browser to serve Tor websites.
 release-notes: Initial release.
 ports:
