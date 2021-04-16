@@ -19,7 +19,7 @@ read -r -d "" build_site_desc <<EOT
 }
 EOT
 
-yq e ".subdomains.[].subdomain | {.: $build_site_desc}" start9/config.yaml > start9/stats.yaml
+yq e ".subdomains.[].name | {.: $build_site_desc}" start9/config.yaml > start9/stats.yaml
 yq e -i '{"data": .}' start9/stats.yaml
 yq e -i '.version = 2' start9/stats.yaml
 if [ ! -s start9/stats.yaml ] ; then
