@@ -1,6 +1,6 @@
-# Wrapper for embassy-pages
+# Wrapper for Embassy Pages
 
-This project wraps `Embassy Pages` for EmbassyOS. It has a dependency on File Browser.
+This project wraps `Embassy Pages` for EmbassyOS.
 
 ## Dependencies
 
