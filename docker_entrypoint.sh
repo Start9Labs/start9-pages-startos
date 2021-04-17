@@ -18,8 +18,11 @@ read -r -d "" build_site_desc <<EOT
     "value": . + ".$TOR_ADDRESS"
 }
 EOT
-
 yq e ".subdomains.[].name | {.: $build_site_desc}" start9/config.yaml > start9/stats.yaml
+yq e -i '{"value": . }' start9/stats.yaml
+yq e -i '.type="object"' start9/stats.yaml
+yq e -i '.description="The available subdomains."' start9/stats.yaml
+yq e -i '{"Subdomains": . }' start9/stats.yaml
 yq e -i '{"data": .}' start9/stats.yaml
 yq e -i '.version = 2' start9/stats.yaml
 if [ ! -s start9/stats.yaml ] ; then
@@ -77,9 +80,9 @@ EOT
 fi
 
 for subdomain in "${subdomains[@]}"; do
-    subdomain_type=$(yq e ".subdomains.[] | select(.name == \"$subdomain\") | .behavior |.type" start9/config.yaml)
+    subdomain_type=$(yq e ".subdomains.[] | select(.name == \"$subdomain\") | .settings |.type" start9/config.yaml)
     if [[ $subdomain_type == "filebrowser" ]]; then
-        directory="$(yq e ".subdomains.[] | select(.name == \"$subdomain\") | .behavior | .directory" start9/config.yaml)"
+        directory="$(yq e ".subdomains.[] | select(.name == \"$subdomain\") | .settings | .directory" start9/config.yaml)"
         cat >> /etc/nginx/conf.d/default.conf <<EOT
 server {
   autoindex on;
@@ -89,8 +92,8 @@ server {
   root "/root/start9/public/filebrowser/${directory}";
 }
 EOT
-    elif [[ $home_type = "redirect" ]]; then
-        if [ "$(yq e ".subdomains.[] | select(.name == \"$subdomain\") | .target == ~" start9/config.yaml)" = "true"]; then
+    elif [[ $subdomain_type = "redirect" ]]; then
+        if [ "$(yq e ".subdomains.[] | select(.name == \"$subdomain\") | .settings | .target == ~" start9/config.yaml)" = "true"]; then
             cat >> /etc/nginx/conf.d/default.conf <<EOT
 server {
   listen 80;
@@ -100,7 +103,7 @@ server {
 }
 EOT
         else
-            target="$(yq e ".subdomains.[] | select(.name == \"$subdomain\") | .target" start9/config.yaml)"
+            target="$(yq e ".subdomains.[] | select(.name == \"$subdomain\") | .settings | .target" start9/config.yaml)"
             cat >> /etc/nginx/conf.d/default.conf <<EOT
 server {
   listen 80;

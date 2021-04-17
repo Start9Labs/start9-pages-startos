@@ -9,6 +9,7 @@ release-notes: Initial release.
 ports:
   - internal: 80
     tor: 80
+    lan: ~
 image:
   type: tar
 mount: /root
