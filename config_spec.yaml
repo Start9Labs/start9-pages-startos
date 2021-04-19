@@ -20,7 +20,7 @@ homepage:
         type: string
         name: Directory Path
         description: The path to the directory in File Browser that contains the static files of your website. For example, a value of "websites/resume_site" would tell Embassy Pages to look for that directory in File Browser.
-        pattern: '^(\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\.*)+)(\/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|\/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\.*)+)*\/?$'
+        pattern: "^(\\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)(/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)*/?$"
         patternDescription: Must be a valid relative file path
         nullable: false
     redirect:
@@ -67,7 +67,7 @@ subdomains:
               type: string
               name: Directory Path
               description: The path to the directory in File Browser that contains the static files of your website. For example, a value of "websites/resume_site" would tell Embassy Pages to look for that directory in File Browser.
-              pattern: '^(\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\.*)+)(\/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|\/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\.*)+)*\/?$'
+              pattern: "^(\\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)(/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)*/?$"
               patternDescription: Must be a valid relative file path
               nullable: false
           redirect:
