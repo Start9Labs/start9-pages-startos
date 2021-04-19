@@ -1,29 +1,17 @@
-# Using Embassy Pages
+# Embassy Pages
 
-## General Info
+## About
 
-Embassy Pages relies on File Browser to store its website directories. All your Embassy Pages sites are hosted on unique subdomains. For example, one site could be `http://hello.myaddress.onion` and another could be `http://goodbye.myaddress.onion`. You chose the subdomain for each site.
+Embassy Pages is a simple web server that uses directories inside File Browser to serve Tor websites. Your website could be a blog, a resume, a portfolio, a business landing page, a product brochure, or just a set of static folders and/or files that you want to share with the world.
+
+When you first install Embassy Pages, there will be a default Homepage hosted at the root, <tor-address>.onion. You can change the behavior of this page, and you can also create Subdomain websites. For example, one site could be hello.<tor-address>.onion and another could be goodbye.<tor-address>.onion. What is served from the Homepage and each Subdomain is totally up to you.
+   
+Self-hosting Tor  websites using Embassy Pages is easy, permissionless, and censorship-resistant; there are no trusted third parties involved.
+Anyone can do it. No one can stop it.
 
 ## Instructions
 
-1. Place your static website files into a directory inside File Browser.
-1. Open the Embassy Pages service and select the Config sub-menu.
-1. Add a new site by selecting "Subdomains" from the Config Options menu:
-   - Click the `+` in the upper right hand corner.
-   - Choose your desired subdomain. For example: `me`
-   - Provide the path to the directory in File Browser. For example: `websites/my_resume`
-1. Click save, then start Embassy Pages. It will automatically restart if it was already running.
-1. Your site will now be hosted at `http://me.myaddress.onion`, visible from any Tor-enabled browser.
-1. You can view and access all your saved websites inside Properties.
-
-## Changing the Homepage
-
-Keep in mind that if you expose the URL of a subdomained Embassy Pages' website, the default Embassy Pages' website will also be exposed (and can be accessed by deleting the subdomained portion of the URL).
-
-If you would like to change the default welcome page for your Embassy Pages' website for this case, navigate to `Config > Homepage`. Change the type to your desired option.
-
-The various options include:
- - Index of subdomains: renders a page with a list of all subdomain pages you added.
- - File Browser Directory: points the Embassy Pages' website address to the specified directory in File Browser. This is useful if you want a customized default page for your Embassy Pages service.
- - Redirect: enables the Embassy Pages website address to redirect to one of your specified subdomain sites.
- - Fuck Off: kindly dissuades unauthorized viewing of your Embassy Pages' website.
+1. Inside Config, you can easily change the behavior of your Homepage to serve: (1) A list of hyperlinks to all your Subdomains; (2) a personal web page; (3) an automatic redirect to a Subdomain; (4) a static web page that tells anyone visiting it to fuck off, politely.
+1. Inside Config, you can create one or more Subdomains, giving each a unique name.
+1. To serve a personal website, simply upload the website directory to File Browser. Then, inside the settings for a particular page (either your Homepage or a Subdomain), enter the path to that directory. For example, a path of websites/blog would tell Embassy Pages that it can find the blog website inside the websites directory in File Browser.
+1. A list of all your Subdomains can be found inside the Properties section of your Embassy Pages service.
