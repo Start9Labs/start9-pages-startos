@@ -11,7 +11,14 @@ Anyone can do it. No one can stop it.
 
 ## Instructions
 
-1. Inside Config, you can easily change the behavior of your Homepage to serve: (1) A list of hyperlinks to all your Subdomains; (2) a personal web page; (3) an automatic redirect to a Subdomain; (4) a static web page that tells anyone visiting it to fuck off, politely.
+1. Inside Config, you can easily change the behavior of your Homepage to serve:
+   1. A list of hyperlinks to all your Subdomains
+   1. A personal web page
+   1. An automatic redirect to a Subdomain
+   1. A static web page that tells anyone visiting it to fuck off, politely.
+   
 1. Inside Config, you can create one or more Subdomains, giving each a unique name.
+
 1. To serve a personal website, simply upload the website directory to File Browser. Then, inside the settings for a particular page (either your Homepage or a Subdomain), enter the path to that directory. For example, a path of websites/blog would tell Embassy Pages that it can find the blog website inside the websites directory in File Browser.
+
 1. A list of all your Subdomains can be found inside the Properties section of your Embassy Pages service.
