@@ -1,6 +1,6 @@
 compat: v0
 id: embassy-pages
-version: 0.1.0
+version: 0.1.1
 title: Embassy Pages
 description:
   short: Create Tor websites, hosted on your Embassy.
