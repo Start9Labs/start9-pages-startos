@@ -29,7 +29,7 @@ if [ ! -s start9/stats.yaml ] ; then
     rm start9/stats.yaml
 fi
 
-bucket_size=64
+bucket_size=72
 for subdomain in "${subdomains[@]}"; do
     len=$(( 62 + ${#subdomain} ))
     if [[ $len -ge $bucket_size ]]; then
@@ -41,7 +41,7 @@ if [[ $home_type = "index" ]]; then
     if [ ${#subdomains} -ne 0 ]; then
         cp /var/www/index/index-prefix.html /var/www/index/index.html
         for subdomain in "${subdomains[@]}"; do
-            echo "      <li><a href=\"http://${subdomain}.${TOR_ADDRESS}\">${subdomain}</a></li>" >> /var/www/index/index.html
+            echo "      <li><a target=\"_blank\" href=\"http://${subdomain}.${TOR_ADDRESS}\">${subdomain}</a></li>" >> /var/www/index/index.html
         done
         cat /var/www/index/index-suffix.html >> /var/www/index/index.html
     else
@@ -96,7 +96,7 @@ server {
   root "/root/start9/public/filebrowser/${directory}";
 }
 EOT
-    elif [[ $subdomain_type = "redirect" ]]; then
+    elif [ $subdomain_type = "redirect" ]; then
         if [ "$(yq e ".subdomains.[] | select(.name == \"$subdomain\") | .settings | .target == ~" start9/config.yaml)" = "true"]; then
             cat >> /etc/nginx/conf.d/default.conf <<EOT
 server {

@@ -27,25 +27,25 @@ h1 {
 a {
   text-decoration: none;
   color: #FFE8FF;
+  border: 2px solid #FFE8FF;
+  padding: 10px 20px;
+  text-align: center;
+  display: inline-block;
 }
 
 a:hover {
-  opacity: 50%;
+  background-color: #FFE8FF;
+  color:#313131;
 }
 
-a:before {
-  content: " - ";
-}
-
-@media(hover: hover) and (pointer: fine) {
-  a:hover {
-    opacity: 50%;
-  }
+a:active {
+  background-color: #FFE8FF;
+  color:#313131;
 }
 
 li {
   list-style-type: none;
-  padding-bottom: 7px;
+  padding-bottom: 15px;
 }
 
 .large {
@@ -53,11 +53,9 @@ li {
 }
 
 .sites-list {
-  text-align: left;
+  text-align: center;
 }
 
-.list-box {
-  width: 20em;
-  margin-left: auto;
-  margin-right: auto;
+ul {
+  padding-inline-start: 0px;
 }
