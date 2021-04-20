@@ -29,9 +29,10 @@ if [ ! -s start9/stats.yaml ] ; then
     rm start9/stats.yaml
 fi
 
-bucket_size=72
+bucket_size=64
 for subdomain in "${subdomains[@]}"; do
-    len=$(( 62 + ${#subdomain} ))
+    suffix=".${TOR_ADDRESS}"
+    len=$(( ${#suffix} + ${#subdomain} ))
     if [[ $len -ge $bucket_size ]]; then
         bucket_size=$(( $bucket_size * 2 ))
     fi
