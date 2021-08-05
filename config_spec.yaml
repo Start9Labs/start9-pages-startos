@@ -6,7 +6,7 @@ homepage:
   tag:
     id: type
     name: Type
-    variantNames:
+    variant-names:
       welcome: Welcome
       index: Subdomain Index
       filebrowser: Web Page
@@ -21,7 +21,7 @@ homepage:
         name: Directory Path
         description: The path to the directory in File Browser that contains the static files of your website. For example, a value of "websites/resume_site" would tell Embassy Pages to look for that directory in File Browser.
         pattern: "^(\\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)(/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)*/?$"
-        patternDescription: Must be a valid relative file path
+        pattern-description: Must be a valid relative file path
         nullable: false
     redirect:
       target:
@@ -29,7 +29,7 @@ homepage:
         name: Target Subdomain
         description: The name of the subdomain to redirect users to. This must be a valid subdomain site within your Embassy Pages. 
         pattern: '^[a-z-]+$'
-        patternDescription: May contain only lowercase characters and hyphens.
+        pattern-description: May contain only lowercase characters and hyphens.
         nullable: false
     fuck-off: {}
 subdomains:
@@ -40,8 +40,8 @@ subdomains:
   range: '[0, *)'
   subtype: object
   spec:
-    uniqueBy: name
-    displayAs: "{{name}}"
+    unique-by: name
+    display-as: "{{name}}"
     spec:
       name:
         type: string
@@ -49,7 +49,7 @@ subdomains:
         name: Subdomain name
         description: The subdomain of your Embassy Pages .onion address to host the website on. For example, a value of "me" would produce a website hosted at http://me.myaddress.onion.
         pattern: "^[a-z-]+$"
-        patternDescription: "May contain only lowercase characters and hyphens"
+        pattern-description: "May contain only lowercase characters and hyphens"
       settings:
         type: union
         name: Settings
@@ -58,7 +58,7 @@ subdomains:
         tag:
           id: type
           name: Type
-          variantNames:
+          variant-names:
             filebrowser: Web Page
             redirect: Redirect
         variants:
@@ -68,7 +68,7 @@ subdomains:
               name: Directory Path
               description: The path to the directory in File Browser that contains the static files of your website. For example, a value of "websites/resume_site" would tell Embassy Pages to look for that directory in File Browser.
               pattern: "^(\\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)(/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)*/?$"
-              patternDescription: Must be a valid relative file path
+              pattern-description: Must be a valid relative file path
               nullable: false
           redirect:
             target:
@@ -76,5 +76,5 @@ subdomains:
               name: Target Subdomain
               description: The subdomain of your Embassy Pages .onion address to redirect to. This should be the name of another subdomain on Embassy Pages. Leave empty to redirect to the homepage.
               pattern: '^[a-z-]+$'
-              patternDescription: May contain only lowercase characters and hyphens.
+              pattern-description: May contain only lowercase characters and hyphens.
               nullable: false
