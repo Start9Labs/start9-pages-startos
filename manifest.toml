@@ -42,7 +42,7 @@ type = "docker"
 image = "compat"
 system = true
 entrypoint = "compat"
-args = ["config", "set", "/root"]
+args = ["config", "set", "/root/start9/config.yaml"]
 mounts = { main = "/root" }
 io-format = "yaml"
 
