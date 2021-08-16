@@ -33,7 +33,7 @@ type = "docker"
 image = "compat"
 system = true
 entrypoint = "compat"
-args = ["config", "get", "/root", "/mnt/assets/config_spec.yaml"]
+args = ["config", "get", "/root/start9/config.yaml", "/mnt/assets/config_spec.yaml"]
 mounts = { compat = "/mnt/assets", main = "/root" }
 io-format = "yaml"
 
@@ -43,7 +43,7 @@ image = "compat"
 system = true
 entrypoint = "compat"
 args = ["config", "set", "/root"]
-mounts = {}
+mounts = { main = "/root" }
 io-format = "yaml"
 
 [dependencies.filebrowser]
