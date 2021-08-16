@@ -23,7 +23,7 @@ type = "docker"
 image = "main"
 entrypoint = "/usr/local/bin/docker_entrypoint.sh"
 args = []
-mounts = { filebrowser="/mnt/filebrowser" }
+mounts = { filebrowser = "/mnt/filebrowser" }
 io-format = "yaml"
 
 [health-checks]
@@ -32,17 +32,17 @@ io-format = "yaml"
 type = "docker"
 image = "compat"
 system = true
-entrypoint = "config"
-args = ["get", "/root"]
-mounts = {}
+entrypoint = "compat"
+args = ["config", "get", "/root", "/mnt/assets/config_spec.yaml"]
+mounts = { compat = "/mnt/assets", main = "/root" }
 io-format = "yaml"
 
 [config.set]
 type = "docker"
 image = "compat"
 system = true
-entrypoint = "config"
-args = ["set", "/root"]
+entrypoint = "compat"
+args = ["config", "set", "/root"]
 mounts = {}
 io-format = "yaml"
 
@@ -50,6 +50,10 @@ io-format = "yaml"
 version = "^2.14.1.1"
 description = "Used to upload files to serve."
 critical = false
+recommended = true
+
+[volumes.main]
+type = "data"
 
 [volumes.filebrowser]
 type = "pointer"
@@ -58,8 +62,13 @@ volume-id = "main"
 path = "/"
 readonly = true
 
+[volumes.compat]
+type = "assets"
+
 [interfaces.main]
-tor-config = { port-mapping={ "80"="80" } }
+name = "Homepage"
+description = "The homepage... (TODO)"
+tor-config = { port-mapping = { "80" = "80" } }
 ui = true
 protocols = ["tcp", "http"]
 
