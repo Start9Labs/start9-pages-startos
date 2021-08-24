@@ -2,9 +2,9 @@ id = "embassy-pages"
 title = "Embassy Pages"
 version = "0.1.3"
 release-notes = "Upgrade to EmbassyOS v0.3.0"
-license = "nginx"
+license = "mit"
 wrapper-repo = "https://github.com/Start9Labs/embassy-pages-wrapper"
-upstream-repo = "http://hg.nginx.org/nginx/"
+upstream-repo = "https://github.com/Start9Labs/embassy-pages-wrapper"
 build = ["make"]
 min-os-version = "0.3.0"
 
@@ -23,6 +23,7 @@ type = "docker"
 image = "main"
 entrypoint = "/usr/local/bin/docker_entrypoint.sh"
 args = []
+# specifices where to put the volumes
 mounts = { filebrowser = "/mnt/filebrowser" }
 io-format = "yaml"
 
@@ -33,6 +34,7 @@ type = "docker"
 image = "compat"
 system = true
 entrypoint = "compat"
+# TODO edit compat code to take an absolute path as third arg (for config.get.args)	
 args = ["config", "get", "/root/start9/config.yaml", "/mnt/assets/config_spec.yaml"]
 mounts = { compat = "/mnt/assets", main = "/root" }
 io-format = "yaml"
