@@ -5,6 +5,7 @@ release-notes = "Upgrade to EmbassyOS v0.3.0"
 license = "mit"
 wrapper-repo = "https://github.com/Start9Labs/embassy-pages-wrapper"
 upstream-repo = "https://github.com/Start9Labs/embassy-pages-wrapper"
+support-site = "https://matrix.to/#/!lMnRwPWnyQvOfAoEnD:matrix.start9labs.com?via=matrix.start9labs.com&via=matrix.org&via=hnitbjorg.xyz" 
 build = ["make"]
 min-os-version = "0.3.0"
 
