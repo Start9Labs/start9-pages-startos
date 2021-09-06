@@ -25,7 +25,7 @@ image = "main"
 entrypoint = "/usr/local/bin/docker_entrypoint.sh"
 args = []
 # specifices where to put the volumes
-mounts = { filebrowser = "/mnt/filebrowser" }
+mounts = { main = "/root", filebrowser = "/mnt/filebrowser" }
 io-format = "yaml"
 
 [health-checks]
@@ -45,8 +45,8 @@ type = "docker"
 image = "compat"
 system = true
 entrypoint = "compat"
-args = ["config", "set", "/root/start9/config.yaml"]
-mounts = { main = "/root" }
+args = ["config", "set", "embassy-pages", "/root/start9/config.yaml"]
+mounts = { compat = "/mnt/assets", main = "/root" }
 io-format = "yaml"
 
 [dependencies.filebrowser]

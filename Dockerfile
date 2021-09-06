@@ -9,6 +9,7 @@ RUN mkdir /run/nginx
 
 ADD ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh
 ADD www /var/www
+RUN mkdir start9
 RUN cp /var/www/assets/main.css /var/www/fuck-off/main.css
 RUN cp /var/www/assets/main.css /var/www/index/main.css
 RUN cp /var/www/assets/main.css /var/www/welcome/main.css
