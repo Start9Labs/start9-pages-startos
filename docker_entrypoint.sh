@@ -7,6 +7,7 @@ echo start9/shared >> .backupignore
 
 home_type=$(yq e '.homepage.type' start9/config.yaml)
 subdomains=($(yq e '.subdomains.[].name' start9/config.yaml))
+tor_address=($(yq e '.tor-address' start9/config.yaml))
 
 read -r -d "" build_site_desc <<EOT
 {
@@ -15,7 +16,7 @@ read -r -d "" build_site_desc <<EOT
     "copyable": true,
     "qr": false,
     "type": "string",
-    "value": . + ".$TOR_ADDRESS"
+    "value": . + ".$tor_address"
 }
 EOT
 yq e ".subdomains.[].name | {.: $build_site_desc}" start9/config.yaml > start9/stats.yaml
@@ -31,7 +32,7 @@ fi
 
 bucket_size=64
 for subdomain in "${subdomains[@]}"; do
-    suffix=".${TOR_ADDRESS}"
+    suffix=".${tor_address}"
     len=$(( ${#suffix} + ${#subdomain} ))
     if [[ $len -ge $bucket_size ]]; then
         bucket_size=$(( $bucket_size * 2 ))
@@ -42,7 +43,7 @@ if [[ $home_type = "index" ]]; then
     if [ ${#subdomains} -ne 0 ]; then
         cp /var/www/index/index-prefix.html /var/www/index/index.html
         for subdomain in "${subdomains[@]}"; do
-            echo "      <li><a target=\"_blank\" href=\"http://${subdomain}.${TOR_ADDRESS}\">${subdomain}</a></li>" >> /var/www/index/index.html
+            echo "      <li><a target=\"_blank\" href=\"http://${subdomain}.${tor_address}\">${subdomain}</a></li>" >> /var/www/index/index.html
         done
         cat /var/www/index/index-suffix.html >> /var/www/index/index.html
     else
@@ -58,8 +59,8 @@ if [[ $home_type = "redirect" ]]; then
 server {
   listen 80;
   listen [::]:80;
-  server_name ${TOR_ADDRESS};
-  return 301 http://${target}.${TOR_ADDRESS}$request_uri;
+  server_name ${tor_address};
+  return 301 http://${target}.${tor_address}$request_uri;
 }
 EOT
 elif [[ $home_type = "filebrowser" ]]; then
@@ -69,7 +70,7 @@ server {
   autoindex on;
   listen 80;
   listen [::]:80;
-  server_name ${TOR_ADDRESS};
+  server_name ${tor_address};
   root "/root/start9/public/filebrowser/${directory}";
 }
 EOT
@@ -78,7 +79,7 @@ else
 server {
   listen 80;
   listen [::]:80;
-  server_name ${TOR_ADDRESS};
+  server_name ${tor_address};
   root "/var/www/${home_type}";
 }
 EOT
@@ -93,7 +94,7 @@ server {
   autoindex on;
   listen 80;
   listen [::]:80;
-  server_name ${subdomain}.${TOR_ADDRESS};
+  server_name ${subdomain}.${tor_address};
   root "/root/start9/public/filebrowser/${directory}";
 }
 EOT
@@ -103,8 +104,8 @@ EOT
 server {
   listen 80;
   listen [::]:80;
-  server_name ${subdomain}.${TOR_ADDRESS};
-  return 301 http://${TOR_ADDRESS}$request_uri;
+  server_name ${subdomain}.${tor_address};
+  return 301 http://${tor_address}$request_uri;
 }
 EOT
         else
@@ -113,8 +114,8 @@ EOT
 server {
   listen 80;
   listen [::]:80;
-  server_name ${subdomain}.${TOR_ADDRESS};
-  return 301 http://${target}.${TOR_ADDRESS}$request_uri;
+  server_name ${subdomain}.${tor_address};
+  return 301 http://${target}.${tor_address}$request_uri;
 }
 EOT
         fi
