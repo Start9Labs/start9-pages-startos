@@ -28,14 +28,21 @@ args = []
 mounts = { main = "/root", filebrowser = "/mnt/filebrowser" }
 io-format = "yaml"
 
-[health-checks]
+[health-checks.nginx]
+type = "docker"
+image = "main"
+system = true
+entrypoint = "sh"
+args = ["-c", "curl http://localhost:80 || exit 1"]
+mounts = { main = "/root" }
+io-format = "yaml"
+critical = false
 
 [config.get]
 type = "docker"
 image = "compat"
 system = true
 entrypoint = "compat"
-# TODO edit compat code to take an absolute path as third arg (for config.get.args)	
 args = ["config", "get", "/root/start9/config.yaml", "/mnt/assets/config_spec.yaml"]
 mounts = { compat = "/mnt/assets", main = "/root" }
 io-format = "yaml"
@@ -45,7 +52,7 @@ type = "docker"
 image = "compat"
 system = true
 entrypoint = "compat"
-args = ["config", "set", "embassy-pages", "/root/start9/config.yaml"]
+args = ["config", "set", "/root/start9/config.yaml", "embassy-pages", "/mnt/assets/config_rules.yaml"]
 mounts = { compat = "/mnt/assets", main = "/root" }
 io-format = "yaml"
 
