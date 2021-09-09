@@ -56,6 +56,15 @@ args = ["config", "set", "/root/start9/config.yaml", "embassy-pages", "/mnt/asse
 mounts = { compat = "/mnt/assets", main = "/root" }
 io-format = "yaml"
 
+[properties]
+type = "docker"
+image = "compat"
+system = true
+entrypoint = "compat"
+args = ["properties", "/root"]
+mounts = { compat = "/mnt/assets", main = "/root" }
+io-format = "yaml"
+
 [dependencies.filebrowser]
 version = "^2.14.1.1"
 description = "Used to upload files to serve."
@@ -76,8 +85,8 @@ readonly = true
 type = "assets"
 
 [interfaces.main]
-name = "Homepage"
-description = "The homepage... (TODO)"
+name = "Network interface"
+description = "Specifies the interface to listen on for HTTP connections."
 tor-config = { port-mapping = { "80" = "80" } }
 ui = true
 protocols = ["tcp", "http"]
