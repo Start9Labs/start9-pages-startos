@@ -86,14 +86,14 @@ protocols = ["tcp", "http"]
 type = "docker"
 image = "compat"
 system = true
-entrypoint = "true"
-args = []
-mounts = {}
+entrypoint = "compat"
+args = ["duplicity", "embassy-pages", "/mnt/backup", "/root"]
+mounts = { BACKUP= "/mnt/backup", main= "/root" }
 
 [backup.restore]
 type = "docker"
 image = "compat"
 system = true
-entrypoint = "true"
-args = []
-mounts = {}
+entrypoint = "compat"
+args = ["duplicity", "embassy-pages", "/mnt/backup", "/root"]
+mounts = { BACKUP= "/mnt/backup", main= "/root" }

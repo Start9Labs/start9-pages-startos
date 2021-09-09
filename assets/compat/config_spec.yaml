@@ -1,5 +1,8 @@
 tor-address:
+  name: Tor Address
+  description: The Tor address.
   type: pointer
+  subtype: package
   package-id: embassy-pages
   target: tor-address
   interface: main
