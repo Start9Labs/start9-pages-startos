@@ -24,7 +24,6 @@ type = "docker"
 image = "main"
 entrypoint = "/usr/local/bin/docker_entrypoint.sh"
 args = []
-# specifices where to put the volumes
 mounts = { main = "/root", filebrowser = "/mnt/filebrowser" }
 io-format = "yaml"
 
@@ -43,7 +42,7 @@ type = "docker"
 image = "compat"
 system = true
 entrypoint = "compat"
-args = ["config", "get", "/root/start9/config.yaml", "/mnt/assets/config_spec.yaml"]
+args = ["config", "get", "/root", "/mnt/assets/config_spec.yaml"]
 mounts = { compat = "/mnt/assets", main = "/root" }
 io-format = "yaml"
 
@@ -52,7 +51,7 @@ type = "docker"
 image = "compat"
 system = true
 entrypoint = "compat"
-args = ["config", "set", "/root/start9/config.yaml", "embassy-pages", "/mnt/assets/config_rules.yaml"]
+args = ["config", "set", "/root/start9", "embassy-pages", "/mnt/assets/config_rules.yaml"]
 mounts = { compat = "/mnt/assets", main = "/root" }
 io-format = "yaml"
 
