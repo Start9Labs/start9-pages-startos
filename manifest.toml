@@ -30,7 +30,7 @@ io-format = "yaml"
 [health-checks.nginx]
 type = "docker"
 image = "main"
-system = true
+system = false
 entrypoint = "sh"
 args = ["-c", "curl http://localhost:80 || exit 1"]
 mounts = { main = "/root" }
@@ -95,7 +95,7 @@ type = "docker"
 image = "compat"
 system = true
 entrypoint = "compat"
-args = ["duplicity", "embassy-pages", "/mnt/backup", "/root"]
+args = ["duplicity", "create", "embassy-pages", "/mnt/backup", "/root"]
 mounts = { BACKUP= "/mnt/backup", main= "/root" }
 
 [backup.restore]
@@ -103,5 +103,5 @@ type = "docker"
 image = "compat"
 system = true
 entrypoint = "compat"
-args = ["duplicity", "embassy-pages", "/mnt/backup", "/root"]
+args = ["duplicity", "restore", "embassy-pages", "/mnt/backup", "/root"]
 mounts = { BACKUP= "/mnt/backup", main= "/root" }
