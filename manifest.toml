@@ -70,6 +70,21 @@ description = "Used to upload files to serve."
 critical = false
 recommended = true
 
+[dependencies.filebrowser.config.check]
+type = "docker"
+image = "compat"
+system = true
+entrypoint = "compat"
+args = ["dependency", "check", "filebrowser", "/root", "/mnt/assets/filebrowser_config_rules.yaml"]
+mounts = { compat = "/mnt/assets", main = "/root" }
+
+[dependencies.filebrowser.config.auto-configure]
+type = "docker"
+image = "compat"
+system = true
+entrypoint = "compat"
+args = ["dependency", "auto-configure", "filebrowser", "/mnt/assets/filebrowser_config_rules.yaml"]
+
 [volumes.main]
 type = "data"
 
