@@ -51,7 +51,7 @@ type = "docker"
 image = "compat"
 system = true
 entrypoint = "compat"
-args = ["config", "set", "/root/start9", "embassy-pages", "/mnt/assets/config_rules.yaml"]
+args = ["config", "set", "embassy-pages", "/root", "/mnt/assets/config_rules.yaml"]
 mounts = { compat = "/mnt/assets", main = "/root" }
 io-format = "yaml"
 
