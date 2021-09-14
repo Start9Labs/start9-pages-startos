@@ -83,7 +83,7 @@ type = "docker"
 image = "compat"
 system = true
 entrypoint = "compat"
-args = ["dependency", "auto-configure", "filebrowser", "/mnt/assets/filebrowser_config_rules.yaml"]
+args = ["dependency", "auto-configure", "filebrowser", "/root", "/mnt/assets/filebrowser_config_rules.yaml"]
 
 [volumes.main]
 type = "data"
