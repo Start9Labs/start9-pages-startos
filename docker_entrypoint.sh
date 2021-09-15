@@ -71,7 +71,7 @@ server {
   listen 80;
   listen [::]:80;
   server_name ${tor_address};
-  root "/root/start9/public/filebrowser/${directory}";
+  root "/mnt/filebrowser/${directory}";
 }
 EOT
 else
@@ -95,7 +95,7 @@ server {
   listen 80;
   listen [::]:80;
   server_name ${subdomain}.${tor_address};
-  root "/root/start9/public/filebrowser/${directory}";
+  root "/mnt/filebrowser/${directory}";
 }
 EOT
     elif [ $subdomain_type = "redirect" ]; then
