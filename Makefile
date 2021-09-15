@@ -1,4 +1,5 @@
 EMVER := $(shell tq -f manifest.toml "version" | sed -e 's/^"//' -e 's/"//')
+ASSET_PATHS := $(shell find ./assets/*)
 
 .DELETE_ON_ERROR:
 
@@ -7,7 +8,7 @@ all: embassy-pages.s9pk
 install: embassy-pages.s9pk
 	appmgr install embassy-pages.s9pk
 
-embassy-pages.s9pk: manifest.toml assets/compat/config_spec.yaml image.tar instructions.md
+embassy-pages.s9pk: manifest.toml image.tar instructions.md LICENSE icon.png ${ASSET_PATHS}
 	embassy-sdk pack
 
 image.tar: Dockerfile docker_entrypoint.sh
