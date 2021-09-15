@@ -92,7 +92,7 @@ type = "data"
 type = "pointer"
 package-id = "filebrowser"
 volume-id = "main"
-path = "/"
+path = "/root"
 readonly = true
 
 [volumes.compat]
