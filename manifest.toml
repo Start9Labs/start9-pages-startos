@@ -114,6 +114,7 @@ type = "docker"
 image = "compat"
 system = true
 entrypoint = "compat"
+io-format= "yaml"
 args = ["duplicity", "create", "embassy-pages", "/mnt/backup", "/root"]
 mounts = { BACKUP= "/mnt/backup", main= "/root" }
 
@@ -122,5 +123,6 @@ type = "docker"
 image = "compat"
 system = true
 entrypoint = "compat"
+io-format= "yaml"
 args = ["duplicity", "restore", "embassy-pages", "/mnt/backup", "/root"]
 mounts = { BACKUP= "/mnt/backup", main= "/root" }
