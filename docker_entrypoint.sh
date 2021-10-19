@@ -48,11 +48,11 @@ if [[ $home_type = "index" ]]; then
     fi
 fi
 
-echo "server_names_hash_bucket_size ${bucket_size};" > /etc/nginx/conf.d/default.conf
+echo "server_names_hash_bucket_size ${bucket_size};" > /etc/nginx/http.d/default.conf
 
 if [[ $home_type = "redirect" ]]; then
     target=$(yq e '.homepage.target' start9/config.yaml)
-    cat >> /etc/nginx/conf.d/default.conf <<EOT
+    cat >> /etc/nginx/http.d/default.conf <<EOT
 server {
   listen 80;
   listen [::]:80;
@@ -62,7 +62,7 @@ server {
 EOT
 elif [[ $home_type = "filebrowser" ]]; then
     directory=$(yq e '.homepage.directory' start9/config.yaml)
-    cat >> /etc/nginx/conf.d/default.conf <<EOT
+    cat >> /etc/nginx/http.d/default.conf <<EOT
 server {
   autoindex on;
   listen 80;
@@ -72,7 +72,7 @@ server {
 }
 EOT
 else
-    cat >> /etc/nginx/conf.d/default.conf <<EOT
+    cat >> /etc/nginx/http.d/default.conf <<EOT
 server {
   listen 80;
   listen [::]:80;
@@ -86,7 +86,7 @@ for subdomain in "${subdomains[@]}"; do
     subdomain_type=$(yq e ".subdomains.[] | select(.name == \"$subdomain\") | .settings |.type" start9/config.yaml)
     if [[ $subdomain_type == "filebrowser" ]]; then
         directory="$(yq e ".subdomains.[] | select(.name == \"$subdomain\") | .settings | .directory" start9/config.yaml)"
-        cat >> /etc/nginx/conf.d/default.conf <<EOT
+        cat >> /etc/nginx/http.d/default.conf <<EOT
 server {
   autoindex on;
   listen 80;
@@ -97,7 +97,7 @@ server {
 EOT
     elif [ $subdomain_type = "redirect" ]; then
         if [ "$(yq e ".subdomains.[] | select(.name == \"$subdomain\") | .settings | .target == ~" start9/config.yaml)" = "true"]; then
-            cat >> /etc/nginx/conf.d/default.conf <<EOT
+            cat >> /etc/nginx/http.d/default.conf <<EOT
 server {
   listen 80;
   listen [::]:80;
@@ -107,7 +107,7 @@ server {
 EOT
         else
             target="$(yq e ".subdomains.[] | select(.name == \"$subdomain\") | .settings | .target" start9/config.yaml)"
-            cat >> /etc/nginx/conf.d/default.conf <<EOT
+            cat >> /etc/nginx/http.d/default.conf <<EOT
 server {
   listen 80;
   listen [::]:80;

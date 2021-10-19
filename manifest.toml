@@ -27,7 +27,7 @@ args = []
 mounts = { main = "/root", filebrowser = "/mnt/filebrowser" }
 io-format = "yaml"
 
-[health-checks.nginx]
+[health-checks.main]
 type = "docker"
 image = "main"
 system = false
