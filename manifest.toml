@@ -32,7 +32,7 @@ type = "docker"
 image = "main"
 system = false
 entrypoint = "sh"
-args = ["-c", "curl http://localhost:80 || exit 1"]
+args = ["-c", "curl embassy-pages.embassy || exit 1"]
 mounts = { main = "/root" }
 io-format = "yaml"
 critical = false
