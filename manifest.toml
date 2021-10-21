@@ -98,7 +98,7 @@ image = "compat"
 system = true
 entrypoint = "compat"
 io-format= "yaml"
-args = ["duplicity", "create", "embassy-pages", "/mnt/backup", "/root"]
+args = ["duplicity", "create", "/mnt/backup", "/root"]
 mounts = { BACKUP= "/mnt/backup", main= "/root" }
 
 [backup.restore]
@@ -107,5 +107,5 @@ image = "compat"
 system = true
 entrypoint = "compat"
 io-format= "yaml"
-args = ["duplicity", "restore", "embassy-pages", "/mnt/backup", "/root"]
+args = ["duplicity", "restore", "/mnt/backup", "/root"]
 mounts = { BACKUP= "/mnt/backup", main= "/root" }
