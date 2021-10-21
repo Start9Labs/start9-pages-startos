@@ -72,23 +72,6 @@ critical = false
 [dependencies.filebrowser.requirement]
 type = "required"
 
-[dependencies.filebrowser.config.check]
-type = "docker"
-image = "compat"
-system = true
-entrypoint = "compat"
-io-format = "yaml"
-args = ["dependency", "check", "embasy-pages", "filebrowser", "/root", "/mnt/assets/filebrowser_config_rules.yaml"]
-mounts = { compat = "/mnt/assets", main = "/root" }
-
-[dependencies.filebrowser.config.auto-configure]
-type = "docker"
-image = "compat"
-io-format = "yaml"
-system = true
-entrypoint = "compat"
-args = ["dependency", "auto-configure", "embassy-pages", "filebrowser", "/root", "/mnt/assets/filebrowser_config_rules.yaml"]
-
 [volumes.main]
 type = "data"
 
