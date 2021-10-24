@@ -1,4 +1,4 @@
-EMVER := $(shell tq -f manifest.toml "version" | sed -e 's/^"//' -e 's/"//')
+EMVER := $(shell toml get manifest.toml "version" | sed -e 's/^"//' -e 's/"//')
 ASSET_PATHS := $(shell find ./assets/*)
 
 .DELETE_ON_ERROR:

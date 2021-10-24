@@ -98,8 +98,8 @@ image = "compat"
 system = true
 entrypoint = "compat"
 io-format= "yaml"
-args = ["duplicity", "create", "/mnt/backup", "/root"]
-mounts = { BACKUP= "/mnt/backup", main= "/root" }
+args = ["duplicity", "create", "/mnt/backup", "/root/data"]
+mounts = { BACKUP= "/mnt/backup", main= "/root/data" }
 
 [backup.restore]
 type = "docker"
@@ -107,5 +107,5 @@ image = "compat"
 system = true
 entrypoint = "compat"
 io-format= "yaml"
-args = ["duplicity", "restore", "/mnt/backup", "/root"]
-mounts = { BACKUP= "/mnt/backup", main= "/root" }
+args = ["duplicity", "restore", "/mnt/backup", "/root/data"]
+mounts = { BACKUP= "/mnt/backup", main= "/root/data" }
