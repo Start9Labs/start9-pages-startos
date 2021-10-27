@@ -30,7 +30,6 @@ io-format = "yaml"
 [health-checks.main]
 type = "docker"
 image = "main"
-system = false
 entrypoint = "sh"
 args = ["-c", "curl embassy-pages.embassy || exit 1"]
 mounts = { main = "/root" }
