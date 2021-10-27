@@ -32,7 +32,6 @@ type = "docker"
 image = "main"
 entrypoint = "sh"
 args = ["-c", "curl embassy-pages.embassy || exit 1"]
-mounts = { main = "/root" }
 io-format = "yaml"
 critical = false
 inject = true
