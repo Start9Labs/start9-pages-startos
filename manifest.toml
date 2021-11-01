@@ -24,7 +24,7 @@ type = "docker"
 image = "main"
 entrypoint = "/usr/local/bin/docker_entrypoint.sh"
 args = []
-mounts = { main = "/root", filebrowser = "/mnt/filebrowser/data" }
+mounts = { main = "/root", filebrowser = "/mnt/filebrowser" }
 io-format = "yaml"
 
 [health-checks.main]
@@ -78,7 +78,7 @@ type = "data"
 type = "pointer"
 package-id = "filebrowser"
 volume-id = "main"
-path = "/root"
+path = "/root/data"
 readonly = true
 
 [volumes.compat]
