@@ -24,7 +24,7 @@ type = "docker"
 image = "main"
 entrypoint = "/usr/local/bin/docker_entrypoint.sh"
 args = []
-mounts = { main = "/root", filebrowser = "/mnt/filebrowser" }
+mounts = { main = "/root", filebrowser = "/mnt/filebrowser/data" }
 io-format = "yaml"
 
 [health-checks.main]
