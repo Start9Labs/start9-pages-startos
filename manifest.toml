@@ -28,12 +28,14 @@ mounts = { main = "/root", filebrowser = "/mnt/filebrowser" }
 io-format = "yaml"
 
 [health-checks.main]
+name = "Web Interface"
+description = "Ensures the network interface is accessible via HTTP."
 type = "docker"
 image = "main"
 entrypoint = "sh"
-args = ["-c", "curl embassy-pages.embassy || exit 1"]
+args = ["-c", "curl --silent --show-error --fail embassy-pages.embassy || exit 1"]
 io-format = "yaml"
-critical = false
+severity = "warning"
 inject = true
 
 [config.get]
