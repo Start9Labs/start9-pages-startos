@@ -35,7 +35,6 @@ image = "main"
 entrypoint = "sh"
 args = ["-c", "curl --silent --show-error --fail embassy-pages.embassy || exit 1"]
 io-format = "yaml"
-severity = "warning"
 inject = true
 
 [config.get]
