@@ -86,8 +86,8 @@ readonly = true
 type = "assets"
 
 [interfaces.main]
-name = "Network interface"
-description = "Specifies the interface to listen on for HTTP connections."
+name = "Web interface"
+description = "Your Embassy Pages sites are displayed here when visited in a web browser."
 tor-config = { port-mapping = { "80" = "80" } }
 ui = true
 protocols = ["tcp", "http"]
