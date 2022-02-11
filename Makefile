@@ -3,10 +3,17 @@ ASSET_PATHS := $(shell find ./assets/*)
 
 .DELETE_ON_ERROR:
 
-all: embassy-pages.s9pk
+all: verify
+
+verify: embassy-pages.s9pk $(S9PK_PATH)
+	embassy-sdk verify s9pk $(S9PK_PATH)
+
+clean:
+	rm -f image.tar
+	rm -f embassy-pages.s9pk
 
 install: embassy-pages.s9pk
-	appmgr install embassy-pages.s9pk
+	embassy-cli package install embassy-pages
 
 embassy-pages.s9pk: manifest.toml image.tar instructions.md LICENSE icon.png ${ASSET_PATHS}
 	embassy-sdk pack
