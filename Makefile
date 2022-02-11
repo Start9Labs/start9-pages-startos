@@ -1,5 +1,6 @@
 EMVER := $(shell toml get manifest.toml "version" | sed -e 's/^"//' -e 's/"//')
 ASSET_PATHS := $(shell find ./assets/*)
+S9PK_PATH=$(shell find . -name embassy-pages.s9pk -print)
 
 .DELETE_ON_ERROR:
 
