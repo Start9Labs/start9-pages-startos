@@ -1,0 +1,117 @@
+build = ["make"]
+id = "embassy-pages"
+license = "mit"
+min-os-version = "0.3.0"
+release-notes = "Upgrade to EmbassyOS v0.3.0"
+support-site = "https://matrix.to/#/!lMnRwPWnyQvOfAoEnD:matrix.start9labs.com"
+title = "Embassy Pages"
+upstream-repo = "https://github.com/Start9Labs/embassy-pages-wrapper"
+version = "0.1.3"
+wrapper-repo = "https://github.com/Start9Labs/embassy-pages-wrapper"
+
+[description]
+long = "Embassy Pages is a simple web server that uses directories inside File Browser to serve Tor websites."
+short = "Create Tor websites, hosted on your Embassy."
+
+[assets]
+docker-images = "image.tar"
+icon = "icon.png"
+instructions = "instructions.md"
+license = "LICENSE"
+
+[main]
+args = []
+entrypoint = "/usr/local/bin/docker_entrypoint.sh"
+image = "main"
+io-format = "yaml"
+mounts = { main = "/root", filebrowser = "/mnt/filebrowser" }
+type = "docker"
+
+[health-checks.main]
+args = []
+description = "Main user interface for interacting with Embassy Pages through a web browser."
+entrypoint = "check-web.sh"
+image = "main"
+inject = true
+io-format = "json"
+name = "Web Interface"
+type = "docker"
+
+[config.get]
+args = ["config", "get", "/root", "/mnt/assets/config_spec.yaml"]
+entrypoint = "compat"
+image = "compat"
+io-format = "yaml"
+mounts = { compat = "/mnt/assets", main = "/root" }
+system = true
+type = "docker"
+
+[config.set]
+args = [
+    "config",
+    "set",
+    "embassy-pages",
+    "/root",
+    "/mnt/assets/config_rules.yaml",
+]
+entrypoint = "compat"
+image = "compat"
+io-format = "yaml"
+mounts = { compat = "/mnt/assets", main = "/root" }
+system = true
+type = "docker"
+
+[properties]
+args = ["properties", "/root"]
+entrypoint = "compat"
+image = "compat"
+io-format = "yaml"
+mounts = { compat = "/mnt/assets", main = "/root" }
+system = true
+type = "docker"
+
+[dependencies.filebrowser]
+critical = false
+description = "Used to upload files to serve."
+version = "^2.14.1.1"
+
+[dependencies.filebrowser.requirement]
+type = "required"
+
+[volumes.main]
+type = "data"
+
+[volumes.filebrowser]
+package-id = "filebrowser"
+path = "data"
+readonly = true
+type = "pointer"
+volume-id = "main"
+
+[volumes.compat]
+type = "assets"
+
+[interfaces.main]
+description = "Your Embassy Pages sites are displayed here when visited in a web browser."
+name = "Web interface"
+protocols = ["tcp", "http"]
+tor-config = { port-mapping = { "80" = "80" } }
+ui = true
+
+[backup.create]
+args = ["duplicity", "create", "/mnt/backup", "/root/data"]
+entrypoint = "compat"
+image = "compat"
+io-format = "yaml"
+mounts = { BACKUP = "/mnt/backup", main = "/root/data" }
+system = true
+type = "docker"
+
+[backup.restore]
+args = ["duplicity", "restore", "/mnt/backup", "/root/data"]
+entrypoint = "compat"
+image = "compat"
+io-format = "yaml"
+mounts = { BACKUP = "/mnt/backup", main = "/root/data" }
+system = true
+type = "docker"
