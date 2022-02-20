@@ -4,7 +4,7 @@ DURATION=$(</dev/stdin)
 if (($DURATION <= 5000 )); then
     exit 60
 else
-    curl --silent --show-error --fail embassy-pages.embassy:80
+    curl --silent --fail embassy-pages.embassy:80 &>/dev/null
     RES=$?
     if test "$RES" != 0; then
         echo "Web interface is unreachable" >&2
