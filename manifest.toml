@@ -71,7 +71,6 @@ system = true
 type = "docker"
 
 [dependencies.filebrowser]
-critical = false
 description = "Used to upload files to serve."
 version = "^2.14.1.1"
 
