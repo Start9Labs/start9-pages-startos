@@ -28,13 +28,13 @@ mounts = { main = "/root", filebrowser = "/mnt/filebrowser" }
 type = "docker"
 
 [health-checks.main]
+success-message = "The Web UI is ready to be visited in a web browser"
 args = []
-description = "Main user interface for interacting with Embassy Pages through a web browser."
 entrypoint = "check-web.sh"
 image = "main"
 inject = true
 io-format = "json"
-name = "Web Interface"
+name = "Web UI"
 type = "docker"
 
 [config.get]
@@ -91,8 +91,8 @@ volume-id = "main"
 type = "assets"
 
 [interfaces.main]
-success-message = "The Web UI is ready to be visited in a web browser."
 name = "Web UI"
+description = "Your Embassy Pages sites are displayed here when visited in a web browser."
 protocols = ["tcp", "http"]
 tor-config = { port-mapping = { "80" = "80" } }
 ui = true
