@@ -50,6 +50,12 @@ fi
 
 echo "server_names_hash_bucket_size ${bucket_size};" > /etc/nginx/http.d/default.conf
 
+if ! test -d /mnt/filebrowser
+then
+    echo "Filebrowser mountpoint does not exist"
+    exit 0
+fi
+
 if [[ $home_type = "redirect" ]]; then
     target=$(yq e '.homepage.target' start9/config.yaml)
     cat >> /etc/nginx/http.d/default.conf <<EOT
