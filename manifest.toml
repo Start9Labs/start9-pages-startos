@@ -1,7 +1,6 @@
 build = ["make"]
 id = "embassy-pages"
 license = "mit"
-min-os-version = "0.3.0"
 release-notes = "Upgrade to EmbassyOS v0.3.0"
 support-site = "https://matrix.to/#/!lMnRwPWnyQvOfAoEnD:matrix.start9labs.com"
 title = "Embassy Pages"
@@ -28,13 +27,13 @@ mounts = { main = "/root", filebrowser = "/mnt/filebrowser" }
 type = "docker"
 
 [health-checks.main]
-success-message = "The Web UI is ready to be visited in a web browser"
 args = []
 entrypoint = "check-web.sh"
 image = "main"
 inject = true
 io-format = "json"
 name = "Web UI"
+success-message = "The Web UI is ready to be visited in a web browser"
 type = "docker"
 
 [config.get]
@@ -91,8 +90,8 @@ volume-id = "main"
 type = "assets"
 
 [interfaces.main]
-name = "Web UI"
 description = "Your Embassy Pages sites are displayed here when visited in a web browser."
+name = "Web UI"
 protocols = ["tcp", "http"]
 tor-config = { port-mapping = { "80" = "80" } }
 ui = true
