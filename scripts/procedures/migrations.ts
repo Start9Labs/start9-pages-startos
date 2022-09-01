@@ -1,4 +1,4 @@
-import { types as T, compat } from "../deps.ts"
+import { types as T, compat } from '../deps.ts'
 
 export const migration: T.ExpectedExports.migration = async (effects, version, ...args) => {
   await effects.createDir({

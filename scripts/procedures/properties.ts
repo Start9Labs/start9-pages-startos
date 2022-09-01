@@ -1,5 +1,5 @@
-import { matches, types as T, YAML } from '../deps.ts';
-const { shape, string, boolean, literal } = matches;
+import { matches, types as T, YAML } from '../deps.ts'
+const { shape, string, boolean, literal } = matches
 
 // deno-lint-ignore no-explicit-any
 const asResult = (result: any) => ({ result: result as T.Properties });
@@ -14,9 +14,9 @@ const noPropertiesFound: T.ResultType<T.Properties> = {
         copyable: false,
         masked: false,
         description: 'Fallback Message When Properties could not be found',
-      },
-    },
-  },
+      }
+    }
+  }
 } as const
 
 const matchSubdomain = shape({
@@ -24,8 +24,8 @@ const matchSubdomain = shape({
   settings: shape({
     type: string,
     directory: string,
-  }),
-});
+  })
+})
 
 const matchesConfig = shape({
   subdomains: matches.arrayOf(matchSubdomain),
