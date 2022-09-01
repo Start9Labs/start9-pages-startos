@@ -59,7 +59,7 @@ export const properties: T.ExpectedExports.properties = async (effects) => {
     volumeId: "main",
     path: "start9/config.yaml",
   }).then(YAML.parse).then((x) => matchesConfig.unsafeCast(x))
-    .catch(() => undefined)
+    .catch(() => undefined);
   // if subdomains exist, display them in properties
   if (config && config.subdomains.length > 0) {
     const subdomains: { [key: string]: PropertyString } = {};
@@ -89,6 +89,11 @@ export const properties: T.ExpectedExports.properties = async (effects) => {
       toWrite: YAML.stringify(result),
     });
     return asResult(result);
+  } else if (config && config.subdomains.length === 0) {
+    return asResult({
+      version: 2,
+      data: {},
+    });
   } else {
     return noPropertiesFound;
   }
