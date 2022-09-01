@@ -4,3 +4,4 @@ embassy-pages.s9pk
 image.tar
 test_config.yaml
 .vscode
+scripts/embassy.js
