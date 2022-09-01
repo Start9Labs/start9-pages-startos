@@ -26,15 +26,10 @@ io-format = "yaml"
 mounts = { main = "/root", filebrowser = "/mnt/filebrowser" }
 type = "docker"
 
-[health-checks.main]
-args = []
-entrypoint = "check-web.sh"
-image = "main"
-inject = true
-io-format = "json"
+["health-checks"."web-ui"]
 name = "Web UI"
-success-message = "The Web UI is ready to be visited in a web browser"
-type = "docker"
+success-message = "Interface is ready to be visited in a web browser"
+type = "script"
 
 [config.get]
 type = "script"

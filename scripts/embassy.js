@@ -299,9 +299,9 @@ class MaybeParser {
         const parser = this;
         const parentState = this.parent.enumParsed(a);
         if ("error" in parentState) {
-            const { error  } = parentState;
-            error.parser = parser;
-            return onParse.invalid(error);
+            const { error: error1  } = parentState;
+            error1.parser = parser;
+            return onParse.invalid(error1);
         }
         return onParse.parsed(parentState.value);
     }
@@ -329,9 +329,9 @@ class OrParsers {
         }
         const other = this.otherParser.enumParsed(a);
         if ("error" in other) {
-            const { error  } = other;
-            error.parser = parser;
-            return onParse.invalid(error);
+            const { error: error2  } = other;
+            error2.parser = parser;
+            return onParse.invalid(error2);
         }
         return onParse.parsed(other.value);
     }
@@ -367,9 +367,9 @@ const enumParsed = {
             value
         };
     },
-    invalid (error) {
+    invalid (error3) {
         return {
-            error
+            error: error3
         };
     }
 };
@@ -395,8 +395,8 @@ class Parser {
     static isA(checkIsA, name) {
         return new Parser(new GuardParser(checkIsA, name));
     }
-    static validatorErrorAsString = (error)=>{
-        const { parser , value , keys  } = error;
+    static validatorErrorAsString = (error4)=>{
+        const { parser , value , keys  } = error4;
         const keysString = !keys.length ? "" : keys.map((x)=>`[${x}]`
         ).reverse().join("");
         return `${keysString}${Parser.parserAsString(parser)}(${saferStringify(value)})`;
@@ -440,14 +440,14 @@ class Parser {
     unsafeCast(value) {
         const state = this.enumParsed(value);
         if ("value" in state) return state.value;
-        const { error  } = state;
-        throw new TypeError(`Failed type: ${Parser.validatorErrorAsString(error)} given input ${saferStringify(value)}`);
+        const { error: error5  } = state;
+        throw new TypeError(`Failed type: ${Parser.validatorErrorAsString(error5)} given input ${saferStringify(value)}`);
     }
     castPromise(value) {
         const state = this.enumParsed(value);
         if ("value" in state) return Promise.resolve(state.value);
-        const { error  } = state;
-        return Promise.reject(new TypeError(`Failed type: ${Parser.validatorErrorAsString(error)} given input ${saferStringify(value)}`));
+        const { error: error6  } = state;
+        return Promise.reject(new TypeError(`Failed type: ${Parser.validatorErrorAsString(error6)} given input ${saferStringify(value)}`));
     }
     errorMessage(input) {
         const parsed = this.parse(input, enumParsed);
@@ -608,27 +608,27 @@ class DictionaryParser {
             for (const [keyParser, valueParser] of parsers){
                 const enumState = keyParser.enumParsed(key);
                 if ("error" in enumState) {
-                    const { error  } = enumState;
-                    error.parser = parser;
-                    error.keys.push("" + key);
-                    parseError.push(error);
+                    const { error: error7  } = enumState;
+                    error7.parser = parser;
+                    error7.keys.push("" + key);
+                    parseError.push(error7);
                     continue;
                 }
                 const newKey = enumState.value;
                 const valueState = valueParser.enumParsed(a[key]);
                 if ("error" in valueState) {
-                    const { error  } = valueState;
-                    error.keys.push("" + newKey);
-                    parseError.unshift(error);
+                    const { error: error8  } = valueState;
+                    error8.keys.push("" + newKey);
+                    parseError.unshift(error8);
                     continue;
                 }
                 delete answer[key];
                 answer[newKey] = valueState.value;
                 break outer;
             }
-            const error = parseError[0];
-            if (!!error) {
-                return onParse.invalid(error);
+            const error9 = parseError[0];
+            if (!!error9) {
+                return onParse.invalid(error9);
             }
         }
         return onParse.parsed(answer);
@@ -723,9 +723,9 @@ class ShapeParser {
                 const parser = parserMap[key];
                 const state = parser.enumParsed(a[key]);
                 if ("error" in state) {
-                    const { error  } = state;
-                    error.keys.push(saferStringify(key));
-                    return onParse.invalid(error);
+                    const { error: error10  } = state;
+                    error10.keys.push(saferStringify(key));
+                    return onParse.invalid(error10);
                 }
                 const smallValue = state.value;
                 value[key] = smallValue;
@@ -848,9 +848,9 @@ class TupleParser {
             const value = values[key];
             const result = parser.enumParsed(value);
             if ("error" in result) {
-                const { error  } = result;
-                error.keys.push(saferStringify(key));
-                return onParse.invalid(error);
+                const { error: error11  } = result;
+                error11.keys.push(saferStringify(key));
+                return onParse.invalid(error11);
             }
             answer[key] = result.value;
         }
@@ -881,9 +881,9 @@ class NamedParser {
         const parser = this;
         const parent = this.parent.enumParsed(a);
         if ("error" in parent) {
-            const { error  } = parent;
-            error.parser = parser;
-            return onParse.invalid(error);
+            const { error: error12  } = parent;
+            error12.parser = parser;
+            return onParse.invalid(error12);
         }
         return onParse.parsed(parent.value);
     }
@@ -4788,9 +4788,38 @@ const properties1 = async (effects)=>{
         return noPropertiesFound1;
     }
 };
-const setConfig1 = async (effects, input)=>{
-    const newConfig = input;
-    return await mod3.setConfig(effects, newConfig, {});
+const health = {
+    async 'web-ui' (effects, duration) {
+        return healthWeb(effects, duration);
+    }
+};
+const healthWeb = async (effects, duration)=>{
+    await guardDurationAboveMinimum({
+        duration,
+        minimumTime: 5000
+    });
+    return await effects.fetch('http://embassy-pages.embassy:80').then((_)=>ok
+    ).catch((e)=>error(e)
+    );
+};
+const guardDurationAboveMinimum = (input)=>input.duration <= input.minimumTime ? Promise.reject(errorCode(60, 'Starting')) : null
+;
+const errorCode = (code, error1)=>({
+        'error-code': [
+            code,
+            error1
+        ]
+    })
+;
+const error = (error2)=>({
+        error: error2
+    })
+;
+const ok = {
+    result: null
+};
+const setConfig1 = async (effects, config)=>{
+    return await mod3.setConfig(effects, config, {});
 };
 const getConfig1 = mod3.getConfig({
     "tor-address": {
@@ -4911,6 +4940,7 @@ const migration = async (effects, version, ...args)=>{
     return mod3.migrations.fromMapping({}, "0.1.4")(effects, version, ...args);
 };
 export { properties1 as properties };
+export { health as health };
 export { setConfig1 as setConfig };
 export { getConfig1 as getConfig };
 export { migration as migration };
