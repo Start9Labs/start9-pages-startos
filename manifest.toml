@@ -1,11 +1,11 @@
 build = ["make"]
 id = "embassy-pages"
 license = "mit"
-release-notes = "Upgrade to EmbassyOS v0.3.0"
+release-notes = "Switch to using new eOS APIs for faster configuration and properties"
 support-site = "https://matrix.to/#/!lMnRwPWnyQvOfAoEnD:matrix.start9labs.com"
 title = "Embassy Pages"
 upstream-repo = "https://github.com/Start9Labs/embassy-pages-wrapper"
-version = "0.1.3"
+version = "0.1.4"
 wrapper-repo = "https://github.com/Start9Labs/embassy-pages-wrapper"
 
 [description]
@@ -37,41 +37,17 @@ success-message = "The Web UI is ready to be visited in a web browser"
 type = "docker"
 
 [config.get]
-args = ["config", "get", "/root", "/mnt/assets/config_spec.yaml"]
-entrypoint = "compat"
-image = "compat"
-io-format = "yaml"
-mounts = { compat = "/mnt/assets", main = "/root" }
-system = true
-type = "docker"
+type = "script"
 
 [config.set]
-args = [
-    "config",
-    "set",
-    "embassy-pages",
-    "/root",
-    "/mnt/assets/config_rules.yaml",
-]
-entrypoint = "compat"
-image = "compat"
-io-format = "yaml"
-mounts = { compat = "/mnt/assets", main = "/root" }
-system = true
-type = "docker"
+type = "script"
 
 [properties]
-args = ["properties", "/root"]
-entrypoint = "compat"
-image = "compat"
-io-format = "yaml"
-mounts = { compat = "/mnt/assets", main = "/root" }
-system = true
-type = "docker"
+type = "script"
 
 [dependencies.filebrowser]
 description = "Used to upload files to serve."
-version = "^2.14.1.1"
+version = "^2.21.1"
 
 [dependencies.filebrowser.requirement]
 type = "required"
@@ -85,9 +61,6 @@ path = "data"
 readonly = true
 type = "pointer"
 volume-id = "main"
-
-[volumes.compat]
-type = "assets"
 
 [interfaces.main]
 description = "Your Embassy Pages sites are displayed here when visited in a web browser."

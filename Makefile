@@ -1,6 +1,6 @@
 EMVER := $(shell toml get manifest.toml "version" | sed -e 's/^"//' -e 's/"//')
-ASSET_PATHS := $(shell find ./assets/*)
 S9PK_PATH=$(shell find . -name embassy-pages.s9pk -print)
+SCRIPTS_SRC := $(shell find ./scripts -name '*.ts')
 
 .DELETE_ON_ERROR:
 
@@ -16,8 +16,11 @@ clean:
 install: embassy-pages.s9pk
 	embassy-cli package install embassy-pages
 
-embassy-pages.s9pk: manifest.toml image.tar instructions.md LICENSE icon.png ${ASSET_PATHS}
+embassy-pages.s9pk: manifest.toml image.tar instructions.md LICENSE icon.png ${ASSET_PATHS} scripts/embassy.js
 	embassy-sdk pack
 
 image.tar: Dockerfile docker_entrypoint.sh check-web.sh
 	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --tag start9/embassy-pages/main:${EMVER} --platform=linux/arm64/v8 -o type=docker,dest=image.tar .
+
+scripts/embassy.js: $(SCRIPTS_SRC)
+	deno bundle scripts/embassy.ts scripts/embassy.js
