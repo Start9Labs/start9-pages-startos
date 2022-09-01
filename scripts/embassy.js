@@ -4302,17 +4302,17 @@ function fromMapping(migrations, currentVersion) {
         let configured = true;
         const current = EmVer.parse(currentVersion);
         const other = EmVer.parse(version1);
-        const filteredMigrations = Object.entries(migrations).map(([version, migration])=>({
+        const filteredMigrations = Object.entries(migrations).map(([version, migration2])=>({
                 version: EmVer.parse(version),
-                migration
+                migration: migration2
             })
         ).filter(({ version  })=>version.greaterThan(other) && version.lessThanOrEqual(current)
         );
         const migrationsToRun = mod.matches(direction).when("from", ()=>filteredMigrations.sort((a, b)=>a.version.compareForSort(b.version)
-            ).map(({ migration  })=>migration.up
+            ).map(({ migration: migration3  })=>migration3.up
             )
         ).when("to", ()=>filteredMigrations.sort((a, b)=>b.version.compareForSort(a.version)
-            ).map(({ migration  })=>migration.down
+            ).map(({ migration: migration4  })=>migration4.down
             )
         ).unwrap();
         for (const migration1 of migrationsToRun){
@@ -4903,6 +4903,14 @@ const getConfig1 = mod3.getConfig({
         }
     }
 });
+const migration = async (effects, version, ...args)=>{
+    await effects.createDir({
+        path: "start9",
+        volumeId: "main"
+    });
+    return mod3.migrations.fromMapping({}, "0.1.4")(effects, version, ...args);
+};
 export { properties1 as properties };
 export { setConfig1 as setConfig };
 export { getConfig1 as getConfig };
+export { migration as migration };

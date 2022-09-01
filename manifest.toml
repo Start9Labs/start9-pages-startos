@@ -86,3 +86,11 @@ io-format = "yaml"
 mounts = { BACKUP = "/mnt/backup", main = "/root/data" }
 system = true
 type = "docker"
+
+[migrations.from."*"]
+type = "script"
+args = [ "from" ]
+
+[migrations.to."*"]
+type = "script"
+args = [ "to" ]
