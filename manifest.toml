@@ -28,7 +28,7 @@ type = "docker"
 
 ["health-checks"."web-ui"]
 name = "Web UI"
-success-message = "Interface is ready to be visited in a web browser"
+success-message = "Ready to be visited in a web browser"
 type = "script"
 
 [config.get]
