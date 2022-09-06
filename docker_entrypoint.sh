@@ -6,27 +6,6 @@ home_type=$(yq e '.homepage.type' start9/config.yaml)
 subdomains=($(yq e '.subdomains.[].name' start9/config.yaml))
 tor_address=($(yq e '.tor-address' start9/config.yaml))
 
-read -r -d "" build_site_desc <<EOT
-{
-    "description": "Subdomain link for the site " + .,
-    "masked": false,
-    "copyable": true,
-    "qr": false,
-    "type": "string",
-    "value": . + ".$tor_address"
-}
-EOT
-yq e ".subdomains.[].name | {.: $build_site_desc}" start9/config.yaml > start9/stats.yaml
-yq e -i '{"value": . }' start9/stats.yaml
-yq e -i '.type="object"' start9/stats.yaml
-yq e -i '.description="The available subdomains."' start9/stats.yaml
-yq e -i '{"Subdomains": . }' start9/stats.yaml
-yq e -i '{"data": .}' start9/stats.yaml
-yq e -i '.version = 2' start9/stats.yaml
-if [ ! -s start9/stats.yaml ] ; then
-    rm start9/stats.yaml
-fi
-
 bucket_size=64
 for subdomain in "${subdomains[@]}"; do
     suffix=".${tor_address}"
