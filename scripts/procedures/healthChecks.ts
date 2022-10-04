@@ -13,7 +13,7 @@ const healthWeb: T.ExpectedExports.health[""] = async (effects, duration) => {
 
   return await effects.fetch("http://embassy-pages.embassy:80")
     .then((_) => ok)
-    .catch((e) => error(e));
+    .catch((e) => error(`Network Error: ${e}`));
 };
 
 // Ensure the starting duration is pass a minimum
