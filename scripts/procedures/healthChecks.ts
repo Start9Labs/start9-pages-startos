@@ -13,7 +13,10 @@ const healthWeb: T.ExpectedExports.health[""] = async (effects, duration) => {
 
   return await effects.fetch("http://embassy-pages.embassy:80")
     .then((_) => ok)
-    .catch((e) => error(`Network Error: ${e}`));
+    .catch((e) => {
+      effects.error(`${e}`)
+      return error(`The Embassy Pages UI is unreachable`)
+    });
 };
 
 // Ensure the starting duration is pass a minimum
