@@ -23,6 +23,8 @@ Anyone can do it. No one can stop it.
 
 1. A list of all your Subdomains can be found inside the Properties section of your Embassy Pages service.
 
+**Note**: Changing the Homepage requires a hard refresh of the Tor website
+
 ## Restore from Backup
 
 1. In `Config`, select "Restore from Backup".
