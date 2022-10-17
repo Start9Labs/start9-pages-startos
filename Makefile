@@ -6,19 +6,20 @@ PKG_ID := $(shell toml get manifest.toml "id" | sed -e 's/^"//' -e 's/"//')
 
 all: verify
 
-verify:  $(PKG_ID).s9pk
+verify: $(PKG_ID).s9pk
 	embassy-sdk verify s9pk $(PKG_ID).s9pk
 
 clean:
 	rm -rf docker-images
 	rm -f image.tar
-	rm -f embassy-pages.s9pk
+	rm -f $(PKG_ID).s9pk
 	rm -f scripts/*.js
 
-install:  $(PKG_ID).s9pk
+# assumes /etc/embassy/config.yaml exists on local system with `host: "http://embassy-server-name.local"` configured
+install: $(PKG_ID).s9pk
 	embassy-cli package install $(PKG_ID).s9pk
 
- $(PKG_ID).s9pk: manifest.toml instructions.md LICENSE icon.png scripts/embassy.js docker-images/aarch64.tar docker-images/x86_64.tar
+$(PKG_ID).s9pk: manifest.toml instructions.md LICENSE icon.png scripts/embassy.js docker-images/aarch64.tar docker-images/x86_64.tar
 	if ! [ -z "$(ARCH)" ]; then cp docker-images/$(ARCH).tar image.tar; fi
 	embassy-sdk pack
 

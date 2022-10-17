@@ -1,14 +1,14 @@
-# Wrapper for Embassy Pages
+# Wrapper for embassy-pages
 
-This project wraps `Embassy Pages` for EmbassyOS.
+Embassy Pages is a simple web server that uses directories inside File Browser to serve Tor websites. This repository creates the `s9pk` package that is installed to run `embassy-pages` on [embassyOS](https://github.com/Start9Labs/embassy-os/.
 
 ## Dependencies
 
 - [docker](https://docs.docker.com/get-docker)
 - [docker-buildx](https://docs.docker.com/buildx/working-with-buildx/)
-- [yq](https://mikefarah.gitbook.io/yq)
-- [appmgr](https://github.com/Start9Labs/embassy-os/tree/master/appmgr)
+- [deno](https://deno.land/)
 - [make](https://www.gnu.org/software/make/)
+- [embassy-sdk](https://github.com/Start9Labs/embassy-os/tree/master/backend)
 
 ## Cloning
 
@@ -21,18 +21,31 @@ cd embassy-pages-wrapper
 
 ## Building
 
-To build the project, run the following commands:
+To build the `embassy-pages` package, run the following commands:
 
 ```
 make
 ```
 
-## Installing (on Embassy)
+## Installing (on embassyOS)
 
-SSH into an Embassy device.
-`scp` the `.s9pk` to any directory from your local machine.
-Run the following command to determine successful install:
+Run the following commands to determine successful install:
+> :information_source: Change embassy-server-name.local to your Embassy address
 
 ```
-sudo appmgr install embassy-pages.s9pk
+embassy-cli auth login
+# Enter your embassy password
+embassy-cli --host https://embassy-server-name.local package install embassy-pages.s9pk
 ```
+
+If you already have your `embassy-cli` config file setup with a default `host`, you can install simply by running:
+
+```
+make install
+```
+
+>**Tip:** You can also install the embassy-pages.s9pk using **Sideload Service** under the **Embassy > Settings** section.
+
+## Verify Install
+
+Go to your Embassy Services page, select **Embassy Pages**, configure and start the service. Then, verify it's interfaces are accessible.

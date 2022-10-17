@@ -1,7 +1,7 @@
 build = ["make"]
 id = "embassy-pages"
 license = "mit"
-release-notes = "Switch to using new eOS APIs for faster configuration and properties"
+release-notes = "Update to run on x86 architecture"
 support-site = "https://matrix.to/#/!lMnRwPWnyQvOfAoEnD:matrix.start9labs.com"
 title = "Embassy Pages"
 upstream-repo = "https://github.com/Start9Labs/embassy-pages-wrapper"
