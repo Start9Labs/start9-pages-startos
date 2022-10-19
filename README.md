@@ -4,6 +4,8 @@ Embassy Pages is a simple web server that uses directories inside File Browser t
 
 ## Dependencies
 
+The following set of dependencies are required to build this project. You can find detailed steps to setup your environment in the service packaging [documentation](https://github.com/Start9Labs/service-pipeline#development-environment).
+
 - [docker](https://docs.docker.com/get-docker)
 - [docker-buildx](https://docs.docker.com/buildx/working-with-buildx/)
 - [deno](https://deno.land/)
@@ -48,4 +50,4 @@ make install
 
 ## Verify Install
 
-Go to your Embassy Services page, select **Embassy Pages**, configure and start the service. Then, verify it's interfaces are accessible.
+Go to your Embassy Services page, select **Embassy Pages**, configure and start the service. Then, verify its interfaces are accessible.
