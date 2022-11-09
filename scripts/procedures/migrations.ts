@@ -12,6 +12,6 @@ export const migration: T.ExpectedExports.migration = async (
   return compat.migrations
     .fromMapping(
       {},
-      "0.1.4",
+      "0.1.6",
     )(effects, version, ...args);
 };
