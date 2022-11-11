@@ -1,7 +1,10 @@
 build = ["make"]
 id = "embassy-pages"
 license = "mit"
-release-notes = "Update to run on x86 architecture"
+release-notes = """
+Update to run on x86 architecture
+Utilize eOS v0.3.3 JS APIs for main procedure
+"""
 support-site = "https://matrix.to/#/!lMnRwPWnyQvOfAoEnD:matrix.start9labs.com"
 title = "Embassy Pages"
 upstream-repo = "https://github.com/Start9Labs/embassy-pages-wrapper"
@@ -18,12 +21,14 @@ instructions = "instructions.md"
 license = "LICENSE"
 
 [main]
-args = []
-entrypoint = "/usr/local/bin/docker_entrypoint.sh"
+type = "script"
+
+[containers.main]
 image = "main"
-io-format = "yaml"
-mounts = { main = "/root", filebrowser = "/mnt/filebrowser" }
-type = "docker"
+
+[containers.main.mounts]
+main = "/root"
+filebrowser = "/mnt/filebrowser"
 
 ["health-checks"."web-ui"]
 name = "Web UI"
