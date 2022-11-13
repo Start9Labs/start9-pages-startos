@@ -3,7 +3,7 @@ id = "embassy-pages"
 license = "mit"
 release-notes = """
 Update to run on x86 architecture
-Utilize eOS v0.3.3 JS APIs for main procedure
+Utilize new eOS APIs
 """
 support-site = "https://matrix.to/#/!lMnRwPWnyQvOfAoEnD:matrix.start9labs.com"
 title = "Embassy Pages"
