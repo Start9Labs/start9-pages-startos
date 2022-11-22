@@ -2,8 +2,8 @@ build = ["make"]
 id = "embassy-pages"
 license = "mit"
 release-notes = """
-Update to run on x86 architecture
-Utilize new eOS APIs
+* Update to run on x86 architecture
+* Utilize new eOS APIs
 """
 support-site = "https://matrix.to/#/!lMnRwPWnyQvOfAoEnD:matrix.start9labs.com"
 title = "Embassy Pages"
