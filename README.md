@@ -8,7 +8,7 @@ Install the system dependencies below to build this project by following the ins
 
 - [docker](https://docs.docker.com/get-docker)
 - [docker-buildx](https://docs.docker.com/buildx/working-with-buildx/)
-- [deno](https://deno.land/)
+- [deno](https://deno.land/#installation)
 - [make](https://www.gnu.org/software/make/)
 - [embassy-sdk](https://github.com/Start9Labs/embassy-os/tree/master/backend)
 

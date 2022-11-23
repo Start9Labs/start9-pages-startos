@@ -13,7 +13,6 @@ long = "Embassy Pages is a simple web server that uses directories inside File B
 short = "Create Tor websites, hosted on your Embassy."
 
 [assets]
-docker-images = "image.tar"
 icon = "icon.png"
 instructions = "instructions.md"
 license = "LICENSE"
