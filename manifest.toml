@@ -1,11 +1,11 @@
 build = ["make"]
 id = "embassy-pages"
 license = "mit"
-release-notes = "Update to run on x86 architecture"
+release-notes = "Update backups to use new eOS APIs "
 support-site = "https://matrix.to/#/!lMnRwPWnyQvOfAoEnD:matrix.start9labs.com"
 title = "Embassy Pages"
 upstream-repo = "https://github.com/Start9Labs/embassy-pages-wrapper"
-version = "0.1.6"
+version = "0.1.7"
 wrapper-repo = "https://github.com/Start9Labs/embassy-pages-wrapper"
 
 [description]
@@ -64,22 +64,10 @@ tor-config = { port-mapping = { "80" = "80" } }
 ui = true
 
 [backup.create]
-args = ["duplicity", "create", "/mnt/backup", "/root/data"]
-entrypoint = "compat"
-image = "compat"
-io-format = "yaml"
-mounts = { BACKUP = "/mnt/backup", main = "/root/data" }
-system = true
-type = "docker"
+type = "script"
 
 [backup.restore]
-args = ["duplicity", "restore", "/mnt/backup", "/root/data"]
-entrypoint = "compat"
-image = "compat"
-io-format = "yaml"
-mounts = { BACKUP = "/mnt/backup", main = "/root/data" }
-system = true
-type = "docker"
+type = "script"
 
 [migrations.from."*"]
 type = "script"
