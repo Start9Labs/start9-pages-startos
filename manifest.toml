@@ -1,11 +1,14 @@
 build = ["make"]
 id = "embassy-pages"
 license = "mit"
-release-notes = "Update backups to use new eOS APIs "
+release-notes = """
+Update backups to use new eOS APIs \
+Add Nextcloud as optional dependency
+"""
 support-site = "https://matrix.to/#/!lMnRwPWnyQvOfAoEnD:matrix.start9labs.com"
 title = "Embassy Pages"
 upstream-repo = "https://github.com/Start9Labs/embassy-pages-wrapper"
-version = "0.1.7"
+version = "0.1.8"
 wrapper-repo = "https://github.com/Start9Labs/embassy-pages-wrapper"
 
 [description]
@@ -22,7 +25,7 @@ args = []
 entrypoint = "/usr/local/bin/docker_entrypoint.sh"
 image = "main"
 io-format = "yaml"
-mounts = { main = "/root", filebrowser = "/mnt/filebrowser" }
+mounts = { main = "/root", filebrowser = "/mnt/filebrowser", nextcloud = "/mnt/nextcloud" }
 type = "docker"
 
 ["health-checks"."web-ui"]
@@ -44,7 +47,16 @@ description = "Used to upload files to serve."
 version = "^2.21.1"
 
 [dependencies.filebrowser.requirement]
-type = "required"
+type = "opt-out"
+how = "Can alternatively use Nextcloud for file storage"
+
+[dependencies.nextcloud]
+description = "Used to upload files to serve."
+version = "^2.21.1"
+
+[dependencies.nextcloud.requirement]
+type = "opt-in"
+how = "Can alternatively use File Browse for file storage"
 
 [volumes.main]
 type = "data"
@@ -55,6 +67,13 @@ path = "data"
 readonly = true
 type = "pointer"
 volume-id = "main"
+
+[volumes.nextcloud]
+package-id = "nextcloud"
+path = "data/embassy/files"
+readonly = true
+type = "pointer"
+volume-id = "nextcloud"
 
 [interfaces.main]
 description = "Your Embassy Pages sites are displayed here when visited in a web browser."

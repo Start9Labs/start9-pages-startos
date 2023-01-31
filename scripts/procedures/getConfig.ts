@@ -22,7 +22,7 @@ export const getConfig = compat.getConfig({
       "variant-names": {
         "welcome": "Welcome",
         "index": "Subdomain Index",
-        "filebrowser": "Web Page",
+        "web-page": "Web Page",
         "redirect": "Redirect",
         "fuck-off": "Fuck Off",
       },
@@ -30,17 +30,28 @@ export const getConfig = compat.getConfig({
     "variants": {
       "welcome": {},
       "index": {},
-      "filebrowser": {
+      "web-page": {
         "directory": {
-          "type": "string",
-          "name": "Folder Path",
-          "description":
-            'The path to the folder in File Browser that contains the static files of your website. For example, a value of "websites/resume_site" would tell Embassy Pages to look for that folder in File Browser.',
-          "pattern":
-            "^(\\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)(/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)*/?$",
-          "pattern-description": "Must be a valid relative file path",
-          "nullable": false,
+          "name": "Internal data storage",
+          "description": "The service that contains the static files for your website",
+          "type": "enum",
+          "values": [
+            "filebrowser",
+            "nextcloud",
+          ],
+          "value-names": {},
+          "default": "filebrowser",
         },
+        "folder": {
+          "type": "string",
+            "name": "Folder Path",
+            "description":
+              'The path to the folder in File Browser that contains the static files of your website. For example, a value of "resume" would tell Embassy Pages to look for that folder in the main page of File Browser.',
+            "pattern":
+              "^(\\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)(/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)*/?$",
+            "pattern-description": "Must be a valid relative file path",
+            "nullable": false,
+        }
       },
       "redirect": {
         "target": {
@@ -55,7 +66,7 @@ export const getConfig = compat.getConfig({
         },
       },
       "fuck-off": {},
-    },
+    }
   },
   "subdomains": {
     "type": "list",
@@ -83,27 +94,38 @@ export const getConfig = compat.getConfig({
           "name": "Settings",
           "description":
             "The desired behavior you want to occur when the subdomain is visited. You can either redirect to another subdomain, or load a web page stored in File Browser.",
-          "default": "filebrowser",
+          "default": "web-page",
           "tag": {
             "id": "type",
             "name": "Type",
             "variant-names": {
-              "filebrowser": "Web Page",
+              "web-page": "Web Page",
               "redirect": "Redirect",
             },
           },
           "variants": {
-            "filebrowser": {
+            "web-page": {
               "directory": {
-                "type": "string",
-                "name": "Folder Path",
-                "description":
-                  'The path to the folder in File Browser that contains the static files of your website. For example, a value of "websites/resume_site" would tell Embassy Pages to look for that folder in File Browser.',
-                "pattern":
-                  "^(\\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)(/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)*/?$",
-                "pattern-description": "Must be a valid relative file path",
-                "nullable": false,
+                "name": "Internal data storage",
+                "description": "The service that contains the static files for your website",
+                "type": "enum",
+                "values": [
+                  "filebrowser",
+                  "nextcloud",
+                ],
+                "value-names": {},
+                "default": "filebrowser",
               },
+              "folder": {
+                "type": "string",
+                  "name": "Folder Path",
+                  "description":
+                    'The path to the folder in File Browser that contains the static files of your website. For example, a value of "resume" would tell Embassy Pages to look for that folder in the main page of File Browser.',
+                  "pattern":
+                    "^(\\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)(/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)*/?$",
+                  "pattern-description": "Must be a valid relative file path",
+                  "nullable": false,
+              }
             },
             "redirect": {
               "target": {
