@@ -31,13 +31,14 @@ export const getConfig = compat.getConfig({
       "welcome": {},
       "index": {},
       "web-page": {
-        "directory": {
+        "source": {
           "name": "Internal data storage",
           "description": "The service that contains the static files for your website",
           "type": "enum",
           "values": [
             "filebrowser",
             "nextcloud",
+            "gitea"
           ],
           "value-names": {},
           "default": "filebrowser",
@@ -46,7 +47,7 @@ export const getConfig = compat.getConfig({
           "type": "string",
             "name": "Folder Path",
             "description":
-              'The path to the folder in File Browser that contains the static files of your website. For example, a value of "resume" would tell Embassy Pages to look for that folder in the main page of File Browser.',
+              'The path to the folder that contains the static files of your website. For example, a value of "projects/resume" would tell Embassy Pages to look for that folder path in the selected service.',
             "pattern":
               "^(\\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)(/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)*/?$",
             "pattern-description": "Must be a valid relative file path",
@@ -105,13 +106,14 @@ export const getConfig = compat.getConfig({
           },
           "variants": {
             "web-page": {
-              "directory": {
+              "source": {
                 "name": "Internal data storage",
                 "description": "The service that contains the static files for your website",
                 "type": "enum",
                 "values": [
                   "filebrowser",
                   "nextcloud",
+                  "gitea"
                 ],
                 "value-names": {},
                 "default": "filebrowser",
@@ -120,7 +122,7 @@ export const getConfig = compat.getConfig({
                 "type": "string",
                   "name": "Folder Path",
                   "description":
-                    'The path to the folder in File Browser that contains the static files of your website. For example, a value of "resume" would tell Embassy Pages to look for that folder in the main page of File Browser.',
+                    'The path to the folder that contains the static files of your website. For example, a value of "projects/resume" would tell Embassy Pages to look for that folder path in the selected service..',
                   "pattern":
                     "^(\\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)(/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)*/?$",
                   "pattern-description": "Must be a valid relative file path",

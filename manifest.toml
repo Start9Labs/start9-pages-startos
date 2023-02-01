@@ -3,7 +3,8 @@ id = "embassy-pages"
 license = "mit"
 release-notes = """
 Update backups to use new eOS APIs \
-Add Nextcloud as optional dependency
+Add Nextcloud as optional dependency \
+Add Gitea as optional dependency \
 """
 support-site = "https://matrix.to/#/!lMnRwPWnyQvOfAoEnD:matrix.start9labs.com"
 title = "Embassy Pages"
@@ -44,7 +45,7 @@ type = "script"
 
 [dependencies.filebrowser]
 description = "Used to upload files to serve."
-version = "^2.21.1"
+version = "^2.22.4.3"
 
 [dependencies.filebrowser.requirement]
 type = "opt-out"
@@ -52,11 +53,19 @@ how = "Can alternatively use Nextcloud for file storage"
 
 [dependencies.nextcloud]
 description = "Used to upload files to serve."
-version = "^2.21.1"
+version = "^25.0.2"
 
 [dependencies.nextcloud.requirement]
 type = "opt-in"
-how = "Can alternatively use File Browse for file storage"
+how = "Can alternatively use File Browser for file storage"
+
+[dependencies.gitea]
+description = "Used to upload files to serve."
+version = "^1.16.9.2"
+
+[dependencies.gitea.requirement]
+type = "opt-in"
+how = "Can be used to host a static website from git repository"
 
 [volumes.main]
 type = "data"
@@ -74,6 +83,13 @@ path = "data/embassy/files"
 readonly = true
 type = "pointer"
 volume-id = "nextcloud"
+
+[volumes.gitea]
+package-id = "gitea"
+path = "data"
+readonly = true
+type = "pointer"
+volume-id = "gitea"
 
 [interfaces.main]
 description = "Your Embassy Pages sites are displayed here when visited in a web browser."
