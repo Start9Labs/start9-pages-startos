@@ -7,14 +7,14 @@ Add Nextcloud as optional dependency \
 Add Gitea as optional dependency \
 """
 support-site = "https://matrix.to/#/!lMnRwPWnyQvOfAoEnD:matrix.start9labs.com"
-title = "Embassy Pages"
+title = "Pages"
 upstream-repo = "https://github.com/Start9Labs/embassy-pages-wrapper"
 version = "0.1.8"
 wrapper-repo = "https://github.com/Start9Labs/embassy-pages-wrapper"
 
 [description]
-long = "Embassy Pages is a simple web server that uses directories inside File Browser to serve Tor websites."
-short = "Create Tor websites, hosted on your Embassy."
+long = "Pages is a simple web server that uses directories inside File Browser to serve Tor websites."
+short = "Create Tor websites, hosted on your personal server."
 
 [assets]
 icon = "icon.png"
@@ -26,7 +26,7 @@ args = []
 entrypoint = "/usr/local/bin/docker_entrypoint.sh"
 image = "main"
 io-format = "yaml"
-mounts = { main = "/root", filebrowser = "/mnt/filebrowser", nextcloud = "/mnt/nextcloud" }
+mounts = { main = "/root", filebrowser = "/mnt/filebrowser", nextcloud = "/mnt/nextcloud", gitea = "/mnt/gitea" }
 type = "docker"
 
 ["health-checks"."web-ui"]
@@ -86,7 +86,7 @@ volume-id = "nextcloud"
 
 [volumes.gitea]
 package-id = "gitea"
-path = "data"
+path = "data/git/repositories"
 readonly = true
 type = "pointer"
 volume-id = "gitea"
