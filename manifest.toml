@@ -2,9 +2,9 @@ build = ["make"]
 id = "embassy-pages"
 license = "mit"
 release-notes = """
-Update backups to use new eOS APIs \
-Add Nextcloud as optional dependency \
-Rename Embassy Pages -> Pages
+* Update backups to use new eOS APIs \n
+* Add Nextcloud as optional dependency \n
+* Rename Embassy Pages -> Pages
 """
 support-site = "https://matrix.to/#/!lMnRwPWnyQvOfAoEnD:matrix.start9labs.com"
 title = "Pages"
