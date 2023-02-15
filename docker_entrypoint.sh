@@ -29,11 +29,6 @@ fi
 
 echo "server_names_hash_bucket_size ${bucket_size};" > /etc/nginx/http.d/default.conf
 
-if ! test -d /mnt/filebrowser
-then
-    echo "Filebrowser mountpoint does not exist"
-    exit 0
-fi
 
 if [[ $home_type = "redirect" ]]; then
     target=$(yq e '.homepage.target' start9/config.yaml)
@@ -45,15 +40,22 @@ server {
   return 301 http://${target}.${tor_address}$request_uri;
 }
 EOT
-elif [[ $home_type = "filebrowser" ]]; then
-    directory=$(yq e '.homepage.directory' start9/config.yaml)
+elif [[ $home_type = "web-page" ]]; then
+    directory=$(yq e '.homepage.folder' start9/config.yaml)
+    source=$(yq e '.homepage.source' start9/config.yaml)
+
+    if ! test -d "/mnt/${source}"
+    then
+        echo "${source} mountpoint does not exist"
+        exit 0
+    fi
     cat >> /etc/nginx/http.d/default.conf <<EOT
 server {
   autoindex on;
   listen 80;
   listen [::]:80;
   server_name ${tor_address};
-  root "/mnt/filebrowser/${directory}";
+  root "/mnt/${source}/${directory}";
 }
 EOT
 else
@@ -69,15 +71,22 @@ fi
 
 for subdomain in "${subdomains[@]}"; do
     subdomain_type=$(yq e ".subdomains.[] | select(.name == \"$subdomain\") | .settings |.type" start9/config.yaml)
-    if [[ $subdomain_type == "filebrowser" ]]; then
-        directory="$(yq e ".subdomains.[] | select(.name == \"$subdomain\") | .settings | .directory" start9/config.yaml)"
+    if [[ $subdomain_type == "web-page" ]]; then
+        directory="$(yq e ".subdomains.[] | select(.name == \"$subdomain\") | .settings | .folder" start9/config.yaml)"
+        source="$(yq e ".subdomains.[] | select(.name == \"$subdomain\") | .settings | .source" start9/config.yaml)"\
+        
+        if ! test -d "/mnt/${source}"
+        then
+            echo "${source} mountpoint does not exist"
+            exit 0
+        fi
         cat >> /etc/nginx/http.d/default.conf <<EOT
 server {
   autoindex on;
   listen 80;
   listen [::]:80;
   server_name ${subdomain}.${tor_address};
-  root "/mnt/filebrowser/${directory}";
+  root "/mnt/${source}/${directory}";
 }
 EOT
     elif [ $subdomain_type = "redirect" ]; then
