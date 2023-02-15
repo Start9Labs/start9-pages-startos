@@ -3,27 +3,27 @@ import {
   matchFilebrowserHomepage,
   matchFilebrowserSubdomain,
   matchSubdomains,
-  matchWebPageHomepage,
+  matchWebPageHomepageConfig,
   matchWebPageSubdomain,
 } from "./types.ts";
 
 export const revertHomepageConfig = (config: T.Config) => {
-  if (matchWebPageHomepage.test(config)) {
-    const newConfig: typeof matchFilebrowserHomepage._TYPE = {
-      homepage: {
-        type: "filebrowser",
-        directory: config.homepage.folder,
-      },
+  if (matchWebPageHomepageConfig.test(config)) {
+    const newHomepage: typeof matchFilebrowserHomepage._TYPE = {
+      type: "filebrowser",
+      directory: config.homepage.folder,
     };
     delete config.homepage.source;
-    return { ...config, ...newConfig };
+    delete config.homepage.folder;
+    config.homepage = newHomepage;
+    return config;
   }
   return config;
 };
 
 export const revertSubdomainConfig = (config: T.Config) => {
   if (matchSubdomains.test(config)) {
-    config.subdomains.map((sub) => {
+    const newSubdomains = config.subdomains.map((sub) => {
       if (matchWebPageSubdomain.test(sub)) {
         const newSubdomain: typeof matchFilebrowserSubdomain._TYPE = {
           name: sub.name,
@@ -36,6 +36,7 @@ export const revertSubdomainConfig = (config: T.Config) => {
       }
       return sub;
     });
+    config.subdomains = newSubdomains;
     return config;
   }
   return config;

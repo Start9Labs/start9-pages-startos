@@ -1,5 +1,5 @@
 import { compat, types as T } from "../deps.ts";
-import { matchSubdomains, matchWebPageHomepage, matchWebPageSubdomain } from "../migrations/types.ts";
+import { matchSubdomains, matchWebPageHomepageConfig, matchWebPageSubdomain } from "../migrations/types.ts";
 export const setConfig: T.ExpectedExports.setConfig = async (
   effects,
   config,
@@ -7,7 +7,7 @@ export const setConfig: T.ExpectedExports.setConfig = async (
   let depFilebrowser: T.DependsOn = {}
   let depNextcloud: T.DependsOn = {}
 
-  if (matchWebPageHomepage.test(config)) {
+  if (matchWebPageHomepageConfig.test(config)) {
     switch (config.homepage.source) {
       case 'filebrowser':
         depFilebrowser =  { filebrowser: [] }

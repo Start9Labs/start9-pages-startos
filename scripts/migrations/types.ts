@@ -2,19 +2,24 @@ import { matches } from "../deps.ts";
 
 const { shape, string, literal, any, arrayOf } = matches;
 
+
 export const matchFilebrowserHomepage = shape({
-  homepage: shape({
     type: literal("filebrowser"),
     directory: string,
-  }, ["directory"]),
-});
+  }, ["directory"])
 
-export const matchWebPageHomepage = shape({
-  homepage: shape({
-    type: literal("web-page"),
+export const matchWebPageHomepage =  shape({
+    type: string,
     source: string,
     folder: string,
-  }, ["source"]),
+  }, ["source", "folder"])
+
+export const matchFilebrowserHomepageConfig = shape({
+  homepage: matchFilebrowserHomepage
+});
+
+export const matchWebPageHomepageConfig = shape({
+  homepage: matchWebPageHomepage
 });
 
 export const matchFilebrowserSubdomain = shape({

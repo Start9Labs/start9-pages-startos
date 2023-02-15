@@ -1,6 +1,4 @@
-# Pages
-
-## About
+# About
 
 Pages is a simple web server that uses folders inside a file hosting service, such as File Browser or Nextcloud, to serve Tor websites. Your website could be a blog, a resume, a portfolio, a business landing page, a product brochure, or just a set of static folders and/or files that you want to share with the world.
 
@@ -8,9 +6,9 @@ When you first install Pages, there will be a default Homepage hosted at the Tor
    
 Self-hosting Tor websites using Pages is easy, permissionless, and censorship-resistant; there are no trusted third parties involved. Anyone can do it. No one can stop it.
 
-## Instructions
+# Instructions
 
-### Homepage
+## Homepage
 
 Inside `Config`, you can easily change the behavior of your Homepage to serve:
 
@@ -21,17 +19,17 @@ Inside `Config`, you can easily change the behavior of your Homepage to serve:
 
 **NOTE:** Changing the Homepage setting requires a hard refresh when visiting the Tor address in a browser #caching.
 
-### Subdomains
+## Subdomains
 
 Inside `Config`, you can create one or more Subdomains, giving each a unique name and custom settings. A list of all your Subdomains can be found inside the `Properties` section of the service management page.
 
-#### Redirect
+### Redirect
 
 This type allows you to redirect a previously configured subdomain to a newly configured one. This is useful if you want to change a subdomain name, but do not want to disrupt loading of an already published site.
 
 Note that redirects can only be used for other subdomains, not external websites.
 
-#### Web Page
+### Web Page
 
 This type allows you to configure a website's hosted folder.
 
