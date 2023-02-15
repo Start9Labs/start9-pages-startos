@@ -23,7 +23,7 @@ Inside `Config`, you can easily change the behavior of your Homepage to serve:
 
 ### Subdomains
 
-Inside `Config`, you can create one or more Subdomains, giving each a unique name and custom settings. A list of all your Subdomains can be found inside the `Properties` section.
+Inside `Config`, you can create one or more Subdomains, giving each a unique name and custom settings. A list of all your Subdomains can be found inside the `Properties` section of the service management page.
 
 #### Redirect
 
