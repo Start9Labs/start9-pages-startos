@@ -4,7 +4,6 @@ import {
   matchFilebrowserSubdomain,
   matchSubdomains,
   matchWebPageHomepage,
-  matchWebPageHomepageConfig,
   matchWebPageSubdomain,
 } from "./types.ts";
 
@@ -15,8 +14,10 @@ export const convertHomepageConfig = (config: T.Config) => {
       source: "filebrowser",
       folder: config.homepage.directory!,
     };
-    (config as typeof matchWebPageHomepageConfig._TYPE).homepage = newHomepage;
-    return config;
+    return {
+      ...config,
+      homepage: newHomepage
+    };
   }
   return config;
 };
@@ -37,8 +38,10 @@ export const convertSubdomainConfig = (config: T.Config) => {
       }
       return sub;
     });
-    config.subdomains = newSubdomains;
-    return config;
+    return {
+      ...config,
+      subdomains: newSubdomains
+    };
   }
   return config;
 };

@@ -15,8 +15,10 @@ export const revertHomepageConfig = (config: T.Config) => {
     };
     delete config.homepage.source;
     delete config.homepage.folder;
-    config.homepage = newHomepage;
-    return config;
+    return {
+      ...config,
+      homepage: newHomepage
+    };
   }
   return config;
 };
@@ -36,8 +38,10 @@ export const revertSubdomainConfig = (config: T.Config) => {
       }
       return sub;
     });
-    config.subdomains = newSubdomains;
-    return config;
+    return {
+      ...config,
+      subdomains: newSubdomains
+    };
   }
   return config;
 };
