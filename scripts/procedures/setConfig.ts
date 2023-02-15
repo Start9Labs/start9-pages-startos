@@ -5,16 +5,12 @@ export const setConfig: T.ExpectedExports.setConfig = async (
   config,
 ) => {
   let depFilebrowser: T.DependsOn = {}
-  let depGitea: T.DependsOn = {}
   let depNextcloud: T.DependsOn = {}
 
   if (matchWebPageHomepage.test(config)) {
     switch (config.homepage.source) {
       case 'filebrowser':
         depFilebrowser =  { filebrowser: [] }
-        break;
-      case 'gitea':
-        depGitea =  { gitea: [] }
         break;
       case 'nextcloud':
         depNextcloud =  { nextcloud: [] }
@@ -31,9 +27,6 @@ export const setConfig: T.ExpectedExports.setConfig = async (
           case 'filebrowser':
             depFilebrowser =  { filebrowser: [] }
             break;
-          case 'gitea':
-            depGitea =  { gitea: [] }
-            break;
           case 'nextcloud':
             depNextcloud =  { nextcloud: [] }
             break;
@@ -46,7 +39,6 @@ export const setConfig: T.ExpectedExports.setConfig = async (
 
   return await compat.setConfig(effects, config, {
     ...depFilebrowser,
-    ...depGitea,
     ...depNextcloud
   });
 };

@@ -4,12 +4,11 @@ license = "mit"
 release-notes = """
 Update backups to use new eOS APIs \
 Add Nextcloud as optional dependency \
-Add Gitea as optional dependency \
 """
 support-site = "https://matrix.to/#/!lMnRwPWnyQvOfAoEnD:matrix.start9labs.com"
 title = "Pages"
 upstream-repo = "https://github.com/Start9Labs/embassy-pages-wrapper"
-version = "0.1.8"
+version = "0.1.7"
 wrapper-repo = "https://github.com/Start9Labs/embassy-pages-wrapper"
 
 [description]
@@ -26,7 +25,7 @@ args = []
 entrypoint = "/usr/local/bin/docker_entrypoint.sh"
 image = "main"
 io-format = "yaml"
-mounts = { main = "/root", filebrowser = "/mnt/filebrowser", nextcloud = "/mnt/nextcloud", gitea = "/mnt/gitea" }
+mounts = { main = "/root", filebrowser = "/mnt/filebrowser", nextcloud = "/mnt/nextcloud" }
 type = "docker"
 
 ["health-checks"."web-ui"]
@@ -59,14 +58,6 @@ version = "^25.0.2"
 type = "opt-in"
 how = "Can alternatively use File Browser for file storage"
 
-[dependencies.gitea]
-description = "Used to upload files to serve."
-version = "^1.16.9.2"
-
-[dependencies.gitea.requirement]
-type = "opt-in"
-how = "Can be used to host a static website from git repository"
-
 [volumes.main]
 type = "data"
 
@@ -83,13 +74,6 @@ path = "data/embassy/files"
 readonly = true
 type = "pointer"
 volume-id = "nextcloud"
-
-[volumes.gitea]
-package-id = "gitea"
-path = "data/git/repositories"
-readonly = true
-type = "pointer"
-volume-id = "gitea"
 
 [interfaces.main]
 description = "Your Embassy Pages sites are displayed here when visited in a web browser."

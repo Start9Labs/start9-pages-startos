@@ -38,7 +38,6 @@ export const getConfig = compat.getConfig({
           "values": [
             "filebrowser",
             "nextcloud",
-            "gitea"
           ],
           "value-names": {},
           "default": "filebrowser",
@@ -113,7 +112,6 @@ export const getConfig = compat.getConfig({
                 "values": [
                   "filebrowser",
                   "nextcloud",
-                  "gitea"
                 ],
                 "value-names": {},
                 "default": "filebrowser",
