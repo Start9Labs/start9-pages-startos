@@ -13,7 +13,7 @@ version = "0.1.7"
 wrapper-repo = "https://github.com/Start9Labs/embassy-pages-wrapper"
 
 [description]
-long = "Pages is a simple web server that uses directories inside File Browser to serve Tor websites."
+long = "Pages is a simple web server that uses folders hosted on other internal services to serve Tor websites."
 short = "Create Tor websites, hosted on your personal server."
 
 [assets]

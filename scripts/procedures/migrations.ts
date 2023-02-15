@@ -20,7 +20,7 @@ export const migration: T.ExpectedExports.migration = async (
   return compat.migrations
     .fromMapping(
       {
-        "0.1.7": {
+        "0.1.6": {
           up: compat.migrations.updateConfig(
             (config) => {
               if (Object.keys(config).length === 0) {
@@ -30,17 +30,17 @@ export const migration: T.ExpectedExports.migration = async (
               return convertSubdomainConfig(convertHomepageConfig(config));
             },
             false,
-            { version: "0.1.7", type: "up" },
+            { version: "0.1.6", type: "up" },
           ),
           down: compat.migrations.updateConfig(
             (config) => {
               return revertSubdomainConfig(revertHomepageConfig(config));
             },
             true,
-            { version: "0.1.7", type: "down" },
+            { version: "0.1.6", type: "down" },
           ),
         },
       },
-      "0.1.8",
+      "0.1.7",
     )(effects, version, ...args);
 };
