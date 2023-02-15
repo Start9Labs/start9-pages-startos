@@ -2,34 +2,41 @@
 
 ## About
 
-Embassy Pages is a simple web server that uses directories inside File Browser to serve Tor websites. Your website could be a blog, a resume, a portfolio, a business landing page, a product brochure, or just a set of static folders and/or files that you want to share with the world.
+Embassy Pages is a simple web server that uses directories inside a file hosting service, such as File Browser or Nextcloud, to serve Tor websites. Your website could be a blog, a resume, a portfolio, a business landing page, a product brochure, or just a set of static folders and/or files that you want to share with the world.
 
-When you first install Embassy Pages, there will be a default Homepage hosted at the root, `<embassy-pages-tor-address>.onion`. You can change the behavior of this page, and you can also create Subdomain websites. For example, one site could be `hello.<embassy-pages-tor-address>.onion` and another could be `goodbye.<embassy-pages-tor-address>.onion`. What is served from the Homepage and each Subdomain is totally up to you.
+When you first install Embassy Pages, there will be a default Homepage hosted at the Tor address. You can change the behavior of this page, and you can also create Subdomain websites. For example, one site could be `hello.<embassy-pages-tor-address>.onion` and another could be `goodbye.<embassy-pages-tor-address>.onion`. What is served from the Homepage and each Subdomain is totally up to you.
    
-Self-hosting Tor  websites using Embassy Pages is easy, permissionless, and censorship-resistant; there are no trusted third parties involved.
-Anyone can do it. No one can stop it.
+Self-hosting Tor websites using Embassy Pages is easy, permissionless, and censorship-resistant; there are no trusted third parties involved. Anyone can do it. No one can stop it.
 
 ## Instructions
 
-1. Inside `Config`, you can easily change the behavior of your Homepage to serve:
+### Homepage
+
+Inside `Config`, you can easily change the behavior of your Homepage to serve:
+
    1. A list of hyperlinks to all your Subdomains
    1. A personal web page
    1. An automatic redirect to a Subdomain
-   1. A static web page that tells anyone visiting it to fuck off, politely.
+   1. A static web page that tells anyone visiting it to f*ck off, politely.
 
-1. Inside `Config`, you can create one or more Subdomains, giving each a unique name.
+**Note**: Changing the Homepage setting requires a hard refresh when visiting the Tor address in a browser #caching.
 
-1. To serve a personal website, simply upload the website directory to File Browser. Then, inside the settings for a particular page (either your Homepage or a Subdomain), enter the path to that directory. For example, a path of websites/blog would tell Embassy Pages that it can find the blog website inside the websites directory in File Browser.
+### Subdomains
 
-1. A list of all your Subdomains can be found inside the Properties section of your Embassy Pages service.
+Inside `Config`, you can create one or more Subdomains, giving each a unique name and custom settings. A list of all your Subdomains can be found inside the `Properties` section.
 
-**Note**: Changing the Homepage requires a hard refresh of the Tor website
+#### Redirect
 
-## Restore from Backup
+Selecting the "Redirect" type allows you to redirect a previous configured subdomain to a newly configured one. This is useful if you want to change a subdomain name, but do not want to disrupt loading of an already published site.
 
-1. In `Config`, select "Restore from Backup".
-1. After the restoration completes, navigate to the Marketplace.
-1. Downgrade Embassy Pages.
-1. Upgrade Embassy Pages to the latest version.
-1. Start Embassy Pages.
-1. Embassy Pages is now successfully restored!
+Note that redirects can only be used for other subdomains, not external websites.
+
+#### Web Page
+
+Selecting the "Web Page" type allows you to configure a websites hosted folder.
+
+1. First, upload the static files for your website to File Browser or to Nextcloud's "Files".
+1. Then, select the service you uploaded to for internal data storage.
+1. Finally, enter the path to the website folder. For example, I create a folder in File Browser called "websites", and another folder inside that one called "blog". Entering the path of websites/blog would tell Pages that it can find the blog files inside that path in File Browser.
+
+Please note that Folder Paths are case sensitive. Nextcloud folders are capitalized by default, so be sure to input them accordingly.

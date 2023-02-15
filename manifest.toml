@@ -4,6 +4,7 @@ license = "mit"
 release-notes = """
 Update backups to use new eOS APIs \
 Add Nextcloud as optional dependency \
+Rename Embassy Pages -> Pages
 """
 support-site = "https://matrix.to/#/!lMnRwPWnyQvOfAoEnD:matrix.start9labs.com"
 title = "Pages"
