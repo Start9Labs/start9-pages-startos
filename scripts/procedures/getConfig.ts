@@ -13,7 +13,7 @@ export const getConfig = compat.getConfig({
   "homepage": {
     "name": "Homepage",
     "description":
-      "The page that will be displayed when your Embassy Pages .onion address is visited. Since this page is technically publicly accessible, you can choose to which type of page to display.",
+      "The page that will be displayed when your Start9 Pages .onion address is visited. Since this page is technically publicly accessible, you can choose to which type of page to display.",
     "type": "union",
     "default": "welcome",
     "tag": {
@@ -21,10 +21,9 @@ export const getConfig = compat.getConfig({
       "name": "Type",
       "variant-names": {
         "welcome": "Welcome",
-        "index": "Subdomain Index",
+        "index": "Table of Contents",
         "web-page": "Web Page",
         "redirect": "Redirect",
-        "fuck-off": "Fuck Off",
       },
     },
     "variants": {
@@ -32,19 +31,20 @@ export const getConfig = compat.getConfig({
       "index": {},
       "web-page": {
         "source": {
-          "name": "Internal data storage",
-          "description": "The service that contains the static files for your website",
+          "name": "Folder Location",
+          "description": "The service that contains your website files.",
           "type": "enum",
           "values": [
             "filebrowser",
             "nextcloud",
           ],
           "value-names": {},
-          "default": "filebrowser",
+          "default": "nextcloud",
         },
         "folder": {
           "type": "string",
             "name": "Folder Path",
+            "placeholder": "e.g. websites/resume",
             "description":
               'The path to the folder that contains the static files of your website. For example, a value of "projects/resume" would tell Embassy Pages to look for that folder path in the selected service.',
             "pattern":
@@ -64,8 +64,7 @@ export const getConfig = compat.getConfig({
             "May contain only lowercase characters and hyphens.",
           "nullable": false,
         },
-      },
-      "fuck-off": {},
+      }
     }
   },
   "subdomains": {
@@ -84,7 +83,7 @@ export const getConfig = compat.getConfig({
           "nullable": false,
           "name": "Subdomain name",
           "description":
-            'The subdomain of your Embassy Pages .onion address to host the website on. For example, a value of "me" would produce a website hosted at http://me.myaddress.onion.',
+            'The subdomain of your Start9 Pages .onion address to host the website on. For example, a value of "me" would produce a website hosted at http://me.xxxxxx.onion.',
           "pattern": "^[a-z-]+$",
           "pattern-description":
             "May contain only lowercase characters and hyphens",
@@ -93,7 +92,7 @@ export const getConfig = compat.getConfig({
           "type": "union",
           "name": "Settings",
           "description":
-            "The desired behavior you want to occur when the subdomain is visited. You can either redirect to another subdomain, or load a web page stored in File Browser.",
+            "The desired behavior you want to occur when the subdomain is visited. You can either redirect to another subdomain, or load a stored web page.",
           "default": "web-page",
           "tag": {
             "id": "type",
@@ -106,21 +105,22 @@ export const getConfig = compat.getConfig({
           "variants": {
             "web-page": {
               "source": {
-                "name": "Internal data storage",
-                "description": "The service that contains the static files for your website",
+                "name": "Folder Location",
+                "description": "The service that contains your website files.",
                 "type": "enum",
                 "values": [
                   "filebrowser",
                   "nextcloud",
                 ],
                 "value-names": {},
-                "default": "filebrowser",
+                "default": "nextcloud",
               },
               "folder": {
                 "type": "string",
                   "name": "Folder Path",
+                  "placeholder": "e.g. websites/resume",
                   "description":
-                    'The path to the folder that contains the static files of your website. For example, a value of "projects/resume" would tell Embassy Pages to look for that folder path in the selected service..',
+                    'The path to the folder that contains the website files. For example, a value of "projects/resume" would tell Start9 Pages to look for that folder path in the selected service.',
                   "pattern":
                     "^(\\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)(/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)*/?$",
                   "pattern-description": "Must be a valid relative file path",
@@ -132,7 +132,7 @@ export const getConfig = compat.getConfig({
                 "type": "string",
                 "name": "Target Subdomain",
                 "description":
-                  "The subdomain of your Embassy Pages .onion address to redirect to. This should be the name of another subdomain on Embassy Pages. Leave empty to redirect to the homepage.",
+                  "The subdomain of your Start9 Pages .onion address to redirect to. This should be the name of another subdomain on Start9 Pages. Leave empty to redirect to the homepage.",
                 "pattern": "^[a-z-]+$",
                 "pattern-description":
                   "May contain only lowercase characters and hyphens.",

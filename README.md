@@ -1,6 +1,6 @@
 # Wrapper for embassy-pages
 
-Embassy Pages is a simple web server that uses directories inside File Browser to serve Tor websites. This repository creates the `s9pk` package that is installed to run `embassy-pages` on [embassyOS](https://github.com/Start9Labs/embassy-os/.
+Start9 Pages is a simple web server that uses directories inside File Browser to serve Tor websites. This repository creates the `s9pk` package that is installed to run `embassy-pages` on [embassyOS](https://github.com/Start9Labs/embassy-os/. It was recently renamed from Embassy Pages, but package ids cannot currently be changed, so it remains `embassy-pages`.
 
 ## Dependencies
 
