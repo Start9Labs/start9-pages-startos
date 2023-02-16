@@ -5,7 +5,6 @@ RUN apk update
 RUN apk add bash curl nginx tini yq
 
 ADD www /var/www
-RUN cp /var/www/assets/main.css /var/www/fuck-off/main.css
 RUN cp /var/www/assets/main.css /var/www/index/main.css
 RUN cp /var/www/assets/main.css /var/www/welcome/main.css
 ADD ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh
