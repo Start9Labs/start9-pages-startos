@@ -2,9 +2,10 @@ build = ["make"]
 id = "embassy-pages"
 license = "mit"
 release-notes = """
-* Update backups to use new eOS APIs \n
+* Update backups to use new APIs \n
 * Add Nextcloud as default dependency \n
-* Rename Embassy Pages -> Start9 Pages
+* Rename Embassy Pages -> Start9 Pages \n
+* Remove F*ck off homepage variant - if you had this configured, your homepage will be migrated to the default welcome page.
 """
 support-site = "https://matrix.to/#/!lMnRwPWnyQvOfAoEnD:matrix.start9labs.com"
 title = "Start9 Pages"
