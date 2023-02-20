@@ -8,11 +8,17 @@ export const matchFilebrowserHomepage = shape({
     directory: string,
   }, ["directory"])
 
-export const matchWebPageHomepage =  shape({
+export const matchWebPageHomepage = shape({
     type: string,
     source: string,
     folder: string,
   }, ["source", "folder"])
+
+export const matchFuckOffHomepageConfig = shape({
+    homepage: shape({
+      type: literal("fuck-off"),
+    })
+  })
 
 export const matchFilebrowserHomepageConfig = shape({
   homepage: matchFilebrowserHomepage

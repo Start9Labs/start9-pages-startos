@@ -2,18 +2,19 @@ build = ["make"]
 id = "embassy-pages"
 license = "mit"
 release-notes = """
-* Update backups to use new eOS APIs \n
-* Add Nextcloud as optional dependency \n
-* Rename Embassy Pages -> Pages
+* Update backups to use new APIs \n
+* Add Nextcloud as default dependency \n
+* Rename Embassy Pages -> Start9 Pages \n
+* Remove F*ck off homepage variant - if you had this configured, your homepage will be migrated to the default welcome page.
 """
 support-site = "https://matrix.to/#/!lMnRwPWnyQvOfAoEnD:matrix.start9labs.com"
-title = "Pages"
+title = "Start9 Pages"
 upstream-repo = "https://github.com/Start9Labs/embassy-pages-wrapper"
-version = "0.1.7"
+version = "0.1.7.1"
 wrapper-repo = "https://github.com/Start9Labs/embassy-pages-wrapper"
 
 [description]
-long = "Pages is a simple web server that uses folders hosted on other internal services to serve Tor websites."
+long = "Start9 Pages is a simple web server that uses folders hosted on other internal services to serve Tor websites."
 short = "Create Tor websites, hosted on your personal server."
 
 [assets]
