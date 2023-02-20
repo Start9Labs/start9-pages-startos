@@ -35,7 +35,6 @@ export const migration: T.ExpectedExports.migration = async (
           ),
           down: compat.migrations.updateConfig(
             (config) => {
-              effects.error(JSON.stringify(config))
               return revertSubdomainConfig(revertHomepageConfig(config));
             },
             true,

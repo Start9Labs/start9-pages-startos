@@ -2,7 +2,7 @@
 
 Start9 Pages provides a simple way to host custom websites over Tor. Your website could be a blog, a resume, a portfolio, a business landing page, a product brochure, or just a set of files that you want to share with the world.
 
-Start9 Pages lets you host a homepage at its primary Tor URL, as well as any number web pages on various subdomains. For example, one site could be `hello.xxxxxxxx.onion` and another could be `goodbye.xxxxxxxxx.onion`. What is served from the homepage and each subdomain is totally up to you.
+Start9 Pages lets you host a homepage at its primary Tor URL, as well as any number of web pages on various subdomains. For example, one site could be `hello.xxxxxxxx.onion` and another could be `goodbye.xxxxxxxxx.onion`. What is served from the homepage and each subdomain is totally up to you.
 
 # Instructions
 
@@ -13,7 +13,7 @@ Inside `Config`, you can easily change the behavior of your Homepage to serve:
    1. Welcome: A default welcome page
    1. Subdomain Index: A list of hyperlinks to all your subdomains
    1. Web Page: A personal web page
-   1. Redirect: An automatic redirect to a subdomain
+   1. Redirect: An automatic redirect to another subdomain
 
 **NOTE:** Changing the homepage setting requires a hard refresh of the browser.
 
