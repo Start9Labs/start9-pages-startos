@@ -108,6 +108,8 @@ export const configSpec = Config.of({
             warning: null,
           },
           {
+            displayAs: "{{name}}",
+            uniqueBy: "name",
             spec: Config.of({
               name: Value.text({
                 name: "Subdomain name",
@@ -208,8 +210,6 @@ export const configSpec = Config.of({
                 }),
               ),
             }),
-            displayAs: "{{name}}",
-            uniqueBy: "name",
           },
         ),
       ),

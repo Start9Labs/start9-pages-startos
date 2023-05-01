@@ -2,19 +2,35 @@ import { PropertyString, PropertyGroup, setupProperties } from "start-sdk/lib/pr
 import { WrapperData } from '../wrapperData'
 
 export const properties = setupProperties<WrapperData>(async ({ wrapperData }) => {
-  const subdomains = PropertyGroup.of({
-    name: 'Subdomains',
-    description: 'The configured subdomains',
-    value: wrapperData.subdomains.map(s =>
-      PropertyString.of({
-        name: 'Subdomain',
-        description: `Link for the site ${s.name}`,
-        value: `${s.name}.${wrapperData["tor-address"]}`,
-        copyable: true,
-        qr: true,
-        masked: false,
+  return wrapperData.config.domains.map(domain => {
+    return PropertyGroup.of({
+      name: `${domain.label}`,
+      description: "The domain and/or subdomains of this page",
+      value: domain.subdomains.length ?  [
+        PropertyGroup.of({
+        name: 'Subdomains',
+        description: 'The subdomains available for this page',
+        value: domain.subdomains.map(sub => {
+          return PropertyString.of({
+            name: `${sub.name}`,
+            description: 'The URL of this subdomain',
+            value: `${sub.name}.${}`, // TODO get this interface
+            copyable: true,
+            masked: false,
+            qr: true
+          })
+        })
       })
-    )
+      ] : [
+        PropertyString.of({
+          name: 'URL',
+          description: 'The URL for this domain',
+          value: "", // TODO get interface
+          copyable: true,
+          masked: false,
+          qr: true
+        })
+      ],
+    })
   })
-  return [subdomains]
 })
