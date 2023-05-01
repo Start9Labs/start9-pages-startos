@@ -1,64 +1,27 @@
-build = ["make"]
 id = "embassy-pages"
-license = "mit"
-release-notes = """
-* Update backups to use new APIs \n
-* Add Nextcloud as default dependency \n
-* Rename Embassy Pages to Start9 Pages \n
-* Remove "F*ck Off" homepage variant - if you had this configured, your homepage will be migrated to the default welcome page.
-"""
-support-site = "https://matrix.to/#/!lMnRwPWnyQvOfAoEnD:matrix.start9labs.com"
 title = "Start9 Pages"
-upstream-repo = "https://github.com/Start9Labs/embassy-pages-wrapper"
-version = "0.1.7.1"
+version = "0.1.8"
+release-notes = """
+Update to latest StartOS APIs
+"""
+license = "mit"
 wrapper-repo = "https://github.com/Start9Labs/embassy-pages-wrapper"
+upstream-repo = "https://github.com/Start9Labs/embassy-pages-wrapper"
+support-site = "https://matrix.to/#/!lMnRwPWnyQvOfAoEnD:matrix.start9labs.com"
+marketing-site = ""
 
 [description]
-long = "Start9 Pages is a simple web server that uses folders hosted on other internal services to serve Tor websites."
 short = "Create Tor websites, hosted on your personal server."
+long = "Start9 Pages is a simple web server that uses folders hosted on other internal services to serve Tor websites."
 
 [assets]
 icon = "icon.png"
 instructions = "instructions.md"
 license = "LICENSE"
 
-[main]
-args = []
-entrypoint = "/usr/local/bin/docker_entrypoint.sh"
+[containers.main]
 image = "main"
-io-format = "yaml"
 mounts = { main = "/root", filebrowser = "/mnt/filebrowser", nextcloud = "/mnt/nextcloud" }
-type = "docker"
-
-["health-checks"."web-ui"]
-name = "Web UI"
-success-message = "Ready to be visited in a web browser"
-type = "script"
-
-[config.get]
-type = "script"
-
-[config.set]
-type = "script"
-
-[properties]
-type = "script"
-
-[dependencies.filebrowser]
-description = "Used to upload files to serve."
-version = "^2.22.4"
-
-[dependencies.filebrowser.requirement]
-type = "opt-out"
-how = "Can alternatively use Nextcloud for file storage"
-
-[dependencies.nextcloud]
-description = "Used to upload files to serve."
-version = "^25.0.2"
-
-[dependencies.nextcloud.requirement]
-type = "opt-in"
-how = "Can alternatively use File Browser for file storage"
 
 [volumes.main]
 type = "data"
@@ -77,23 +40,18 @@ readonly = true
 type = "pointer"
 volume-id = "nextcloud"
 
-[interfaces.main]
-description = "Your Embassy Pages sites are displayed here when visited in a web browser."
-name = "Web UI"
-protocols = ["tcp", "http"]
-tor-config = { port-mapping = { "80" = "80" } }
-ui = true
+[dependencies.filebrowser]
+description = "Used to upload files to serve."
+version = "^2.22.4"
 
-[backup.create]
-type = "script"
+[dependencies.filebrowser.requirement]
+type = "opt-out"
+how = "Can alternatively use Nextcloud for file storage"
 
-[backup.restore]
-type = "script"
+[dependencies.nextcloud]
+description = "Used to upload files to serve."
+version = "^25.0.2"
 
-[migrations.from."*"]
-type = "script"
-args = [ "from" ]
-
-[migrations.to."*"]
-type = "script"
-args = [ "to" ]
+[dependencies.nextcloud.requirement]
+type = "opt-in"
+how = "Can alternatively use File Browser for file storage"

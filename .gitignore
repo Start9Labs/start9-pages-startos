@@ -4,6 +4,7 @@ embassy-pages.s9pk
 image.tar
 test_config.yaml
 .vscode
-scripts/embassy.js
+procedures/*.js
 docker-images
 TODO.md
+node_modules/

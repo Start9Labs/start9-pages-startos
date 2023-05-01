@@ -13,7 +13,7 @@ clean:
 	rm -rf docker-images
 	rm -f image.tar
 	rm -f $(PKG_ID).s9pk
-	rm -f scripts/*.js
+	rm -f procedures/*.js
 
 # assumes /etc/embassy/config.yaml exists on local system with `host: "http://embassy-server-name.local"` configured
 install: $(PKG_ID).s9pk
