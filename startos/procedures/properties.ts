@@ -14,7 +14,7 @@ export const properties = setupProperties<WrapperData>(async ({ wrapperData }) =
           return PropertyString.of({
             name: `${sub.name}`,
             description: 'The URL of this subdomain',
-            value: `${sub.name}.${}`, // TODO get this interface
+            value: `${sub.name}.${tor_address}`, // TODO get this interface
             copyable: true,
             masked: false,
             qr: true

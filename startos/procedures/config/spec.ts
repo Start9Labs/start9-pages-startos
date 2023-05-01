@@ -216,5 +216,5 @@ export const configSpec = Config.of({
     }),
   })),
 });
-export const matchConfigSpec = configSpec.validator();
+export const matchConfigSpec = configSpec.validator;
 export type ConfigSpec = typeof matchConfigSpec._TYPE;
