@@ -1,4 +1,7 @@
-import { Config, List, Value, Variants } from "start-sdk/lib/config/builder";
+import { Config } from "@start9labs/start-sdk/lib/config/builder/config";
+import { Value } from "@start9labs/start-sdk/lib/config/builder/value";
+import { List } from "@start9labs/start-sdk/lib/config/builder/list";
+import { Variants } from "@start9labs/start-sdk/lib/config/builder/variants";
 
 export const configSpec = Config.of({
   domains: Value.list(List.obj({

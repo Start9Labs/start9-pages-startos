@@ -1,4 +1,4 @@
-import { setupInit, setupInstall, setupUninstall } from 'start-sdk/lib/inits'
+import { setupInit, setupInstall, setupUninstall } from '@start9labs/start-sdk/lib/inits'
 import { WrapperData } from '../wrapperData'
 import { migrations } from './migrations'
 

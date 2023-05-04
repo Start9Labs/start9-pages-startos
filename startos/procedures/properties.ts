@@ -1,4 +1,4 @@
-import { PropertyString, PropertyGroup, setupProperties } from "start-sdk/lib/properties";
+import { PropertyString, PropertyGroup, setupProperties } from "@start9labs/start-sdk/lib/properties";
 import { WrapperData } from '../wrapperData'
 
 export const properties = setupProperties<WrapperData>(async ({ wrapperData }) => {

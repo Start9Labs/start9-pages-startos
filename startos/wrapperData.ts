@@ -6,5 +6,12 @@ import { ConfigSpec } from './procedures/config/spec'
  * It is conventional for the "config" key to store the service's saved config, excluding sensitive data like passwords
  */
 export interface WrapperData {
-  config: ConfigSpec
+  config: ConfigSpecExtended
+}
+export type Domain = ConfigSpec["domains"][0]
+export interface DomainWithId extends Domain {
+  id: string
+}
+export interface ConfigSpecExtended extends ConfigSpec {
+  domains: DomainWithId[]
 }

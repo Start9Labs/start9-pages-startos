@@ -1,10 +1,10 @@
 #!/bin/bash
 
-export HOST_IP=$(ip -4 route list match 0/0 | awk '{print $3}')
+# export HOST_IP=$(ip -4 route list match 0/0 | awk '{print $3}')
 
-home_type=$(yq e '.homepage.type' start9/config.yaml)
-subdomains=($(yq e '.subdomains.[].name' start9/config.yaml))
-tor_address=($(yq e '.tor-address' start9/config.yaml))
+# home_type=$(yq e '.homepage.type' start9/config.yaml)
+# subdomains=($(yq e '.subdomains.[].name' start9/config.yaml))
+# tor_address=($(yq e '.tor-address' start9/config.yaml))
 
 bucket_size=64
 for subdomain in "${subdomains[@]}"; do
@@ -27,7 +27,7 @@ done
 #     fi
 # fi
 
-echo "server_names_hash_bucket_size ${bucket_size};" > /etc/nginx/http.d/default.conf
+# echo "server_names_hash_bucket_size ${bucket_size};" > /etc/nginx/http.d/default.conf
 
 
 # if [[ $home_type = "redirect" ]]; then
@@ -113,4 +113,4 @@ echo "server_names_hash_bucket_size ${bucket_size};" > /etc/nginx/http.d/default
 #     fi
 # done
 
-exec tini -- nginx -g "daemon off;"
+# exec tini -- nginx -g "daemon off;"

@@ -1,13 +1,12 @@
-import { HealthReceipt } from 'start-sdk/lib/health'
-import { checkPortListening } from 'start-sdk/lib/health/checkFns'
-import {
-  Daemons,
-  NetworkInterfaceBuilder,
-  setupMain,
-} from 'start-sdk/lib/mainFn'
-import exportInterfaces from 'start-sdk/lib/mainFn/exportInterfaces'
-import { ExpectedExports } from 'start-sdk/lib/types'
+import { checkPortListening } from '@start9labs/start-sdk/lib/health/checkFns'
+import exportInterfaces from '@start9labs/start-sdk/lib/mainFn/exportInterfaces'
+import { ExpectedExports } from '@start9labs/start-sdk/lib/types'
 import { WrapperData } from '../wrapperData'
+import { NetworkInterfaceBuilder } from '@start9labs/start-sdk/lib/mainFn/NetworkInterfaceBuilder'
+import { HealthReceipt } from '@start9labs/start-sdk/lib/health/HealthReceipt'
+import { Daemons } from '@start9labs/start-sdk/lib/mainFn/Daemons'
+import { setupMain } from '@start9labs/start-sdk/lib/mainFn'
+import { AddressReceipt } from '@start9labs/start-sdk/lib/mainFn/AddressReceipt'
 
 export const main: ExpectedExports.main = setupMain<WrapperData>(
   async ({ effects, utils, started }) => {
@@ -16,7 +15,9 @@ export const main: ExpectedExports.main = setupMain<WrapperData>(
      *
      * In this section, you will fetch any resources or run any commands necessary to run the service
      */
-    await effects.console.info('Starting Hello World!')
+    await effects.console.info('Starting Start9 Pages...')
+    const bucketSize = 128
+    await effects.appendFile({ path: '/etc/nginx/http.d/default.conf', volumeId: 'main', toWrite: `server_names_hash_bucket_size ${bucketSize};` })
 
     /**
      * ======================== Interfaces ========================
@@ -28,53 +29,37 @@ export const main: ExpectedExports.main = setupMain<WrapperData>(
 
     // ------------ Tor ------------
 
-    // Find or generate a random Tor hostname by ID
-    const torHostname1 = utils.torHostName('torHostname1')
-
-    // Create a Tor host with the assigned port mapping
-    const torHost1 = await torHostname1.bindTor(8080, 80)
-    // Assign the Tor host a web protocol (e.g. "http", "ws")
-    const torOrigin1 = torHost1.createOrigin('http')
-
-    // Create another Tor host with the assigned port mapping
-    const torHost2 = await torHostname1.bindTor(8443, 443)
-    // Assign the Tor host a web protocol (e.g. "https", "wss")
-    const torOrigin2 = torHost2.createOrigin('https')
-
-    // ------------ LAN ------------
-
-    // Create a LAN host with the assigned internal port
-    const lanHost1 = await utils.bindLan(8080)
-    // Assign the LAN host a web protocol (e.g. "https", "wss")
-    const lanOrigins1 = lanHost1.createOrigins('https')
-
-    // ------------ Interface ----------------
-
-    // An interface is a grouping of addresses that expose the same resource (e.g. a UI or RPC API).
-    // Addresses are different "routes" to the same destination
-
-    // Define the Interface for user display and consumption
-    const iFace1 = new NetworkInterfaceBuilder({
-      effects,
-      name: 'Web UI',
-      id: 'webui',
-      description: 'The web interface of Hello World',
-      ui: true,
-      basic: null,
-      path: '',
-      search: {},
-    })
-
-    // Choose which origins to attach to this interface. The resulting addresses will share the attributes of the interface (name, path, search, etc)
-    const addressReceipt1 = await iFace1.exportAddresses([
-      torOrigin1,
-      torOrigin2,
-      ...lanOrigins1.ip,
-      lanOrigins1.local,
-    ])
-
+    // loop over configured domains and set their
+    const config = await effects.getWrapperData<WrapperData, '/config'>({ path: '/config', callback: () => {} })
+    let addressReceipts: AddressReceipt[] = []
+    for (const domain of config.domains){
+      // Find or generate a random Tor hostname by ID
+      const torHostname = utils.torHostName(`${domain.id}`)
+      // Create a Tor host with the assigned port mapping
+      const torHostHttp = await torHostname.bindTor(8080, 80)
+      // Assign the Tor host a web protocol (e.g. "http", "ws")
+      const torOriginHttp = torHostHttp.createOrigin('http')
+      // Create another Tor host with the assigned port mapping
+      const torHostHttps = await torHostname.bindTor(8443, 443)
+      // Assign the Tor host a web protocol (e.g. "https", "wss")
+      const torOriginHttps = torHostHttps.createOrigin('https')
+      // Define the Interface for user display and consumption
+      const webInterface = new NetworkInterfaceBuilder({
+        effects,
+        name: `Web UI for ${domain.label}`,
+        id: `webui-${domain.id}`,
+        description: `The web interface for ${domain.label}`,
+        ui: true,
+        basic: null,
+        path: '',
+        search: {},
+      })
+      // Choose which origins to attach to this interface. The resulting addresses will share the attributes of the interface (name, path, search, etc)
+      addressReceipts.push(await webInterface.export([torOriginHttp, torOriginHttps]))
+    }
+    
     // Export all address receipts for all interfaces to obtain interface receipt
-    const interfaceReceipt = exportInterfaces(addressReceipt1)
+    const interfaceReceipt = exportInterfaces(addressReceipts)
 
     /**
      * ======================== Additional Health Checks (optional) ========================
@@ -95,19 +80,19 @@ export const main: ExpectedExports.main = setupMain<WrapperData>(
       started,
       interfaceReceipt, // Provide the interfaceReceipt to prove it was completed
       healthReceipts, // Provide the healthReceipts or [] to prove they were at least considered
-    }).addDaemon('webui', {
-      command: 'hello-world', // The command to start the daemon
+    }).addDaemon('hosting-instance', {
+      command: ['nginx', '-g', 'daemon off;'], // The command to start the daemon
       ready: {
-        display: 'Web Interface',
+        display: 'Hosting Instance',
         // The function to run to determine the health status of the daemon
         fn: () =>
           checkPortListening(effects, 8080, {
             timeout: 10_000,
-            successMessage: 'The web interface is ready',
-            errorMessage: 'The web interface is not ready',
+            successMessage: 'Page hosting is fully operational',
+            errorMessage: 'Page hosting is not functional',
           }),
       },
       requires: [],
     })
-  },
+  }
 )

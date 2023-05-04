@@ -1,8 +1,9 @@
 import { ConfigSpec } from './spec'
-import { WrapperData } from '../../wrapperData'
-import { Save } from 'start-sdk/lib/config/setupConfig'
+import { ConfigSpecExtended, DomainWithId, WrapperData } from '../../wrapperData'
+import { Save } from '@start9labs/start-sdk/lib/config/setupConfig'
 import { Manifest } from '../../manifest'
-import { Effects } from 'start-sdk/lib/types'
+import { Effects } from '@start9labs/start-sdk/lib/types'
+import { v4 as uuid } from 'uuid';
 
 type UnionSelectKey = ConfigSpec["domains"][0]["homepage"]["unionSelectKey"] | ConfigSpec["domains"][0]["subdomains"][0]["settings"]["unionSelectKey"]
 type UnionSelectValue = ConfigSpec["domains"][0]["homepage"]["unionValueKey"] | ConfigSpec["domains"][0]["subdomains"][0]["settings"]["unionValueKey"]
@@ -57,16 +58,17 @@ export const save: Save<WrapperData, ConfigSpec, Manifest> = async ({
   dependencies,
 }) => {
   input.domains.map(async domain => {
+    (domain as DomainWithId).id = uuid()
     // handle homepage union selection
     if (domain.homepage.unionSelectKey === 'index') {
       if (domain.subdomains.length) {
         await effects.runCommand(['cp', '/var/www/index/index-prefix.html /var/www/index/index.html'])
-        domain.subdomains.forEach(async sub => {
+        for (const sub of domain.subdomains) {
           // @TODO get tor interface for this domain
           const toWrite = `      <li><a target="_blank" href="http://${sub.name}.${tor_address}">${sub.name}</a></li>`
           // @TODO ensure correct when exists on effects
           await effects.appendFile({ path: '/var/www/index/index.html', volumeId: 'main', toWrite })
-        });
+        }
       } else {
         await effects.runCommand(['cp', '/var/www/index/empty.html /var/www/index/index.html'])
       }
@@ -76,12 +78,15 @@ export const save: Save<WrapperData, ConfigSpec, Manifest> = async ({
     }
     // handle subdomains if they exist
     if (domain.subdomains.length) {
-      domain.subdomains.forEach(async subdomain => {
+      for (const subdomain of domain.subdomains) {
         // @TODO add tor interface
         await handleVariantNginxConf(subdomain.settings.unionSelectKey, subdomain.settings.unionValueKey, "REPLACE_ME", effects, subdomain.name)
-      })
+      }
     }
   })
-  await utils.setOwnWrapperData('/config', input)
-  return effects.setDependencies([])
+  await utils.setOwnWrapperData('/config', input as ConfigSpecExtended)
+  return {
+    dependenciesReceipt: await effects.setDependencies([]),
+    restart: true
+  }
 }

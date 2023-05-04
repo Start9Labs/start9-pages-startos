@@ -1,4 +1,4 @@
-import { setupAutoConfig } from 'start-sdk/lib/autoconfig'
+import { setupAutoConfig } from '@start9labs/start-sdk/lib/autoconfig'
 import { ConfigSpec } from './config/spec'
 import { WrapperData } from '../wrapperData'
 import { Manifest } from '../manifest'
