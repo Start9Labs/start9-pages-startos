@@ -1,90 +1,164 @@
 import { checkPortListening } from '@start9labs/start-sdk/lib/health/checkFns'
 import exportInterfaces from '@start9labs/start-sdk/lib/mainFn/exportInterfaces'
-import { ExpectedExports } from '@start9labs/start-sdk/lib/types'
-import { WrapperData } from '../wrapperData'
+import { Effects, ExpectedExports } from '@start9labs/start-sdk/lib/types'
+import { DomainConfigWithId, Page, SubdomainConfigWithId, WrapperData } from '../wrapperData'
 import { NetworkInterfaceBuilder } from '@start9labs/start-sdk/lib/mainFn/NetworkInterfaceBuilder'
 import { HealthReceipt } from '@start9labs/start-sdk/lib/health/HealthReceipt'
 import { Daemons } from '@start9labs/start-sdk/lib/mainFn/Daemons'
 import { setupMain } from '@start9labs/start-sdk/lib/mainFn'
 import { AddressReceipt } from '@start9labs/start-sdk/lib/mainFn/AddressReceipt'
+import { Utils } from '@start9labs/start-sdk/lib/util'
+import { appendFile, copyFile} from 'fs'
+import assert from 'assert'
+
+const configureTor = (page: DomainConfigWithId | SubdomainConfigWithId) => async (utils: Utils<WrapperData, {}>, effects: Effects) => {
+  const isDomain = (x: any): x is DomainConfigWithId => x.label;
+  const name = isDomain(page) ? (page as DomainConfigWithId).label : (page as SubdomainConfigWithId).name
+  const id = page.id
+  // Find or generate a random Tor hostname by ID
+  const torHostname = utils.torHostName(`${id}`)
+  // Create a Tor host with the assigned port mapping
+  const torHostHttp = await torHostname.bindTor(8080, 80)
+  // Assign the Tor host a web protocol (e.g. "http", "ws")
+  const torOriginHttp = torHostHttp.createOrigin('http')
+  // Create another Tor host with the assigned port mapping
+  const torHostHttps = await torHostname.bindTor(8443, 443)
+  // Assign the Tor host a web protocol (e.g. "https", "wss")
+  const torOriginHttps = torHostHttps.createOrigin('https')
+  // Define the Interface for user display and consumption
+  const webInterface = new NetworkInterfaceBuilder({
+    effects,
+    name: `Web UI for ${name}`,
+    id: `webui-${id}`,
+    description: `The web interface for ${name}`,
+    ui: true,
+    username: null,
+    path: '',
+    search: {},
+  })
+  return {
+    torHostname: torHostname.id,
+    webInterface,
+    torOriginHttp,
+    torOriginHttps
+  }
+}
+
+const handleVariantNginxConf = async(page: Page, interfaceAddress: string, subdomainName?: string) => {
+  const address = subdomainName ? `${subdomainName}.${interfaceAddress}` : interfaceAddress
+  const pageType = page.unionSelectKey
+  const pageDetails = page.unionValueKey
+
+  switch (pageType) {
+    case 'web-page':
+      if ('folder' in pageDetails && 'source' in pageDetails) {
+        const toWrite = `
+          server {
+              autoindex on;
+              listen 80;
+              listen [::]:80;
+              server_name ${address};
+              root "/mnt/${pageDetails.source}/${pageDetails.folder}";
+            }
+        `
+        await appendFile('/etc/nginx/http.d/default.conf', toWrite, err => assert.ifError(err))
+      }
+      break;
+    case 'redirect':
+      const redirectAddress = 'target' in pageDetails ? `${pageDetails.target}.${interfaceAddress}` : interfaceAddress
+      const redirectToWrite = `
+        server {
+          listen 80;
+          listen [::]:80;
+          server_name ${address};
+          return 301 http://${redirectAddress}$request_uri;
+        }
+      `
+      await appendFile('/etc/nginx/http.d/default.conf', redirectToWrite, err => assert.ifError(err))
+      break;
+    default:
+      const defaultToWrite = `
+        server {
+          listen 80;
+          listen [::]:80;
+          server_name ${address};
+          root "/var/www/${pageType}";
+        }
+      `
+      await appendFile('/etc/nginx/http.d/default.conf', defaultToWrite, err => assert.ifError(err))
+      break;
+  }
+}
 
 export const main: ExpectedExports.main = setupMain<WrapperData>(
   async ({ effects, utils, started }) => {
-    /**
-     * ======================== Setup ========================
-     *
-     * In this section, you will fetch any resources or run any commands necessary to run the service
-     */
-    await effects.console.info('Starting Start9 Pages...')
-    const bucketSize = 128
-    await effects.appendFile({ path: '/etc/nginx/http.d/default.conf', volumeId: 'main', toWrite: `server_names_hash_bucket_size ${bucketSize};` })
-
-    /**
-     * ======================== Interfaces ========================
-     *
-     * In this section, you will decide how the service will be exposed to the outside world
-     *
-     * Naming convention reference: https://developer.mozilla.org/en-US/docs/Web/API/Location
-     */
-
-    // ------------ Tor ------------
-
-    // loop over configured domains and set their
-    const config = await effects.getWrapperData<WrapperData, '/config'>({ path: '/config', callback: () => {} })
-    let addressReceipts: AddressReceipt[] = []
-    for (const domain of config.domains){
-      // Find or generate a random Tor hostname by ID
-      const torHostname = utils.torHostName(`${domain.id}`)
-      // Create a Tor host with the assigned port mapping
-      const torHostHttp = await torHostname.bindTor(8080, 80)
-      // Assign the Tor host a web protocol (e.g. "http", "ws")
-      const torOriginHttp = torHostHttp.createOrigin('http')
-      // Create another Tor host with the assigned port mapping
-      const torHostHttps = await torHostname.bindTor(8443, 443)
-      // Assign the Tor host a web protocol (e.g. "https", "wss")
-      const torOriginHttps = torHostHttps.createOrigin('https')
-      // Define the Interface for user display and consumption
-      const webInterface = new NetworkInterfaceBuilder({
-        effects,
-        name: `Web UI for ${domain.label}`,
-        id: `webui-${domain.id}`,
-        description: `The web interface for ${domain.label}`,
-        ui: true,
-        basic: null,
-        path: '',
-        search: {},
-      })
-      // Choose which origins to attach to this interface. The resulting addresses will share the attributes of the interface (name, path, search, etc)
-      addressReceipts.push(await webInterface.export([torOriginHttp, torOriginHttps]))
-    }
-    
-    // Export all address receipts for all interfaces to obtain interface receipt
-    const interfaceReceipt = exportInterfaces(addressReceipts)
-
-    /**
-     * ======================== Additional Health Checks (optional) ========================
-     *
-     * In this section, you will define additional health checks beyond those associated with daemons
-     */
     const healthReceipts: HealthReceipt[] = []
+    const config = await effects.getWrapperData<WrapperData, '/config'>({ path: '/config', callback: () => {} })
+    const addressReceipts: AddressReceipt[] = []
+    const bucketSize = 128
 
-    /**
-     * ======================== Daemons ========================
-     *
-     * In this section, you will create one or more daemons that define the service runtime
-     *
-     * Each daemon defines its own health check, which can optionally be exposed to the user
-     */
+    await console.info('Starting Start9 Pages...')
+
+    await appendFile('/etc/nginx/http.d/default.conf', `server_names_hash_bucket_size ${bucketSize};`, err => assert.ifError(err))
+    
+    effects.mount({
+      location: {
+        volumeId: 'mnt',
+        path: '/filebrowser',
+      },
+      target: {
+        packageId: 'filebrowser',
+        volumeId: 'main',
+        path: '/data',
+        readonly: true,
+      },
+    })
+
+    effects.mount({
+      location: {
+        volumeId: 'mnt',
+        path: '/nextcloud',
+      },
+      target: {
+        packageId: 'nextcloud',
+        volumeId: 'main',
+        path: '/data/embassy/files',
+        readonly: true,
+      },
+    })
+    
+    for (const domain of config.domains) {
+      const { torHostname, webInterface, torOriginHttp, torOriginHttps } = await configureTor(domain)(utils, effects)
+      addressReceipts.push(await webInterface.export([torOriginHttp, torOriginHttps]))
+
+      if (domain.homepage.unionSelectKey === 'index') {
+        await copyFile('/var/www/index/empty.html', '/var/www/index/index.html', err => assert.ifError(err))
+      } else {
+        await handleVariantNginxConf(domain.homepage, torHostname)
+      }
+
+      if (domain.subdomains.length) {
+        await copyFile('/var/www/index/index-prefix.html', '/var/www/index/index.html', err => assert.ifError(err))
+        for (const subdomain of domain.subdomains) {
+          if (domain.homepage.unionSelectKey === 'index') {
+            const toWrite = `      <li><a target="_blank" href="http://${subdomain.name}.${torHostname}">${subdomain.name}</a></li>`
+            await appendFile('/var/www/index/index.html', toWrite, err => assert.ifError(err))
+          } else {
+            await handleVariantNginxConf(subdomain.settings, torHostname, subdomain.name)
+          }
+        }
+      }
+    }
+
     return Daemons.of({
       effects,
       started,
-      interfaceReceipt, // Provide the interfaceReceipt to prove it was completed
-      healthReceipts, // Provide the healthReceipts or [] to prove they were at least considered
+      interfaceReceipt: exportInterfaces(addressReceipts),
+      healthReceipts,
     }).addDaemon('hosting-instance', {
-      command: ['nginx', '-g', 'daemon off;'], // The command to start the daemon
+      command: ['nginx', '-g', 'daemon off;'],
       ready: {
         display: 'Hosting Instance',
-        // The function to run to determine the health status of the daemon
         fn: () =>
           checkPortListening(effects, 8080, {
             timeout: 10_000,
