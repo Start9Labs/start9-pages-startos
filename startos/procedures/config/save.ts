@@ -1,9 +1,18 @@
 import { ConfigSpec } from './spec'
-import { ConfigSpecExtended, DomainConfigWithId, WrapperData } from '../../wrapperData'
+import { ConfigSpecExtended, DomainConfigWithId, PageUnion, WrapperData } from '../../wrapperData'
 import { Save } from '@start9labs/start-sdk/lib/config/setupConfig'
 import { Manifest } from '../../manifest'
 import { v4 as uuid } from 'uuid'
 import { Dependencies } from '@start9labs/start-sdk/lib/types'
+
+const setDeps = (pageType: PageUnion, deps: Dependencies) => {
+  if (pageType.unionSelectKey === 'web-page'){
+    deps.push({
+      id: pageType.unionValueKey.source,
+      kind: 'exists'
+    })
+  }
+}
 
 export const save: Save<WrapperData, ConfigSpec, Manifest> = async ({
   effects,
@@ -14,25 +23,10 @@ export const save: Save<WrapperData, ConfigSpec, Manifest> = async ({
   const deps: Dependencies = []
   input.domains = input.domains.map((domain: DomainConfigWithId) => {
     if (!domain.id) domain.id = uuid()
-    if (domain.homepage.unionSelectKey === 'web-page'){
-      const domainValue = domain.homepage.unionValueKey
-      if ('source' in domainValue) {
-        deps.push({
-          id: domainValue.source,
-          kind: 'exists'
-        })
-      }
-    }
+    setDeps(domain.homepage, deps)
     if (domain.subdomains.length) {
       for (const subdomain of domain.subdomains) {
-        if (!subdomain.id) subdomain.id = uuid()
-        const subdomainValue = subdomain.settings.unionValueKey
-        if ('source' in subdomainValue) {
-          deps.push({
-            id: subdomainValue.source,
-            kind: 'exists'
-          })
-        }
+        setDeps(subdomain.settings, deps)
       }
     }
     return domain

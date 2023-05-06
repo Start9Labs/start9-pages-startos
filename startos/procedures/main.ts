@@ -133,9 +133,8 @@ export const main: ExpectedExports.main = setupMain<WrapperData>(
 
       if (domain.homepage.unionSelectKey === 'index') {
         await copyFile('/var/www/index/empty.html', '/var/www/index/index.html', err => assert.ifError(err))
-      } else {
-        await handleVariantNginxConf(domain.homepage, torHostname)
       }
+      await handleVariantNginxConf(domain.homepage, torHostname)
 
       if (domain.subdomains.length) {
         await copyFile('/var/www/index/index-prefix.html', '/var/www/index/index.html', err => assert.ifError(err))
@@ -143,9 +142,8 @@ export const main: ExpectedExports.main = setupMain<WrapperData>(
           if (domain.homepage.unionSelectKey === 'index') {
             const toWrite = `      <li><a target="_blank" href="http://${subdomain.name}.${torHostname}">${subdomain.name}</a></li>`
             await appendFile('/var/www/index/index.html', toWrite, err => assert.ifError(err))
-          } else {
-            await handleVariantNginxConf(subdomain.settings, torHostname, subdomain.name)
           }
+          await handleVariantNginxConf(subdomain.settings, torHostname, subdomain.name)
         }
       }
     }
