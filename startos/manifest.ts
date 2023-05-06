@@ -5,20 +5,20 @@ import { actionsMetadata } from './procedures/actions'
  * In this function you define static properties of the service
  */
 export const manifest = setupManifest({
-  id: 'hello-world',
-  title: 'Hello World',
-  version: '4.0.0',
-  releaseNotes: 'Revamped for StartOS 0.4.0',
+  id: 'embassy-pages',
+  title: 'Start9 Pages',
+  version: '0.1.8',
+  releaseNotes: 'Updated to use StartOS 0.4.0 SDK APIs',
   license: 'mit',
-  replaces: Array<string>('Hello World (hosted)', 'Goodbye World'),
-  wrapperRepo: 'https://github.com/Start9Labs/hello-world-wrapper',
-  upstreamRepo: 'https://github.com/Start9Labs/hello-world',
-  supportSite: 'https://docs.start9.com/',
-  marketingSite: 'https://start9.com/',
+  replaces: Array<string>('Github Pages', 'Netlify', 'Cloudfare Pages', 'Firebase', 'Amazon S3', 'Zeit', 'Forge'),
+  wrapperRepo: 'https://github.com/Start9Labs/embassy-pages-wrapper',
+  upstreamRepo: 'https://github.com/Start9Labs/embassy-pages-wrapper',
+  supportSite: 'https://matrix.to/#/#s9-testing-embassy-pages:matrix.start9labs.com',
+  marketingSite: '',
   donationUrl: 'https://donate.start9.com/',
   description: {
-    short: 'Example service for s9pk highlighting basic features',
-    long: 'Hello World is a bare-bones service that launches a web interface to say "Hello World", and nothing more.',
+    short: 'Create Tor websites, hosted on your personal server.',
+    long: 'Start9 Pages is a simple web server that uses folders hosted on other internal services to serve Tor websites.',
   },
   assets: {
     license: 'LICENSE',
@@ -28,6 +28,7 @@ export const manifest = setupManifest({
   volumes: {
     // This is the image where files from the project asset directory will go
     main: 'data',
+    mnt: 'assets',
   },
   containers: {
     main: {
@@ -36,22 +37,32 @@ export const manifest = setupManifest({
       // Specifies where to mount the data volume(s), if there are any. Mounts for pointer dependency volumes are also denoted here. These are necessary if data needs to be read from / written to these volumes.
       mounts: {
         // Specifies where on the service's file system its persistence directory should be mounted prior to service startup
-        main: '/data',
+        main: '/root',
+        mnt: '/mnt',
       },
     },
   },
   actions: actionsMetadata,
   alerts: {
-    install: 'Optional alert to display before installing the service',
-    update: 'Optional alert to display before updating the service',
-    uninstall: 'Optional alert to display before uninstalling the service',
-    restore:
-      'Optional alert to display before restoring the service from backup',
-    start: 'Optional alert to display before starting the service',
-    stop: 'Optional alert to display before stopping the service',
+    install: null,
+    update: null,
+    uninstall: null,
+    restore: null,
+    start: null,
+    stop: null,
   },
-  /** See Hello Moon for an example with dependencies */
-  dependencies: {},
+  dependencies: {
+    filebrowser: {
+      version: '^2.22.4',
+      description: 'Used to upload files to serve.',
+      requirement: { type: 'opt-out', how: 'Enable in config' },
+    },
+    nextcloud: {
+      version: '^25.0.2',
+      description: 'Used to upload files to serve.',
+      requirement: { type: 'opt-out', how: 'Enable in config' },
+    },
+  },
 })
 
 export type Manifest = typeof manifest
