@@ -1,5 +1,4 @@
 import { setupManifest } from '@start9labs/start-sdk/lib/manifest/setupManifest'
-import { actionsMetadata } from './procedures/actions'
 
 /**
  * In this function you define static properties of the service
@@ -10,10 +9,19 @@ export const manifest = setupManifest({
   version: '0.1.8',
   releaseNotes: 'Updated to use StartOS 0.4.0 SDK APIs',
   license: 'mit',
-  replaces: Array<string>('Github Pages', 'Netlify', 'Cloudfare Pages', 'Firebase', 'Amazon S3', 'Zeit', 'Forge'),
+  replaces: Array<string>(
+    'Github Pages',
+    'Netlify',
+    'Cloudfare Pages',
+    'Firebase',
+    'Amazon S3',
+    'Zeit',
+    'Forge',
+  ),
   wrapperRepo: 'https://github.com/Start9Labs/embassy-pages-wrapper',
   upstreamRepo: 'https://github.com/Start9Labs/embassy-pages-wrapper',
-  supportSite: 'https://matrix.to/#/#s9-testing-embassy-pages:matrix.start9labs.com',
+  supportSite:
+    'https://matrix.to/#/#s9-testing-embassy-pages:matrix.start9labs.com',
   marketingSite: '',
   donationUrl: 'https://donate.start9.com/',
   description: {
@@ -42,7 +50,6 @@ export const manifest = setupManifest({
       },
     },
   },
-  actions: actionsMetadata,
   alerts: {
     install: null,
     update: null,

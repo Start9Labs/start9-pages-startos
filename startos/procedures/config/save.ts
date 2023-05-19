@@ -1,39 +1,28 @@
-import { ConfigSpec } from './spec'
-import { ConfigSpecExtended, DomainConfigWithId, PageUnion, WrapperData } from '../../wrapperData'
-import { Save } from '@start9labs/start-sdk/lib/config/setupConfig'
-import { Manifest } from '../../manifest'
-import { v4 as uuid } from 'uuid'
-import { Dependencies } from '@start9labs/start-sdk/lib/types'
+import { Dependency } from '@start9labs/start-sdk/lib/types'
+import { sdk } from '../../sdk'
+import { configSpec } from './spec'
+import { setInterfaces } from '../interfaces'
 
-const setDeps = (pageType: PageUnion, deps: Dependencies) => {
-  if (pageType.unionSelectKey === 'web-page'){
-    deps.push({
-      id: pageType.unionValueKey.source,
-      kind: 'exists'
-    })
-  }
-}
+export const save = sdk.setupConfigSave(
+  configSpec,
+  async ({ effects, utils, input, dependencies }) => {
+    await utils.store.setOwn('/config', input)
 
-export const save: Save<WrapperData, ConfigSpec, Manifest> = async ({
-  effects,
-  utils,
-  input,
-  dependencies,
-}) => {
-  const deps: Dependencies = []
-  input.domains = input.domains.map((domain: DomainConfigWithId) => {
-    if (!domain.id) domain.id = uuid()
-    setDeps(domain.homepage, deps)
-    if (domain.subdomains.length) {
-      for (const subdomain of domain.subdomains) {
-        setDeps(subdomain.settings, deps)
-      }
+    const pages = input.pages
+
+    // determine dependencies
+    let currentDeps: Dependency[] = []
+    if (pages.some((p) => p.source === 'filebrowser')) {
+      currentDeps.push(dependencies.exists('filebrowser'))
     }
-    return domain
-  })
-  await utils.setOwnWrapperData('/config', input as ConfigSpecExtended)
-  return {
-    dependenciesReceipt: await effects.setDependencies(deps),
-    restart: true
-  }
-}
+    if (pages.some((p) => p.source === 'nextcloud')) {
+      currentDeps.push(dependencies.exists('nextcloud'))
+    }
+
+    return {
+      interfacesReceipt: await setInterfaces({ effects, utils, input }), // This is plumbing, don't touch it
+      dependenciesReceipt: await effects.setDependencies(currentDeps),
+      restart: true,
+    }
+  },
+)

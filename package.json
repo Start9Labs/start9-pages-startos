@@ -5,8 +5,7 @@
     "check": "tsc --noEmit"
   },
   "dependencies": {
-    "@start9labs/start-sdk": "git+https://github.com/Start9Labs/start-sdk#e32b768e5c95574555cb29020d414c814f5c4598",
-    "uuid": "^9.0.0"
+    "@start9labs/start-sdk": "0.4.0-rev0.lib0.rc4"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
@@ -14,8 +13,7 @@
     "@vercel/ncc": "^0.36.1",
     "prettier": "^2.8.4",
     "typescript": "^4.9.5",
-    "filebrowser": "git+https://github.com/Start9Labs/filebrowser-wrapper.git#update/040",
-    "nextcloud": "git+https://github.com/Start9Labs/nextcloud-wrapper.git#update/040"
+    "filebrowser": "git+https://github.com/Start9Labs/filebrowser-wrapper.git#02a2620ed993ce24814fb5e5c59b017b1c523c08"
   },
   "prettier": {
     "trailingComma": "all",
