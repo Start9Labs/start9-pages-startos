@@ -1,10 +1,9 @@
 .DS_Store
 www/.DS_Store
-embassy-pages.s9pk
-image.tar
+*.s9pk
 test_config.yaml
-.vscode
+.vscode/
 procedures/*.js
-docker-images
+docker-images/
 TODO.md
 node_modules/
