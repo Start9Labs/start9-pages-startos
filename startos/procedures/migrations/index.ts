@@ -1,4 +1,4 @@
 import { sdk } from '../../sdk'
-import { v0_1_8 } from './v0_1_8'
+import { v0_2_0 } from './v0_2_0'
 
-export const migrations = sdk.setupMigrations(v0_1_8)
+export const migrations = sdk.setupMigrations(v0_2_0)
