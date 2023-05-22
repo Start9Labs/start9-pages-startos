@@ -1,8 +1,4 @@
-import { setupMigrations } from '@start9labs/start-sdk/lib/inits/migrations/setupMigrations'
-import { manifest } from '../../manifest'
-import { v4_0_0 } from './v4_0_0'
+import { sdk } from '../../sdk'
+import { v0_1_8 } from './v0_1_8'
 
-/**
- * Add each new migration as the next argument to this function
- */
-export const migrations = setupMigrations(manifest, v4_0_0)
+export const migrations = sdk.setupMigrations(v0_1_8)
