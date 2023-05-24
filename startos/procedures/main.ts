@@ -45,12 +45,10 @@ export const main = sdk.setupMain(async ({ effects, utils, started }) => {
     })
   }
 
-  const healthReceipts: HealthReceipt[] = []
-
   return Daemons.of({
     effects,
     started,
-    healthReceipts,
+    healthReceipts: [],
   }).addDaemon('hosting-instance', {
     command: ['nginx', '-g', 'daemon off;'],
     ready: {
