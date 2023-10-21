@@ -9,9 +9,9 @@ release-notes = """
 """
 support-site = "https://matrix.to/#/!lMnRwPWnyQvOfAoEnD:matrix.start9labs.com"
 title = "Start9 Pages"
-upstream-repo = "https://github.com/Start9Labs/embassy-pages-wrapper"
+upstream-repo = "https://github.com/Start9Labs/start9-pages-startos"
 version = "0.1.7.1"
-wrapper-repo = "https://github.com/Start9Labs/embassy-pages-wrapper"
+wrapper-repo = "https://github.com/Start9Labs/start9-pages-startos"
 
 [description]
 long = "Start9 Pages is a simple web server that uses folders hosted on other internal services to serve Tor websites."
@@ -78,7 +78,7 @@ type = "pointer"
 volume-id = "nextcloud"
 
 [interfaces.main]
-description = "Your Embassy Pages sites are displayed here when visited in a web browser."
+description = "Your Start9 Pages sites are displayed here when visited in a web browser."
 name = "Web UI"
 protocols = ["tcp", "http"]
 tor-config = { port-mapping = { "80" = "80" } }
