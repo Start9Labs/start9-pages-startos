@@ -1,13 +1,13 @@
-PKG_VERSION := $(shell toml get manifest.toml "version" | sed -e 's/^"//' -e 's/"//')
-SCRIPTS_SRC := $(shell find ./scripts -name '*.ts')
-PKG_ID := $(shell toml get manifest.toml "id" | sed -e 's/^"//' -e 's/"//')
+PKG_ID := $(shell yq e ".id" manifest.toml)
+PKG_VERSION := $(shell yq e ".version" manifest.toml)
+TS_FILES := $(shell find ./scripts -name '*.ts')
 
 .DELETE_ON_ERROR:
 
 all: verify
 
 verify: $(PKG_ID).s9pk
-	embassy-sdk verify s9pk $(PKG_ID).s9pk
+	start-sdk verify s9pk $(PKG_ID).s9pk
 
 clean:
 	rm -rf docker-images
@@ -17,10 +17,10 @@ clean:
 
 # assumes /etc/embassy/config.yaml exists on local system with `host: "http://embassy-server-name.local"` configured
 install: $(PKG_ID).s9pk
-	embassy-cli package install $(PKG_ID).s9pk
+	start-cli package install $(PKG_ID).s9pk
 
 $(PKG_ID).s9pk: manifest.toml instructions.md LICENSE icon.png scripts/embassy.js docker-images/aarch64.tar docker-images/x86_64.tar
-	embassy-sdk pack
+	start-sdk pack
 
 docker-images/aarch64.tar: Dockerfile docker_entrypoint.sh
 	mkdir -p docker-images
