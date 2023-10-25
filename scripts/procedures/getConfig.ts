@@ -46,7 +46,7 @@ export const getConfig = compat.getConfig({
             "name": "Folder Path",
             "placeholder": "e.g. websites/resume",
             "description":
-              'The path to the folder that contains the static files of your website. For example, a value of "projects/resume" would tell Embassy Pages to look for that folder path in the selected service.',
+              'The path to the folder that contains the static files of your website. For example, a value of "projects/resume" would tell Start9 Pages to look for that folder path in the selected service.',
             "pattern":
               "^(\\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)(/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)*/?$",
             "pattern-description": "Must be a valid relative file path",
@@ -58,7 +58,7 @@ export const getConfig = compat.getConfig({
           "type": "string",
           "name": "Target Subdomain",
           "description":
-            "The name of the subdomain to redirect users to. This must be a valid subdomain site within your Embassy Pages.",
+            "The name of the subdomain to redirect users to. This must be a valid subdomain site within your Start9 Pages.",
           "pattern": "^[a-z-]+$",
           "pattern-description":
             "May contain only lowercase characters and hyphens.",
