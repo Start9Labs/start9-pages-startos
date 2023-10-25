@@ -2,15 +2,12 @@ build = ["make"]
 id = "embassy-pages"
 license = "mit"
 release-notes = """
-* Update backups to use new APIs \n
-* Add Nextcloud as default dependency \n
-* Rename Embassy Pages to Start9 Pages \n
-* Remove "F*ck Off" homepage variant - if you had this configured, your homepage will be migrated to the default welcome page.
+* Fix bug with Nextcloud filepath \n
 """
 support-site = "https://matrix.to/#/!lMnRwPWnyQvOfAoEnD:matrix.start9labs.com"
 title = "Start9 Pages"
 upstream-repo = "https://github.com/Start9Labs/start9-pages-startos"
-version = "0.1.7.1"
+version = "0.1.7.2"
 wrapper-repo = "https://github.com/Start9Labs/start9-pages-startos"
 
 [description]
