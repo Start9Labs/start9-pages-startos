@@ -33,25 +33,54 @@ export const getConfig = compat.getConfig({
         "source": {
           "name": "Folder Location",
           "description": "The service that contains your website files.",
-          "type": "enum",
-          "values": [
-            "filebrowser",
-            "nextcloud",
-          ],
-          "value-names": {},
+          "type": "union",
           "default": "nextcloud",
+          "tag": {
+            "id": "type",
+            "name": "Type",
+            "variant-names": {
+              "nextcloud": "Nextcloud",
+              "filebrowser": "Filebrowser"
+            }
+          },
+          "variants": {
+            "nextcloud": {
+              "folder": {
+                "type": "string",
+                "name": "Folder Path",
+                "placeholder": "e.g. websites/resume",
+                "description":
+                  'The path to the folder that contains the website files. For example, a value of "projects/resume" would tell Start9 Pages to look for that folder path in Nextcloud files.',
+                "pattern":
+                  "^(\\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)(/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)*/?$",
+                "pattern-description": "Must be a valid relative file path",
+                "nullable": false,
+              },
+              "user": {
+                "type": "string",
+                "name": "Username",
+                "placeholder": "e.g. admin",
+                "description": 'The user account in Nextcloud where the website files were saved.',
+                "pattern": "^[a-zA-Z0-9-.]+$",
+                "pattern-description": "May only contain alphanumeric characters, hyphens, and periods.",
+                "nullable": false,
+              }
+            },
+            "filebrowser": {
+              "folder": {
+                "type": "string",
+                "name": "Folder Path",
+                "placeholder": "e.g. websites/resume",
+                "description":
+                  'The path to the folder that contains the website files. For example, a value of "projects/resume" would tell Start9 Pages to look for that folder path in Filebrowser.',
+                "pattern":
+                  "^(\\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)(/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)*/?$",
+                "pattern-description": "Must be a valid relative file path",
+                "nullable": false,
+              }
+            }
+          }
         },
-        "folder": {
-          "type": "string",
-            "name": "Folder Path",
-            "placeholder": "e.g. websites/resume",
-            "description":
-              'The path to the folder that contains the static files of your website. For example, a value of "projects/resume" would tell Start9 Pages to look for that folder path in the selected service.',
-            "pattern":
-              "^(\\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)(/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)*/?$",
-            "pattern-description": "Must be a valid relative file path",
-            "nullable": false,
-        }
       },
       "redirect": {
         "target": {
@@ -107,25 +136,54 @@ export const getConfig = compat.getConfig({
               "source": {
                 "name": "Folder Location",
                 "description": "The service that contains your website files.",
-                "type": "enum",
-                "values": [
-                  "filebrowser",
-                  "nextcloud",
-                ],
-                "value-names": {},
+                "type": "union",
                 "default": "nextcloud",
+                "tag": {
+                  "id": "type",
+                  "name": "Type",
+                  "variant-names": {
+                    "nextcloud": "Nextcloud",
+                    "filebrowser": "Filebrowser"
+                  }
+                },
+                "variants": {
+                  "nextcloud": {
+                    "folder": {
+                      "type": "string",
+                      "name": "Folder Path",
+                      "placeholder": "e.g. websites/resume",
+                      "description":
+                        'The path to the folder that contains the website files. For example, a value of "projects/resume" would tell Start9 Pages to look for that folder path in Nextcloud files.',
+                      "pattern":
+                        "^(\\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)(/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)*/?$",
+                      "pattern-description": "Must be a valid relative file path",
+                      "nullable": false,
+                    },
+                    "user": {
+                      "type": "string",
+                      "name": "Username",
+                      "placeholder": "e.g. admin",
+                      "description": 'The user account in Nextcloud where the website files were saved.',
+                      "pattern": "^[a-zA-Z0-9-.]+$",
+                      "pattern-description": "May only contain alphanumeric characters, hyphens, and periods.",
+                      "nullable": false,
+                    }
+                  },
+                  "filebrowser": {
+                    "folder": {
+                      "type": "string",
+                      "name": "Folder Path",
+                      "placeholder": "e.g. websites/resume",
+                      "description":
+                        'The path to the folder that contains the website files. For example, a value of "projects/resume" would tell Start9 Pages to look for that folder path in Filebrowser.',
+                      "pattern":
+                        "^(\\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)(/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)*/?$",
+                      "pattern-description": "Must be a valid relative file path",
+                      "nullable": false,
+                    }
+                  }
+                }
               },
-              "folder": {
-                "type": "string",
-                  "name": "Folder Path",
-                  "placeholder": "e.g. websites/resume",
-                  "description":
-                    'The path to the folder that contains the website files. For example, a value of "projects/resume" would tell Start9 Pages to look for that folder path in the selected service.',
-                  "pattern":
-                    "^(\\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)(/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)*/?$",
-                  "pattern-description": "Must be a valid relative file path",
-                  "nullable": false,
-              }
             },
             "redirect": {
               "target": {

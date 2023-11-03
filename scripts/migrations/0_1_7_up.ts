@@ -3,13 +3,13 @@ import {
   matchFilebrowserHomepageConfig,
   matchFilebrowserSubdomain,
   matchSubdomains,
-  matchWebPageHomepage,
-  matchWebPageSubdomain,
+  matchWebPageHomepageOld,
+  matchWebPageSubdomainOld,
 } from "./types.ts";
 
 export const convertHomepageConfig = (config: T.Config) => {
   if (matchFilebrowserHomepageConfig.test(config)) {
-    const newHomepage: typeof matchWebPageHomepage._TYPE = {
+    const newHomepage: typeof matchWebPageHomepageOld._TYPE = {
       type: "web-page",
       source: "filebrowser",
       folder: config.homepage.directory!,
@@ -26,7 +26,7 @@ export const convertSubdomainConfig = (config: T.Config) => {
   if (matchSubdomains.test(config)) {
     const newSubdomains = config.subdomains.map((sub) => {
       if (matchFilebrowserSubdomain.test(sub)) {
-        const newSubdomain: typeof matchWebPageSubdomain._TYPE = {
+        const newSubdomain: typeof matchWebPageSubdomainOld._TYPE = {
           name: sub.name,
           settings: {
             type: "web-page",

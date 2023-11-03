@@ -8,30 +8,40 @@ export const setConfig: T.ExpectedExports.setConfig = async (
   let depNextcloud: T.DependsOn = {}
 
   if (matchWebPageHomepageConfig.test(config)) {
-    switch (config.homepage.source) {
-      case 'filebrowser':
+    switch (config.homepage.source.type) {
+      case 'filebrowser': {
         depFilebrowser =  { filebrowser: [] }
         break;
-      case 'nextcloud':
+      }
+      case 'nextcloud': {
         depNextcloud =  { nextcloud: [] }
+        const path = `/data/${config.homepage.source.user}/files/${config.homepage.source.folder}`
+        config.homepage.source.folder = path
         break;
-      default:
+      }
+      default: {
         break;
+      }
     }
   }
 
   if (matchSubdomains.test(config)) {
     config.subdomains.map(sub => {
       if (matchWebPageSubdomain.test(sub)) {
-        switch (sub.settings.source) {
-          case 'filebrowser':
+        switch (sub.settings.source.type) {
+          case 'filebrowser':{
             depFilebrowser =  { filebrowser: [] }
             break;
-          case 'nextcloud':
+          }
+          case 'nextcloud': {
             depNextcloud =  { nextcloud: [] }
+            const path = `/data/${sub.settings.source.user}/files/${sub.settings.source.folder}`
+            sub.settings.source.folder = path
             break;
-          default:
+          }
+          default:{
             break;
+          }
         }
       }
     })

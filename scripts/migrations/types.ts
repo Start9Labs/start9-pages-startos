@@ -8,11 +8,20 @@ export const matchFilebrowserHomepage = shape({
     directory: string,
   }, ["directory"])
 
-export const matchWebPageHomepage = shape({
+export const matchWebPageHomepageOld = shape({
     type: string,
     source: string,
     folder: string,
   }, ["source", "folder"])
+
+export const matchWebPageHomepage = shape({
+    type: string,
+    source: shape({
+      type: string,
+      folder: string,
+      user: string
+    }, ["user"]),
+  })
 
 export const matchFuckOffHomepageConfig = shape({
     homepage: shape({
@@ -28,6 +37,10 @@ export const matchWebPageHomepageConfig = shape({
   homepage: matchWebPageHomepage
 });
 
+export const matchWebPageHomepageConfigOld = shape({
+  homepage: matchWebPageHomepageOld
+});
+
 export const matchFilebrowserSubdomain = shape({
   name: string,
   settings: shape({
@@ -36,7 +49,7 @@ export const matchFilebrowserSubdomain = shape({
   }),
 });
 
-export const matchWebPageSubdomain = shape({
+export const matchWebPageSubdomainOld = shape({
   name: string,
   settings: shape({
     type: string,
@@ -44,6 +57,19 @@ export const matchWebPageSubdomain = shape({
     folder: string,
   }),
 });
+
+export const matchWebPageSubdomain = shape({
+  name: string,
+  settings: shape({
+    type: string,
+    source: shape({
+      type: string,
+      folder: string,
+      user: string
+    }, ["user"]),
+  }),
+});
+
 
 export const matchSubdomains = shape({
   subdomains: arrayOf(shape({

@@ -43,8 +43,8 @@ server {
 }
 EOT
 elif [[ $home_type = "web-page" ]]; then
-    directory=$(yq e '.homepage.folder' start9/config.yaml)
-    source=$(yq e '.homepage.source' start9/config.yaml)
+    directory=$(yq e '.homepage.source.folder' start9/config.yaml)
+    source=$(yq e '.homepage.source.type' start9/config.yaml)
 
     if ! test -d "/mnt/${source}"
     then
@@ -74,8 +74,8 @@ fi
 for subdomain in "${subdomains[@]}"; do
     subdomain_type=$(yq e ".subdomains.[] | select(.name == \"$subdomain\") | .settings |.type" start9/config.yaml)
     if [[ $subdomain_type == "web-page" ]]; then
-        directory="$(yq e ".subdomains.[] | select(.name == \"$subdomain\") | .settings | .folder" start9/config.yaml)"
-        source="$(yq e ".subdomains.[] | select(.name == \"$subdomain\") | .settings | .source" start9/config.yaml)"\
+        directory="$(yq e ".subdomains.[] | select(.name == \"$subdomain\") | .settings | .source | .folder" start9/config.yaml)"
+        source="$(yq e ".subdomains.[] | select(.name == \"$subdomain\") | .settings | .source | .type" start9/config.yaml)"\
         
         if ! test -d "/mnt/${source}"
         then
