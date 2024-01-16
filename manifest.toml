@@ -1,6 +1,6 @@
 build = ["make"]
 id = "embassy-pages"
-license = "mit"
+license = "MIT"
 release-notes = """
 * Minor Nextcloud dependency update \n
 """
