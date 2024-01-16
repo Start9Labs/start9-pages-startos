@@ -69,7 +69,7 @@ volume-id = "main"
 
 [volumes.nextcloud]
 package-id = "nextcloud"
-path = "/"
+path = "/data/admin/files"
 readonly = true
 type = "pointer"
 volume-id = "nextcloud"
