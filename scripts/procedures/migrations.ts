@@ -60,6 +60,6 @@ export const migration: T.ExpectedExports.migration = async (
           ),
         },
       },
-      "0.1.7.1",
+      "0.1.7.3",
     )(effects, version, ...args);
 };
