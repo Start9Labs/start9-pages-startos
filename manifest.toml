@@ -51,7 +51,7 @@ how = "Can alternatively use Nextcloud for file storage"
 
 [dependencies.nextcloud]
 description = "Used to upload files to serve."
-version = "^26.0.2"
+version = ">=25.0.2 <28.1"
 
 [dependencies.nextcloud.requirement]
 type = "opt-in"
