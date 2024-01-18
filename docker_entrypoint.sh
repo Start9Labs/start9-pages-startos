@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "Starting up..."
+
 export HOST_IP=$(ip -4 route list match 0/0 | awk '{print $3}')
 
 home_type=$(yq e '.homepage.type' start9/config.yaml)
@@ -112,5 +114,7 @@ EOT
         fi
     fi
 done
+
+echo "Start9 Pages initalized"
 
 exec tini -- nginx -g "daemon off;"
