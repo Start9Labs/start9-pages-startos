@@ -2,12 +2,13 @@ build = ["make"]
 id = "embassy-pages"
 license = "MIT"
 release-notes = """
-* Minor Nextcloud dependency update \n
+* Update Nextcloud dependency version and data path \n
+* Add startup logging \n
 """
 support-site = "https://matrix.to/#/!lMnRwPWnyQvOfAoEnD:matrix.start9labs.com"
 title = "Start9 Pages"
 upstream-repo = "https://github.com/Start9Labs/start9-pages-startos"
-version = "0.1.7.3"
+version = "0.1.7.4"
 wrapper-repo = "https://github.com/Start9Labs/start9-pages-startos"
 
 [description]
