@@ -8,30 +8,36 @@ export const setConfig: T.ExpectedExports.setConfig = async (
   let depNextcloud: T.DependsOn = {}
 
   if (matchWebPageHomepageConfig.test(config)) {
-    switch (config.homepage.source) {
-      case 'filebrowser':
+    switch (config.homepage.source.type) {
+      case 'filebrowser': {
         depFilebrowser =  { filebrowser: [] }
         break;
-      case 'nextcloud':
+      }
+      case 'nextcloud': {
         depNextcloud =  { nextcloud: [] }
         break;
-      default:
+      }
+      default: {
         break;
+      }
     }
   }
 
   if (matchSubdomains.test(config)) {
     config.subdomains.map(sub => {
       if (matchWebPageSubdomain.test(sub)) {
-        switch (sub.settings.source) {
-          case 'filebrowser':
+        switch (sub.settings.source.type) {
+          case 'filebrowser':{
             depFilebrowser =  { filebrowser: [] }
             break;
-          case 'nextcloud':
+          }
+          case 'nextcloud': {
             depNextcloud =  { nextcloud: [] }
             break;
-          default:
+          }
+          default:{
             break;
+          }
         }
       }
     })

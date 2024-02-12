@@ -3,18 +3,20 @@ import {
   matchFilebrowserHomepage,
   matchFilebrowserSubdomain,
   matchSubdomains,
-  matchWebPageHomepageConfig,
-  matchWebPageSubdomain,
+  matchWebPageHomepageConfigOld,
+  matchWebPageSubdomainOld,
 } from "./types.ts";
 
 export const revertHomepageConfig = (config: T.Config) => {
-  if (matchWebPageHomepageConfig.test(config)) {
+  if (matchWebPageHomepageConfigOld.test(config)) {
     const newHomepage: typeof matchFilebrowserHomepage._TYPE = {
       type: "filebrowser",
       directory: config.homepage.folder,
     };
-    delete config.homepage.source;
-    delete config.homepage.folder;
+    // deno-lint-ignore no-explicit-any
+    delete (config.homepage as any).source;
+    // deno-lint-ignore no-explicit-any
+    delete (config.homepage as any).folder;
     return {
       ...config,
       homepage: newHomepage
@@ -26,7 +28,7 @@ export const revertHomepageConfig = (config: T.Config) => {
 export const revertSubdomainConfig = (config: T.Config) => {
   if (matchSubdomains.test(config)) {
     const newSubdomains = config.subdomains.map((sub) => {
-      if (matchWebPageSubdomain.test(sub)) {
+      if (matchWebPageSubdomainOld.test(sub)) {
         const newSubdomain: typeof matchFilebrowserSubdomain._TYPE = {
           name: sub.name,
           settings: {

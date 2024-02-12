@@ -1,37 +1,37 @@
 import { types as T } from "../deps.ts";
 import {
-  matchFilebrowserHomepageConfig,
-  matchFilebrowserSubdomain,
   matchSubdomains,
+  matchWebPageHomepageConfig,
   matchWebPageHomepageOld,
+  matchWebPageSubdomain,
   matchWebPageSubdomainOld,
 } from "./types.ts";
 
-export const convertHomepageConfig = (config: T.Config) => {
-  if (matchFilebrowserHomepageConfig.test(config)) {
+export const revertHomepageConfigSource = (config: T.Config) => {
+  if (matchWebPageHomepageConfig.test(config)) {
     const newHomepage: typeof matchWebPageHomepageOld._TYPE = {
-      type: "web-page",
-      source: "filebrowser",
-      folder: config.homepage.directory!,
+      type: config.homepage.type,
+      source: config.homepage.source.type,
+      folder: config.homepage.source.folder,
     };
     return {
       ...config,
-      homepage: newHomepage
+      homepage: newHomepage,
     };
   }
   return config;
 };
 
-export const convertSubdomainConfig = (config: T.Config) => {
+export const revertSubdomainConfigSource = (config: T.Config) => {
   if (matchSubdomains.test(config)) {
     const newSubdomains = config.subdomains.map((sub) => {
-      if (matchFilebrowserSubdomain.test(sub)) {
+      if (matchWebPageSubdomain.test(sub)) {
         const newSubdomain: typeof matchWebPageSubdomainOld._TYPE = {
           name: sub.name,
           settings: {
             type: "web-page",
-            source: "filebrowser",
-            folder: sub.settings.directory,
+            source: sub.settings.source.type,
+            folder: sub.settings.source.folder,
           },
         };
         return newSubdomain;
@@ -40,7 +40,7 @@ export const convertSubdomainConfig = (config: T.Config) => {
     });
     return {
       ...config,
-      subdomains: newSubdomains
+      subdomains: newSubdomains,
     };
   }
   return config;

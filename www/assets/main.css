@@ -17,7 +17,7 @@ h1, h2, h3, h4 {
   color: #eb9ff7;
   font-weight: 400;
   letter-spacing: 4px;
-  font-variant: small-caps;
+  font-variant: all-small-caps;
 }
 
 h1 {
