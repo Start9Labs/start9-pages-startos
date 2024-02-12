@@ -53,11 +53,11 @@ elif [[ $home_type = "web-page" ]]; then
         exit 0
     fi
 
-    if [[ $source == "nextcloud"]]; then
+    if [[ $source = "nextcloud" ]]; then
         user=$(yq e '.homepage.source.user' start9/config.yaml)
-        $path = "/mnt/${source}/data/${user}/files/${directory}"
+        path="/mnt/${source}/data/${user}/files/${directory}"
     else
-        $path = "/mnt/${source}/${directory}"
+        path="/mnt/${source}/${directory}"
     fi
     cat >> /etc/nginx/http.d/default.conf <<EOT
 server {
@@ -82,7 +82,7 @@ fi
 for subdomain in "${subdomains[@]}"; do
     subdomain_type=$(yq e ".subdomains.[] | select(.name == \"$subdomain\") | .settings |.type" start9/config.yaml)
     path=""
-    if [[ $subdomain_type == "web-page" ]]; then
+    if [[ $subdomain_type = "web-page" ]]; then
         directory="$(yq e ".subdomains.[] | select(.name == \"$subdomain\") | .settings | .source | .folder" start9/config.yaml)"
         source="$(yq e ".subdomains.[] | select(.name == \"$subdomain\") | .settings | .source | .type" start9/config.yaml)"\
         
@@ -92,11 +92,11 @@ for subdomain in "${subdomains[@]}"; do
             exit 0
         fi
 
-        if [[ $source == "nextcloud"]]; then
+        if [[ $source = "nextcloud" ]]; then
             user="$(yq e ".subdomains.[] | select(.name == \"$subdomain\") | .settings | .source | .user" start9/config.yaml)"
-            $path = "/mnt/${source}/data/${user}/files/${directory}"
+            path="/mnt/${source}/data/${user}/files/${directory}"
         else
-            $path = "/mnt/${source}/${directory}"
+            path="/mnt/${source}/${directory}"
         fi
         cat >> /etc/nginx/http.d/default.conf <<EOT
 server {

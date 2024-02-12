@@ -1,22 +1,22 @@
 import { types as T } from "../deps.ts";
 import {
   matchSubdomains,
-  matchWebPageHomepage,
+  matchWebPageHomepageConfig,
   matchWebPageHomepageOld,
   matchWebPageSubdomain,
   matchWebPageSubdomainOld,
 } from "./types.ts";
 
 export const revertHomepageConfigSource = (config: T.Config) => {
-  if (matchWebPageHomepage.test(config)) {
-    const homepage: typeof matchWebPageHomepageOld._TYPE = {
-      type: config.type,
-      source: config.source.type,
-      folder: config.source.folder,
+  if (matchWebPageHomepageConfig.test(config)) {
+    const newHomepage: typeof matchWebPageHomepageOld._TYPE = {
+      type: config.homepage.type,
+      source: config.homepage.source.type,
+      folder: config.homepage.source.folder,
     };
     return {
       ...config,
-      homepage,
+      homepage: newHomepage,
     };
   }
   return config;

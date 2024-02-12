@@ -60,7 +60,7 @@ export const getConfig = compat.getConfig({
                 "type": "string",
                 "name": "Username",
                 "placeholder": "e.g. admin",
-                "description": 'The user account in Nextcloud where the website files were saved.',
+                "description": 'The user account in Nextcloud where the website files are saved.',
                 "pattern": "^[a-zA-Z0-9-.]+$",
                 "pattern-description": "May only contain alphanumeric characters, hyphens, and periods.",
                 "nullable": false,
