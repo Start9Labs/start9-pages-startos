@@ -15,8 +15,6 @@ export const setConfig: T.ExpectedExports.setConfig = async (
       }
       case 'nextcloud': {
         depNextcloud =  { nextcloud: [] }
-        const path = `/data/${config.homepage.source.user}/files/${config.homepage.source.folder}`
-        config.homepage.source.folder = path
         break;
       }
       default: {
@@ -35,8 +33,6 @@ export const setConfig: T.ExpectedExports.setConfig = async (
           }
           case 'nextcloud': {
             depNextcloud =  { nextcloud: [] }
-            const path = `/data/${sub.settings.source.user}/files/${sub.settings.source.folder}`
-            sub.settings.source.folder = path
             break;
           }
           default:{

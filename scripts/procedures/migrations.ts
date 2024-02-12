@@ -1,5 +1,7 @@
 import { compat, types as T } from "../deps.ts";
 import { convertHomepageVariants } from "../migrations/0_1_7_1_up.ts";
+import { revertHomepageConfigSource, revertSubdomainConfigSource } from "../migrations/0_1_7_5_down.ts";
+import { convertHomepageConfigSource, convertSubdomainConfigSource } from "../migrations/0_1_7_5_up.ts";
 import {
   revertHomepageConfig,
   revertSubdomainConfig,
@@ -59,7 +61,31 @@ export const migration: T.ExpectedExports.migration = async (
             { version: "0.1.7.1", type: "down" },
           ),
         },
+        "0.1.7.4": {
+          up: compat.migrations.updateConfig(
+            (config) => {
+              if (Object.keys(config).length === 0) {
+                // service was never configured
+                return config;
+              }
+              return convertSubdomainConfigSource(convertHomepageConfigSource(config));
+            },
+            true,
+            { version: "0.1.7.4", type: "up" },
+          ),
+          down: compat.migrations.updateConfig(
+            (config) => {
+              if (Object.keys(config).length === 0) {
+                // service was never configured
+                return config;
+              }
+              return revertSubdomainConfigSource(revertHomepageConfigSource(config));
+            },
+            true,
+            { version: "0.1.7.4", type: "down" },
+          ),
+        },
       },
-      "0.1.7.4",
+      "0.1.7.5",
     )(effects, version, ...args);
 };

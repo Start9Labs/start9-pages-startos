@@ -13,8 +13,10 @@ export const revertHomepageConfig = (config: T.Config) => {
       type: "filebrowser",
       directory: config.homepage.folder,
     };
-    delete config.homepage.source;
-    delete config.homepage.folder;
+    // deno-lint-ignore no-explicit-any
+    delete (config.homepage as any).source;
+    // deno-lint-ignore no-explicit-any
+    delete (config.homepage as any).folder;
     return {
       ...config,
       homepage: newHomepage

@@ -50,7 +50,7 @@ export const getConfig = compat.getConfig({
                 "name": "Folder Path",
                 "placeholder": "e.g. websites/resume",
                 "description":
-                  'The path to the folder that contains the website files. For example, a value of "projects/resume" would tell Start9 Pages to look for that folder path in Nextcloud files.',
+                  'The path to the folder that contains the website files. For example, a value of "projects/resume" would tell Start9 Pages to look for that folder path in Nextcloud Files.',
                 "pattern":
                   "^(\\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)(/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)*/?$",
                 "pattern-description": "Must be a valid relative file path",
@@ -64,6 +64,7 @@ export const getConfig = compat.getConfig({
                 "pattern": "^[a-zA-Z0-9-.]+$",
                 "pattern-description": "May only contain alphanumeric characters, hyphens, and periods.",
                 "nullable": false,
+                "default": "admin"
               }
             },
             "filebrowser": {
@@ -167,6 +168,7 @@ export const getConfig = compat.getConfig({
                       "pattern": "^[a-zA-Z0-9-.]+$",
                       "pattern-description": "May only contain alphanumeric characters, hyphens, and periods.",
                       "nullable": false,
+                      "default": "admin"
                     }
                   },
                   "filebrowser": {
