@@ -1,9 +1,6 @@
-.DS_Store
-www/.DS_Store
 *.s9pk
-test_config.yaml
-.vscode/
-procedures/*.js
-docker-images/
-TODO.md
+startos/*.js
 node_modules/
+.DS_Store
+.vscode/
+docker-images

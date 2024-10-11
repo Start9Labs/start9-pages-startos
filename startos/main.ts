@@ -42,23 +42,14 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
   for (const i of interfaces) {
     const { source, path } = pages.find((p) => p.id === i.id)!
 
-    const mountpoint = `${
-      source === 'filebrowser'
-        ? depMounts.addDependency()
-        : await utils
-            .mountDependencies
-            // dependencyMounts.nextcloud.main.filesDir,
-            ()
-    }/${path}`
-
-    i.hostnames.forEach((h) => {
+    i.addressInfo?.hostnames.forEach((h) => {
       const toWrite = `
         server {
             autoindex on;
             listen ${uiPort};
             listen [::]:${uiPort};
             server_name ${h};
-            root "${mountpoint}";
+            root "${source === 'filebrowser' ? filebrowserMountpoint : nextcloudMountpoint}/${path}";
           }
         `
       appendFile(nginxPath, toWrite, (err) => assert.ifError(err))
@@ -70,13 +61,16 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
     started,
     healthReceipts: [],
   }).addDaemon('hosting-instance', {
+    image: { id: 'main' },
     command: ['nginx', '-g', 'daemon off;'],
+    mounts,
     ready: {
-      display: 'Hosting Instance',
+      display: 'Websites Ready', // If null, the health check will NOT be displayed to the user. If provided, this string will be the name of the health check and displayed to the user.
+      // The function below determines the health status of the daemon.
       fn: () =>
-        checkPortListening(effects, uiPort, {
-          successMessage: 'Page hosting is fully operational',
-          errorMessage: 'Page hosting is not functional',
+        sdk.healthCheck.checkPortListening(effects, 80, {
+          successMessage: 'The web interface is ready',
+          errorMessage: 'The web interface is unreachable',
         }),
     },
     requires: [],

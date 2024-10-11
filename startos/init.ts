@@ -1,12 +1,14 @@
 import { sdk } from './sdk'
+import { exposedStore } from './store'
 import { setDependencies } from './dependencies'
-import { setupInterfaces } from './interfaces'
+import { setInterfaces } from './interfaces'
 import { versions } from './versions'
 import { actions } from './actions'
 
-
+// **** Install ****
 const install = sdk.setupInstall(async ({ effects }) => {})
 
+// **** Uninstall ****
 const uninstall = sdk.setupUninstall(async ({ effects }) => {})
 
 /**
@@ -16,7 +18,8 @@ export const { packageInit, packageUninit, containerInit } = sdk.setupInit(
   versions,
   install,
   uninstall,
-  setupInterfaces,
+  setInterfaces,
   setDependencies,
-  actions
+  actions,
+  exposedStore,
 )
