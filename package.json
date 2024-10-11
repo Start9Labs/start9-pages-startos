@@ -1,18 +1,19 @@
 {
+  "name": "start9-pages-startos",
   "scripts": {
     "build": "ncc build procedures/index.ts -o ./",
     "prettier": "prettier --write startos",
     "check": "tsc --noEmit"
   },
   "dependencies": {
-    "@start9labs/start-sdk": "0.4.0-rev0.lib0.rc4"
+    "@start9labs/start-sdk": "0.3.6-alpha.10"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
+    "@types/node": "^22.1.0",
     "@types/uuid": "^9.0.1",
-    "@vercel/ncc": "^0.36.1",
-    "prettier": "^2.8.4",
-    "typescript": "^4.9.5",
+    "@vercel/ncc": "^0.38.1",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.3",
     "filebrowser": "git+https://github.com/Start9Labs/filebrowser-wrapper.git#02a2620ed993ce24814fb5e5c59b017b1c523c08"
   },
   "prettier": {

@@ -1,8 +1,8 @@
 import { randomUUID } from 'crypto'
 import { sdk } from '../../sdk'
-const { Config, Value, List } = sdk
+const { InputSpec, Value, List } = sdk
 
-export const configSpec = Config.of({
+export const inputSpec = InputSpec.of({
   pages: Value.list(
     List.obj(
       {
@@ -11,16 +11,13 @@ export const configSpec = Config.of({
       {
         displayAs: '{{label}}',
         uniqueBy: 'label',
-        spec: Config.of({
-          id: Value.dynamicText(() => {
-            return {
+        spec: InputSpec.of({
+          id: Value.text({
               name: 'ID',
               description: 'The ID of your page, used for internal persistence',
               required: {
                 default: randomUUID(),
               },
-              disabled: true,
-            }
           }),
           label: Value.text({
             name: 'Label',
@@ -64,5 +61,5 @@ export const configSpec = Config.of({
   ),
 })
 
-export const matchConfigSpec = configSpec.validator
+export const matchConfigSpec = inputSpec.validator
 export type ConfigSpec = typeof matchConfigSpec._TYPE

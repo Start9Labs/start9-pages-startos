@@ -1,5 +1,8 @@
-import { ConfigSpec } from './procedures/config/spec'
+import { setupExposeStore } from '@start9labs/start-sdk'
+import { ConfigSpec } from './actions/config/spec'
 
-export interface Store {
+export type Store = {
   config: ConfigSpec
 }
+
+export const exposedStore = setupExposeStore<Store>(() => [])
