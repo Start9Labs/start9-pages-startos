@@ -1,12 +1,12 @@
 {
   "name": "start9-pages-startos",
   "scripts": {
-    "build": "ncc build procedures/index.ts -o ./",
+    "build": "rm -rf ./javascript && ncc build startos/index.ts -o ./javascript",
     "prettier": "prettier --write startos",
     "check": "tsc --noEmit"
   },
   "dependencies": {
-    "@start9labs/start-sdk": "0.3.6-alpha.11"
+    "@start9labs/start-sdk": "0.3.6-beta.4"
   },
   "devDependencies": {
     "@types/node": "^22.1.0",

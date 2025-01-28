@@ -10,14 +10,13 @@ export const setInterfaces = sdk.setupInterfaces(
     return Promise.all(
       (pages || []).map(async (page) => {
         const { id, label } = page
-        const multi = sdk.host.multi(effects, id)
+        const multi = sdk.MultiHost.of(effects, id)
         const multiOrigin = await multi.bindPort(uiPort, { protocol: 'http' })
         const multiInterface = sdk.createInterface(effects, {
           name: label,
           id,
           description: `The webpage for ${label}`,
           type: 'ui',
-          hasPrimary: false,
           masked: false,
           schemeOverride: null,
           username: null,

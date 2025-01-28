@@ -2,6 +2,7 @@ import { sdk } from './sdk'
 import { appendFile } from 'fs'
 import assert from 'assert'
 import { uiPort } from './interfaces'
+import { T } from '@start9labs/start-sdk'
 
 export const main = sdk.setupMain(async ({ effects, started }) => {
   console.info('Starting Start9 Pages...')
@@ -21,7 +22,8 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
 
   let mounts = sdk.Mounts.of().addVolume('main', null, '/root', false)
   if (pages.some((p) => p.source === 'filebrowser')) {
-    mounts = mounts.addDependency<typeof FilebrowserManifest>(
+    // @TODO mounts.addDependency<typeof FilebrowserManifest>
+    mounts = mounts.addDependency(
       'filebrowser',
       'data',
       null,
@@ -30,7 +32,8 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
     )
   }
   if (pages.some((p) => p.source === 'nextcloud')) {
-    mounts = mounts.addDependency<typeof NextcloudManifest>(
+    // @TODO mounts.addDependency<typeof NextcloudManifest>
+    mounts = mounts.addDependency(
       'nextcloud',
       'data',
       null,
@@ -56,23 +59,24 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
     })
   }
 
-  return sdk.Daemons.of({
-    effects,
-    started,
-    healthReceipts: [],
-  }).addDaemon('hosting-instance', {
-    image: { id: 'main' },
-    command: ['nginx', '-g', 'daemon off;'],
-    mounts,
-    ready: {
-      display: 'Websites Ready', // If null, the health check will NOT be displayed to the user. If provided, this string will be the name of the health check and displayed to the user.
-      // The function below determines the health status of the daemon.
-      fn: () =>
-        sdk.healthCheck.checkPortListening(effects, 80, {
-          successMessage: 'The web interface is ready',
-          errorMessage: 'The web interface is unreachable',
-        }),
+  const healthReceipts: T.HealthReceipt[] = []
+
+
+  return sdk.Daemons.of(effects, started, healthReceipts).addDaemon(
+    'primary',
+    {
+      subcontainer: { imageId: 'embassy-pages' },
+      command: ['nginx', '-g', 'daemon off;'],
+      mounts,
+      ready: {
+        display: 'Websites Ready',
+        fn: () =>
+          sdk.healthCheck.checkPortListening(effects, 80, {
+            successMessage: 'The web interface is ready',
+            errorMessage: 'The web interface is unreachable',
+          }),
+      },
+      requires: [],
     },
-    requires: [],
-  })
+  )
 })

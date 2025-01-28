@@ -1,7 +1,5 @@
-import { T, VersionRange } from '@start9labs/start-sdk'
+import { T } from '@start9labs/start-sdk'
 import { sdk } from './sdk'
-// @TODO aiden export properly
-import { Dependency } from '@start9labs/start-sdk/base/lib/dependencies/Dependency'
 
 export const setDependencies = sdk.setupDependencies(async ({ effects }) => {
 
@@ -9,18 +7,23 @@ export const setDependencies = sdk.setupDependencies(async ({ effects }) => {
     .getOwn(effects, sdk.StorePath.config)
     .const()
 
-  let currentDeps = {} as Record<'filebrowser' | 'nextcloud', Dependency>
+  let currentDeps = {} as Record<
+    'filebrowser' | 'nextcloud',
+    T.DependencyRequirement
+  >
   if (pages.some((p) => p.source === 'filebrowser')) {
-    currentDeps['filebrowser'] = sdk.Dependency.of({
-      type: 'exists',
-      versionRange: VersionRange.parse(''),
-    })
+    currentDeps['filebrowser'] = {
+      id: 'filebrowser',
+      kind: 'exists',
+      versionRange: '>=2.30.0:1', //@TODO confirm
+    }
   }
   if (pages.some((p) => p.source === 'nextcloud')) {
-    currentDeps['nextcloud'] = sdk.Dependency.of({
-      type: 'exists',
-      versionRange: VersionRange.parse(''),
-    })
+    currentDeps['nextcloud'] = {
+      id: 'nextcloud',
+      kind: 'exists',
+      versionRange: '>=27.1.7:1', //@TODO confirm
+    }
   }
 
   return currentDeps

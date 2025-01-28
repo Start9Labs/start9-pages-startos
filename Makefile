@@ -1,34 +1,33 @@
-PKG_VERSION := $(shell toml get manifest.toml "version" | sed -e 's/^"//' -e 's/"//')
-SCRIPTS_SRC := $(shell find ./scripts -name '*.ts')
-PKG_ID := $(shell toml get manifest.toml "id" | sed -e 's/^"//' -e 's/"//')
+PACKAGE_ID := embassy-pages
 
-.DELETE_ON_ERROR:
+# Phony targets
+.PHONY: all clean install
 
-all: verify
+# Default target
+all: ${PACKAGE_ID}.s9pk
 
-verify: $(PKG_ID).s9pk
-	embassy-sdk verify s9pk $(PKG_ID).s9pk
+# Build targets
+${PACKAGE_ID}.s9pk: $(shell start-cli s9pk list-ingredients)
+	start-cli s9pk pack
 
+javascript/index.js: $(shell git ls-files startos) tsconfig.json node_modules package.json
+	npm run build
+
+node_modules: package.json package-lock.json
+	npm ci
+
+package-lock.json: package.json
+	npm i
+
+# Clean target
 clean:
-	rm -rf docker-images
-	rm -f image.tar
-	rm -f $(PKG_ID).s9pk
-	rm -f procedures/*.js
+	rm -rf ${PACKAGE_ID}.s9pk
+	rm -rf javascript
+	rm -rf node_modules
 
-# assumes /etc/embassy/config.yaml exists on local system with `host: "http://embassy-server-name.local"` configured
-install: $(PKG_ID).s9pk
-	embassy-cli package install $(PKG_ID).s9pk
-
-$(PKG_ID).s9pk: manifest.toml instructions.md LICENSE icon.png scripts/embassy.js docker-images/aarch64.tar docker-images/x86_64.tar
-	embassy-sdk pack
-
-docker-images/aarch64.tar: Dockerfile docker_entrypoint.sh
-	mkdir -p docker-images
-	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --tag start9/$(PKG_ID)/main:$(PKG_VERSION) --platform=linux/arm64 -o type=docker,dest=docker-images/aarch64.tar .
-
-docker-images/x86_64.tar: Dockerfile docker_entrypoint.sh
-	mkdir -p docker-images
-	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --tag start9/$(PKG_ID)/main:$(PKG_VERSION) --platform=linux/amd64 -o type=docker,dest=docker-images/x86_64.tar .
-
-scripts/embassy.js: $(SCRIPTS_SRC)
-	deno bundle scripts/embassy.ts scripts/embassy.js
+# Install target
+install:
+	@if [ ! -f ~/.startos/config.yaml ]; then echo "You must define \"host: http://server-name.local\" in ~/.startos/config.yaml config file first."; exit 1; fi
+	@echo "\nInstalling to $$(grep -v '^#' ~/.startos/config.yaml | cut -d'/' -f3) ...\n"
+	@[ -f $(PACKAGE_ID).s9pk ] || ( $(MAKE) && echo "\nInstalling to $$(grep -v '^#' ~/.startos/config.yaml | cut -d'/' -f3) ...\n" )
+	@start-cli package install -s $(PACKAGE_ID).s9pk

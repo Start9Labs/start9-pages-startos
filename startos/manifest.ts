@@ -9,14 +9,20 @@ export const manifest = setupManifest({
   supportSite:
     'https://matrix.to/#/#s9-testing-embassy-pages:matrix.start9labs.com',
   donationUrl: 'https://donate.start9.com/',
-  marketingSite: '',
+  marketingSite: 'https://start9.com',
   description: {
     short: 'Create Tor websites, hosted on your personal server.',
     long: 'Start9 Pages is a simple web server that uses folders hosted on other internal services to serve Tor websites.',
   },
   assets: [],
   volumes: ['main'],
-  images: {},
+  images: {
+    'embassy-pages': {
+      source: {
+        dockerTag: 'nginx:1.27.3-alpine',
+      },
+    },
+  },
   alerts: {
     install: null,
     update:
