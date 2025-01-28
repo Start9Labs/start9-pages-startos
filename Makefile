@@ -1,4 +1,4 @@
-PACKAGE_ID := embassy-pages
+PACKAGE_ID := start9-pages
 
 # Phony targets
 .PHONY: all clean install

@@ -1,7 +1,7 @@
 import { setupManifest } from '@start9labs/start-sdk'
 
 export const manifest = setupManifest({
-  id: 'embassy-pages',
+  id: 'start9-pages',
   title: 'Start9 Pages',
   license: 'mit',
   wrapperRepo: 'https://github.com/Start9Labs/embassy-pages-wrapper',
