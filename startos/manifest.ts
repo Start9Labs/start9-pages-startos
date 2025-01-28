@@ -1,7 +1,7 @@
 import { setupManifest } from '@start9labs/start-sdk'
 
 export const manifest = setupManifest({
-  id: 'start9-pages',
+  id: 'start-pages',
   title: 'Start9 Pages',
   license: 'mit',
   wrapperRepo: 'https://github.com/Start9Labs/embassy-pages-wrapper',
@@ -17,7 +17,7 @@ export const manifest = setupManifest({
   assets: [],
   volumes: ['main'],
   images: {
-    'start9-pages': {
+    'pages': {
       source: {
         dockerTag: 'nginx:1.27.3-alpine',
       },

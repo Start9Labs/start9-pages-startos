@@ -1,4 +1,4 @@
-PACKAGE_ID := start9-pages
+PACKAGE_ID := start-pages
 
 # Phony targets
 .PHONY: all clean install
