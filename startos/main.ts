@@ -65,7 +65,7 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
   return sdk.Daemons.of(effects, started, healthReceipts).addDaemon(
     'primary',
     {
-      subcontainer: { imageId: 'embassy-pages' },
+      subcontainer: { imageId: 'start9-pages' },
       command: ['nginx', '-g', 'daemon off;'],
       mounts,
       ready: {

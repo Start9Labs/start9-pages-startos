@@ -17,7 +17,7 @@ export const manifest = setupManifest({
   assets: [],
   volumes: ['main'],
   images: {
-    'embassy-pages': {
+    'start9-pages': {
       source: {
         dockerTag: 'nginx:1.27.3-alpine',
       },
