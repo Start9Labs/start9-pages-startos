@@ -36,12 +36,12 @@ export const manifest = setupManifest({
     filebrowser: {
       description: 'Used to upload files to serve.',
       optional: true,
-      s9pk: '',
+      s9pk: '../hello-world-wrapper/hello-world.s9pk',
     },
     nextcloud: {
       description: 'Used to upload files to serve.',
       optional: true,
-      s9pk: '',
+      s9pk: '../hello-world-wrapper/hello-world.s9pk',
     },
   },
 })
