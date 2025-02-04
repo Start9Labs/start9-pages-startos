@@ -1,8 +1,6 @@
 # Wrapper for start9-pages
 
-Start9 Pages is a simple web server that uses directories inside File Browser or Nextcloud to serve Tor websites. This repository creates the `s9pk` package that is installed to run `start9-pages` on [embassyOS](https://github.com/Start9Labs/embassy-os/. 
-
-This package was recently renamed from Embassy Pages. Package ids cannot currently be changed, so it remains `start9-pages`.
+Start9 Pages is a simple web server that uses directories inside File Browser or Nextcloud to serve websites. This repository creates the `s9pk` package that is installed to run `start9-pages` on [StartOS](https://github.com/Start9Labs/start-os/). 
 
 ## Dependencies
 
@@ -27,18 +25,19 @@ cd start9-pages-startos
 To build the `start9-pages` package, run the following commands:
 
 ```
+make clean
 make
 ```
 
-## Installing (on embassyOS)
+## Installing on StartOS
 
 Run the following commands to determine successful install:
-> :information_source: Change embassy-server-name.local to your Embassy address
+> :information_source: Change adjective-noun.local to your StartOS address
 
 ```
 start-cli auth login
-# Enter your embassy password
-embassy-cli --host https://embassy-server-name.local package install start9-pages.s9pk
+# Enter your startos password
+start-cli --host https://adjective-noun.local package install start9-pages.s9pk
 ```
 
 If you already have your `start-cli` config file setup with a default `host`, you can install simply by running:
@@ -47,8 +46,8 @@ If you already have your `start-cli` config file setup with a default `host`, yo
 make install
 ```
 
->**Tip:** You can also install the start9-pages.s9pk using **Sideload Service** under the **Embassy > Settings** section.
+>**Tip:** You can also install the start9-pages.s9pk by sideloading it, which can be found under  **System > Sideload Service** in the StartOS UI.
 
 ## Verify Install
 
-Go to your Embassy Services page, select **Embassy Pages**, configure and start the service. Then, verify its interfaces are accessible.
+Go to your StartOS Services page, select **Start9 Pages**, configure and start the service. Then, verify its interfaces are accessible.
