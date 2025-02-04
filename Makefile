@@ -1,4 +1,4 @@
-PACKAGE_ID := start-pages
+PACKAGE_ID := startos-pages
 
 # Phony targets
 .PHONY: all clean install

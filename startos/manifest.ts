@@ -1,13 +1,12 @@
 import { setupManifest } from '@start9labs/start-sdk'
 
 export const manifest = setupManifest({
-  id: 'start-pages',
+  id: 'startos-pages',
   title: 'Start9 Pages',
   license: 'mit',
-  wrapperRepo: 'https://github.com/Start9Labs/embassy-pages-wrapper',
-  upstreamRepo: 'https://github.com/Start9Labs/embassy-pages-wrapper',
-  supportSite:
-    'https://matrix.to/#/#s9-testing-embassy-pages:matrix.start9labs.com',
+  wrapperRepo: 'https://github.com/Start9Labs/start9-pages-wrapper',
+  upstreamRepo: 'https://github.com/Start9Labs/start9-pages-wrapper',
+  supportSite: 'https://matrix.to/#/#start9-pages:start9.me',
   donationUrl: 'https://donate.start9.com/',
   marketingSite: 'https://start9.com',
   description: {
@@ -17,7 +16,7 @@ export const manifest = setupManifest({
   assets: [],
   volumes: ['main'],
   images: {
-    'pages': {
+    pages: {
       source: {
         dockerTag: 'nginx:1.27.3-alpine',
       },
