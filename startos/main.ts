@@ -61,22 +61,18 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
 
   const healthReceipts: T.HealthReceipt[] = []
 
-
-  return sdk.Daemons.of(effects, started, healthReceipts).addDaemon(
-    'primary',
-    {
-      subcontainer: { imageId: 'pages' },
-      command: ['nginx', '-g', 'daemon off;'],
-      mounts,
-      ready: {
-        display: 'Websites Ready',
-        fn: () =>
-          sdk.healthCheck.checkPortListening(effects, 80, {
-            successMessage: 'The web interface is ready',
-            errorMessage: 'The web interface is unreachable',
-          }),
-      },
-      requires: [],
+  return sdk.Daemons.of(effects, started, healthReceipts).addDaemon('primary', {
+    subcontainer: { imageId: 'pages' },
+    command: ['nginx', '-g', 'daemon off;'],
+    mounts,
+    ready: {
+      display: 'Websites Ready',
+      fn: () =>
+        sdk.healthCheck.checkPortListening(effects, 80, {
+          successMessage: 'The web interface is ready',
+          errorMessage: 'The web interface is unreachable',
+        }),
     },
-  )
+    requires: [],
+  })
 })

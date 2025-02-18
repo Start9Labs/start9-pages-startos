@@ -2,7 +2,7 @@ import { setupManifest } from '@start9labs/start-sdk'
 
 export const manifest = setupManifest({
   id: 'startos-pages',
-  title: 'Start9 Pages',
+  title: 'StartOS Pages',
   license: 'mit',
   wrapperRepo: 'https://github.com/Start9Labs/start9-pages-wrapper',
   upstreamRepo: 'https://github.com/Start9Labs/start9-pages-wrapper',
