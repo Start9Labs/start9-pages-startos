@@ -13,7 +13,6 @@ export const manifest = setupManifest({
     short: 'Create Tor websites, hosted on your personal server.',
     long: 'Start9 Pages is a simple web server that uses folders hosted on other internal services to serve Tor websites.',
   },
-  assets: [],
   volumes: ['main'],
   images: {
     pages: {

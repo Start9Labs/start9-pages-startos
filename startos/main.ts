@@ -59,7 +59,7 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
     })
   }
 
-  const healthReceipts: T.HealthReceipt[] = []
+  const healthReceipts: T.HealthCheck[] = []
 
   return sdk.Daemons.of(effects, started, healthReceipts).addDaemon('primary', {
     subcontainer: { imageId: 'pages' },
