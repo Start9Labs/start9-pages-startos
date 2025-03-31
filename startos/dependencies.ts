@@ -2,23 +2,20 @@ import { T } from '@start9labs/start-sdk'
 import { sdk } from './sdk'
 
 export const setDependencies = sdk.setupDependencies(async ({ effects }) => {
-
-  const { pages } = await sdk.store
-    .getOwn(effects, sdk.StorePath.config)
-    .const()
+  const config = await sdk.store.getOwn(effects, sdk.StorePath.config).const()
 
   let currentDeps = {} as Record<
     'filebrowser' | 'nextcloud',
     T.DependencyRequirement
   >
-  if (pages.some((p) => p.source === 'filebrowser')) {
+  if (config.pages.some((p) => p.source === 'filebrowser')) {
     currentDeps['filebrowser'] = {
       id: 'filebrowser',
       kind: 'exists',
-      versionRange: '>=2.30.0:1', //@TODO confirm
+      versionRange: '>=2.31.2:1',
     }
   }
-  if (pages.some((p) => p.source === 'nextcloud')) {
+  if (config.pages.some((p) => p.source === 'nextcloud')) {
     currentDeps['nextcloud'] = {
       id: 'nextcloud',
       kind: 'exists',

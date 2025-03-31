@@ -1,6 +1,7 @@
-import { randomUUID } from 'crypto'
+import { randomBytes } from 'crypto'
 import { sdk } from '../../sdk'
 import { inputSpec } from './spec'
+import { getLowercaseAlphaString } from '../../utils'
 
 export const config = sdk.Action.withInput(
   // id
@@ -27,7 +28,7 @@ export const config = sdk.Action.withInput(
     await sdk.store.setOwn(effects, sdk.StorePath.config, {
       pages: input.pages.map((p) => ({
         ...p,
-        id: p.id || randomUUID(),
+        id: p.id || getLowercaseAlphaString(),
       })),
     })
   },

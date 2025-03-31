@@ -12,12 +12,7 @@ export const inputSpec = InputSpec.of({
         displayAs: '{{label}}',
         uniqueBy: 'label',
         spec: InputSpec.of({
-          id: Value.text({
-              name: 'ID',
-              description: 'The ID of your page, used for internal persistence',
-              required: true,
-              default: randomUUID(),
-          }),
+          id: Value.hidden(),
           label: Value.text({
             name: 'Label',
             description:

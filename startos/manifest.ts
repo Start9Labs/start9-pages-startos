@@ -34,7 +34,7 @@ export const manifest = setupManifest({
     filebrowser: {
       description: 'Used to upload files to serve.',
       optional: true,
-      s9pk: '../hello-world-startos/hello-world.s9pk',
+      s9pk: '../filebrowser-startos/filebrowser.s9pk',
     },
     nextcloud: {
       description: 'Used to upload files to serve.',

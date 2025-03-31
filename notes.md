@@ -1,0 +1,5 @@
+- on config get - if gitea mount is not empty, get list of repos and dynamically set an enum
+- on config set - clone the repo to pages data volume
+- on start, git pull any repos
+- if gitea mount is empty (ie its not installed), or if you have no repos - behavior is same - enum list is "None" and you wont be able to save config
+- when adding a new subpage, either make it a subdomain or a new tor address entirely

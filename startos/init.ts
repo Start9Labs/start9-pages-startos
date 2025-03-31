@@ -6,7 +6,9 @@ import { versions } from './versions'
 import { actions } from './actions'
 
 // **** Install ****
-const install = sdk.setupInstall(async ({ effects }) => {})
+const install = sdk.setupInstall(async ({ effects }) => {
+  await sdk.store.setOwn(effects, sdk.StorePath, { config: { pages: [] }})
+})
 
 // **** Uninstall ****
 const uninstall = sdk.setupUninstall(async ({ effects }) => {})
