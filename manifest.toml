@@ -2,7 +2,7 @@ build = ["make"]
 id = "embassy-pages"
 license = "MIT"
 release-notes = """
-* Update Nextcloud configuration option to include user \n
+* Adjust version bounds for dependencies\n
 """
 support-site = "https://matrix.to/#/!lMnRwPWnyQvOfAoEnD:matrix.start9labs.com"
 title = "Start9 Pages"
@@ -43,7 +43,7 @@ type = "script"
 
 [dependencies.filebrowser]
 description = "Used to upload files to serve."
-version = "^2.22.4"
+version = ">=2.22.4"
 
 [dependencies.filebrowser.requirement]
 type = "opt-out"
@@ -51,7 +51,7 @@ how = "Can alternatively use Nextcloud for file storage"
 
 [dependencies.nextcloud]
 description = "Used to upload files to serve."
-version = ">=25.0.2 <32.0.0"
+version = ">=25.0.2"
 
 [dependencies.nextcloud.requirement]
 type = "opt-in"
