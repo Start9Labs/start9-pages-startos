@@ -118,6 +118,7 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
             errorMessage: 'Unavailable',
           }),
       },
-    requires: [],
-  })
+      requires: [],
+    },
+  )
 })
