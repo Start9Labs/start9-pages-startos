@@ -1,14 +1,18 @@
 import { sdk } from './sdk'
-import { exposedStore } from './store'
+import { exposedStore, initStore } from './store'
 import { setDependencies } from './dependencies'
 import { setInterfaces } from './interfaces'
 import { versions } from './versions'
 import { actions } from './actions'
 
 // **** Install ****
-const install = sdk.setupInstall(async ({ effects }) => {
-  await sdk.store.setOwn(effects, sdk.StorePath, { config: { pages: [] }})
-})
+const install = sdk.setupInstall(
+  // post install
+  async ({ effects }) => {},
+  // pre install
+  async ({ effects }) => {
+  },
+)
 
 // **** Uninstall ****
 const uninstall = sdk.setupUninstall(async ({ effects }) => {})
@@ -23,5 +27,6 @@ export const { packageInit, packageUninit, containerInit } = sdk.setupInit(
   setInterfaces,
   setDependencies,
   actions,
+  initStore,
   exposedStore,
 )

@@ -5,4 +5,10 @@ export type Store = {
   config: ConfigSpec
 }
 
+export const initStore: Store = {
+  config: { 
+    pages: []
+  }
+}
+
 export const exposedStore = setupExposeStore<Store>(() => [])
