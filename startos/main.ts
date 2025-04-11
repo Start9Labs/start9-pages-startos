@@ -12,6 +12,9 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
   )
 
   const config = await sdk.store.getOwn(effects, sdk.StorePath.config).const()
+    if (!config || !config.pages)
+      await sdk.store.setOwn(effects, sdk.StorePath, { config: { pages: [] } })
+
   const interfaces = await sdk.serviceInterface.getAllOwn(effects).const()
   const nginxDefaultConf = `${primaryContainer.rootfs}/etc/nginx/conf.d/default.conf`
   const nginxConf = `${primaryContainer.rootfs}/etc/nginx/nginx.conf`
@@ -53,11 +56,11 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
   const filebrowserMountpoint = '/mnt/filebrowser'
   const nextcloudMountpoint = '/mnt/nextcloud'
 
-  const mounts = sdk.Mounts.of().addVolume('main', null, '/root', false)
+  let mounts = sdk.Mounts.of().addVolume('main', null, '/root', false)
 
   if (config.pages.some((p) => p.source === 'filebrowser')) {
     // @TODO mounts = mounts.addDependency<typeof FilebrowserManifest>
-    mounts.addDependency(
+    mounts = mounts.addDependency(
       'filebrowser',
       'main',
       'files',
@@ -67,7 +70,7 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
   }
   if (config.pages.some((p) => p.source === 'nextcloud')) {
     // @TODO mounts.addDependency<typeof NextcloudManifest>
-    mounts.addDependency('nextcloud', 'main', null, nextcloudMountpoint, true)
+    mounts = mounts.addDependency('nextcloud', 'main', null, nextcloudMountpoint, true)
   }
 
   for (const i of interfaces) {

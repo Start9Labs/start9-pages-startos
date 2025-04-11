@@ -3,6 +3,8 @@ import { sdk } from './sdk'
 
 export const setDependencies = sdk.setupDependencies(async ({ effects }) => {
   const config = await sdk.store.getOwn(effects, sdk.StorePath.config).const()
+  if (!config || !config.pages)
+    await sdk.store.setOwn(effects, sdk.StorePath, { config: { pages: [] } })
 
   let currentDeps = {} as Record<
     'filebrowser' | 'nextcloud',

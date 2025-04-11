@@ -7,8 +7,7 @@
   },
   "dependencies": {
     "@start9labs/start-sdk": "0.3.6-beta.19",
-    "filebrowser-startos": "git+https://github.com/Start9Labs/filebrowser-startos.git#update/036",
-    "hello-world-startos": "git+https://github.com/Start9Labs/hello-world-startos.git#update/040"
+    "filebrowser-startos": "git+https://github.com/Start9Labs/filebrowser-startos.git#update/036"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",

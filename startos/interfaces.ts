@@ -4,8 +4,11 @@ export const uiPort = 80
 
 export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
   const config = await sdk.store.getOwn(effects, sdk.StorePath.config).const()
+    if (!config || !config.pages)
+      await sdk.store.setOwn(effects, sdk.StorePath, { config: { pages: [] } })
+
   return Promise.all(
-    config.pages.map(async (page) => {
+    (config.pages || []).map(async (page) => {
       const { id, label } = page
       const multi = sdk.MultiHost.of(effects, id)
       const multiOrigin = await multi.bindPort(uiPort, { protocol: 'http' })
