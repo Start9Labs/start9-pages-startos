@@ -27,7 +27,6 @@ ${PACKAGE_ID}.s9pk: $(INGREDIENTS) | check-deps check-init
 
 javascript/index.js: $(shell git ls-files startos) tsconfig.json node_modules package.json
 	npm run build
-	$(eval INGREDIENTS := $(shell start-cli s9pk list-ingredients))
 
 assets:
 	mkdir -p assets

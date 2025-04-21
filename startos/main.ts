@@ -3,18 +3,50 @@ import { SubContainer, T } from '@start9labs/start-sdk'
 import { writeFile, appendFile } from 'fs/promises'
 
 export const main = sdk.setupMain(async ({ effects, started }) => {
+  /**
+   * ======================== Setup (optional) ========================
+   *
+   * In this section, we fetch any resources or run any desired preliminary commands.
+   */
   console.info('Starting Start9 Pages...')
 
-  const primaryContainer = await SubContainer.of(
+  const config = await sdk.store.getOwn(effects, sdk.StorePath.config).const()
+
+  const filebrowserMountpoint = '/mnt/filebrowser'
+  const nextcloudMountpoint = '/mnt/nextcloud'
+
+  let mounts = sdk.Mounts.of().addVolume('main', null, '/root', false)
+
+  if (config.pages.some((p) => p.source === 'filebrowser')) {
+    // @TODO mounts = mounts.addDependency<typeof FilebrowserManifest>
+    mounts = mounts.addDependency(
+      'filebrowser',
+      'main',
+      'files',
+      filebrowserMountpoint,
+      true,
+    )
+  }
+  if (config.pages.some((p) => p.source === 'nextcloud')) {
+    // @TODO mounts.addDependency<typeof NextcloudManifest>
+    mounts = mounts.addDependency(
+      'nextcloud',
+      'main',
+      null,
+      nextcloudMountpoint,
+      true,
+    )
+  }
+
+  const pagesSub = await SubContainer.of(
     effects,
     { imageId: 'pages' },
+    mounts,
     'primary',
   )
 
-  const config = await sdk.store.getOwn(effects, sdk.StorePath.config).const()
-  const interfaces = await sdk.serviceInterface.getAllOwn(effects).const()
-  const nginxDefaultConf = `${primaryContainer.rootfs}/etc/nginx/conf.d/default.conf`
-  const nginxConf = `${primaryContainer.rootfs}/etc/nginx/nginx.conf`
+  const nginxDefaultConf = `${pagesSub.rootfs}/etc/nginx/conf.d/default.conf`
+  const nginxConf = `${pagesSub.rootfs}/etc/nginx/nginx.conf`
 
   try {
     await writeFile(
@@ -50,25 +82,7 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
     throw e
   }
 
-  const filebrowserMountpoint = '/mnt/filebrowser'
-  const nextcloudMountpoint = '/mnt/nextcloud'
-
-  const mounts = sdk.Mounts.of().addVolume('main', null, '/root', false)
-
-  if (config.pages.some((p) => p.source === 'filebrowser')) {
-    // @TODO mounts = mounts.addDependency<typeof FilebrowserManifest>
-    mounts.addDependency(
-      'filebrowser',
-      'main',
-      'files',
-      filebrowserMountpoint,
-      true,
-    )
-  }
-  if (config.pages.some((p) => p.source === 'nextcloud')) {
-    // @TODO mounts.addDependency<typeof NextcloudManifest>
-    mounts.addDependency('nextcloud', 'main', null, nextcloudMountpoint, true)
-  }
+  const interfaces = await sdk.serviceInterface.getAllOwn(effects).const()
 
   for (const i of interfaces) {
     const { source, path } = config.pages.find((p) => p.id === i.id)!
@@ -107,9 +121,8 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
   return sdk.Daemons.of(effects, started, additionalChecks).addDaemon(
     'primary',
     {
-      subcontainer: primaryContainer,
+      subcontainer: pagesSub,
       command: ['nginx', '-g', 'daemon off;'],
-      mounts,
       ready: {
         display: 'Hosting',
         fn: () =>

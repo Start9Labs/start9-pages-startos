@@ -1,13 +1,10 @@
-import { randomUUID } from 'crypto'
 import { sdk } from '../../sdk'
 const { InputSpec, Value, List } = sdk
 
 export const inputSpec = InputSpec.of({
   pages: Value.list(
     List.obj(
-      {
-        name: 'Pages',
-      },
+      { name: 'Pages' },
       {
         displayAs: '{{label}}',
         uniqueBy: 'label',
@@ -25,10 +22,7 @@ export const inputSpec = InputSpec.of({
             name: 'Source',
             description: 'The service that contains your website files.',
             default: 'filebrowser',
-            values: {
-              filebrowser: 'filebrowser',
-              nextcloud: 'nextcloud',
-            },
+            values: { filebrowser: 'filebrowser', nextcloud: 'nextcloud' },
           }),
           path: Value.text({
             name: 'Path',
@@ -51,5 +45,4 @@ export const inputSpec = InputSpec.of({
   ),
 })
 
-export const matchConfigSpec = inputSpec.validator
-export type ConfigSpec = typeof matchConfigSpec._TYPE
+export type ConfigSpec = typeof inputSpec.validator._TYPE

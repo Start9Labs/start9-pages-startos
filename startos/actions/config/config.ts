@@ -1,4 +1,3 @@
-import { randomBytes } from 'crypto'
 import { sdk } from '../../sdk'
 import { inputSpec } from './spec'
 import { getLowercaseAlphaString } from '../../utils'

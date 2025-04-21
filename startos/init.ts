@@ -5,14 +5,11 @@ import { setInterfaces } from './interfaces'
 import { versions } from './versions'
 import { actions } from './actions'
 
-// **** Install ****
-const install = sdk.setupInstall(
-  // post install
-  async ({ effects }) => {},
-  // pre install
-  async ({ effects }) => {
-  },
-)
+// **** PreInstall ****
+const preInstall = sdk.setupPreInstall(async ({ effects }) => {})
+
+// **** PostInstall ****
+const postInstall = sdk.setupPostInstall(async ({ effects }) => {})
 
 // **** Uninstall ****
 const uninstall = sdk.setupUninstall(async ({ effects }) => {})
@@ -22,7 +19,8 @@ const uninstall = sdk.setupUninstall(async ({ effects }) => {})
  */
 export const { packageInit, packageUninit, containerInit } = sdk.setupInit(
   versions,
-  install,
+  preInstall,
+  postInstall,
   uninstall,
   setInterfaces,
   setDependencies,
