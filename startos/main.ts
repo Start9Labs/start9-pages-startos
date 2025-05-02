@@ -1,14 +1,26 @@
 import { sdk } from './sdk'
 import { SubContainer, T } from '@start9labs/start-sdk'
 import { writeFile, appendFile } from 'fs/promises'
+import { manifest as FilebrowserManifest } from 'filebrowser-startos/startos/manifest'
 
 export const main = sdk.setupMain(async ({ effects, started }) => {
   /**
-   * ======================== Setup (optional) ========================
+   * ======================== Additional Health Checks (optional) ========================
+   */
+  const additionalChecks: T.HealthCheck[] = []
+  /**
+   * ======================== Setup ========================
    */
   console.info('Starting Start9 Pages...')
 
+  // const depResult = await sdk.checkDependencies(effects)
+  // depResult.throwIfNotSatisfied()
+
   const config = await sdk.store.getOwn(effects, sdk.StorePath.config).const()
+
+  // ========================
+  // Handle dependency mounts
+  // ========================
 
   const filebrowserMountpoint = '/mnt/filebrowser'
   const nextcloudMountpoint = '/mnt/nextcloud'
@@ -16,8 +28,7 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
   let mounts = sdk.Mounts.of().addVolume('main', null, '/root', false)
 
   if (config.pages.some((p) => p.source === 'filebrowser')) {
-    // @TODO mounts = mounts.addDependency<typeof FilebrowserManifest>
-    mounts = mounts.addDependency(
+    mounts = mounts.addDependency<typeof FilebrowserManifest>(
       'filebrowser',
       'main',
       'files',
@@ -35,6 +46,10 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
       true,
     )
   }
+
+  // ========================
+  // Setup nginx
+  // ========================
 
   const pagesSub = await SubContainer.of(
     effects,
@@ -79,45 +94,45 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
   } catch (e) {
     throw e
   }
-
   const interfaces = await sdk.serviceInterface.getAllOwn(effects).const()
+  const serverBlocks: string[] = []
 
   for (const i of interfaces) {
-    const { source, path } = config.pages.find((p) => p.id === i.id)!
-    i.addressInfo?.hostnames.forEach(async (h) => {
-      let hostname
-      let port
-      if (h.kind === 'onion') {
-        hostname = h.hostname.value
-        port = h.hostname.sslPort
-      } else if (h.hostname.kind === 'domain') {
-        hostname = `${h.hostname.subdomain}.${h.hostname.domain}`
-        port = h.hostname.sslPort
-      } else {
-        hostname = h.hostname.value
-        port = h.hostname.sslPort
-      }
-      const toWrite = `
-          server {
-              autoindex on;
-              listen ${port};
-              listen [::]:${port};
-              server_name ${hostname};
-              root ${source === 'filebrowser' ? filebrowserMountpoint : nextcloudMountpoint}/${path};
-            }
-          `
-      try {
-        await appendFile(nginxDefaultConf, toWrite)
-      } catch (e) {
-        throw e
-      }
+    const page = config.pages.find((p: any) => p.id === i.id)
+    if (!page) continue
+
+    const { source, path, port, label, id } = page
+    const block = `
+server {
+    listen ${port};
+    listen [::]:${port};
+    server_name _;
+    root ${source === 'filebrowser' ? filebrowserMountpoint : nextcloudMountpoint}/${path};
+    index index.html index.htm;
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+`
+    serverBlocks.push(block)
+    const healthCheck = sdk.HealthCheck.of(effects, {
+      id: `${id}-health-check`,
+      name: `${label}`,
+      fn: async () =>
+        sdk.healthCheck.checkPortListening(effects, port, {
+          successMessage: `Running`,
+          errorMessage: `Unavailable`,
+        }),
     })
+    additionalChecks.push(healthCheck)
   }
 
-  /**
-   * ======================== Additional Health Checks (optional) ========================
-   */
-  const additionalChecks: T.HealthCheck[] = []
+  // Write to file
+  try {
+    await appendFile(nginxDefaultConf, serverBlocks.join('\n\n'))
+  } catch (e) {
+    throw e
+  }
 
   /**
    *  ======================== Daemons ========================

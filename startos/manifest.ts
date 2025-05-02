@@ -4,8 +4,8 @@ export const manifest = setupManifest({
   id: 'start9-pages',
   title: 'Start9 Pages',
   license: 'mit',
-  wrapperRepo: 'https://github.com/Start9Labs/start9-pages-wrapper',
-  upstreamRepo: 'https://github.com/Start9Labs/start9-pages-wrapper',
+  wrapperRepo: 'https://github.com/Start9Labs/start9-pages-startos',
+  upstreamRepo: 'https://github.com/Start9Labs/start9-pages-startos',
   supportSite: 'https://matrix.to/#/#start9-pages:start9.me',
   donationUrl: 'https://donate.start9.com/',
   marketingSite: 'https://start9.com',
@@ -17,7 +17,7 @@ export const manifest = setupManifest({
   images: {
     pages: {
       source: {
-        dockerTag: 'nginx:1.27.3-alpine',
+        dockerTag: 'nginx:stable-alpine',
       },
     },
   },
@@ -39,6 +39,7 @@ export const manifest = setupManifest({
     nextcloud: {
       description: 'Used to upload files to serve.',
       optional: true,
+      // @TODO replace with nextcloud
       s9pk: '../hello-world-startos/hello-world.s9pk',
     },
   },

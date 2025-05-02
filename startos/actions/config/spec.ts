@@ -10,6 +10,7 @@ export const inputSpec = InputSpec.of({
         uniqueBy: 'label',
         spec: InputSpec.of({
           id: Value.hidden(),
+          port: Value.hidden(),
           label: Value.text({
             name: 'Label',
             description:
