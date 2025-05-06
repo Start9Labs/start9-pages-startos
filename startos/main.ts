@@ -27,7 +27,7 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
 
   let mounts = sdk.Mounts.of().addVolume('main', null, '/root', false)
 
-  if (config.pages.some((p) => p.source === 'filebrowser')) {
+  if (config.pages.some((p) => p.source.selection === 'filebrowser')) {
     mounts = mounts.addDependency<typeof FilebrowserManifest>(
       'filebrowser',
       'main',
@@ -36,7 +36,7 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
       true,
     )
   }
-  if (config.pages.some((p) => p.source === 'nextcloud')) {
+  if (config.pages.some((p) => p.source.selection === 'nextcloud')) {
     // @TODO mounts.addDependency<typeof NextcloudManifest>
     mounts = mounts.addDependency(
       'nextcloud',
@@ -101,13 +101,13 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
     const page = config.pages.find((p: any) => p.id === i.id)
     if (!page) continue
 
-    const { source, path, port, label, id } = page
+    const { source, port, label, id } = page
     const block = `
 server {
     listen ${port};
     listen [::]:${port};
     server_name _;
-    root ${source === 'filebrowser' ? filebrowserMountpoint : nextcloudMountpoint}/${path};
+    root ${source.selection === 'filebrowser' ? filebrowserMountpoint : nextcloudMountpoint}/${source.value.path};
     index index.html index.htm;
     location / {
         try_files $uri $uri/ =404;
