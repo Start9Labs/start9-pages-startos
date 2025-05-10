@@ -1,4 +1,7 @@
-import { sdk } from '../../sdk'
+import { sdk } from '../sdk'
+import { createPortGenerator, getLowercaseAlphaString } from '../utils'
+import { store } from '../file-models/store.json'
+
 const { InputSpec, Value, List, Variants } = sdk
 
 export const inputSpec = InputSpec.of({
@@ -89,4 +92,44 @@ export const inputSpec = InputSpec.of({
   ),
 })
 
-export type ConfigSpec = typeof inputSpec.validator._TYPE
+export const config = sdk.Action.withInput(
+  // id
+  'config',
+
+  // metadata
+  async ({ effects }) => ({
+    name: 'Settings',
+    description: 'Add and manage your pages',
+    warning: null,
+    allowedStatuses: 'any',
+    group: null,
+    visibility: 'enabled',
+  }),
+
+  // form input specification
+  inputSpec,
+
+  // optionally pre-fill the input form
+  async ({ effects }) => ({
+    pages: (await store.read((s) => s.pages).once()) || [],
+  }),
+
+  // the execution function
+  async ({ effects, input }) => {
+    const usedPortsRaw = (await store.read((s) => s.ports).once()) || []
+    const usedPorts = new Set(usedPortsRaw)
+
+    await store.merge(effects, {
+      ports: [...usedPorts],
+      pages: input.pages.map((p) => {
+        const newPort = createPortGenerator(usedPorts)
+        usedPorts.add(newPort)
+        return {
+          ...p,
+          id: p.id || getLowercaseAlphaString(),
+          port: p.port || newPort,
+        }
+      }),
+    })
+  },
+)

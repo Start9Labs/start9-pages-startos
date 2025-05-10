@@ -1,9 +1,10 @@
+import { store } from './file-models/store.json'
 import { sdk } from './sdk'
 
 export const setInterfaces = sdk.setupInterfaces(async ({ effects }) => {
-  const config = await sdk.store.getOwn(effects, sdk.StorePath.config).const()
+  const pages = (await store.read((s) => s.pages).const(effects)) || []
   return Promise.all(
-    config.pages.map(async (page) => {
+    pages.map(async (page) => {
       const { id, label, port } = page
       const multi = sdk.MultiHost.of(effects, id)
       const multiOrigin = await multi.bindPort(port, { protocol: 'http' })

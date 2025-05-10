@@ -2,6 +2,7 @@ import { sdk } from './sdk'
 import { SubContainer, T } from '@start9labs/start-sdk'
 import { writeFile, appendFile } from 'fs/promises'
 import { manifest as FilebrowserManifest } from 'filebrowser-startos/startos/manifest'
+import { store } from './file-models/store.json'
 
 export const main = sdk.setupMain(async ({ effects, started }) => {
   /**
@@ -16,7 +17,7 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
   // const depResult = await sdk.checkDependencies(effects)
   // depResult.throwIfNotSatisfied()
 
-  const config = await sdk.store.getOwn(effects, sdk.StorePath.config).const()
+  const pages = (await store.read((s) => s.pages).const(effects)) || []
 
   // ========================
   // Handle dependency mounts
@@ -25,26 +26,31 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
   const filebrowserMountpoint = '/mnt/filebrowser'
   const nextcloudMountpoint = '/mnt/nextcloud'
 
-  let mounts = sdk.Mounts.of().addVolume('main', null, '/root', false)
+  let mounts = sdk.Mounts.of().mountVolume({
+    volumeId: 'main',
+    subpath: null,
+    mountpoint: '/root',
+    readonly: false,
+  })
 
-  if (config.pages.some((p) => p.source.selection === 'filebrowser')) {
-    mounts = mounts.addDependency<typeof FilebrowserManifest>(
-      'filebrowser',
-      'main',
-      'files',
-      filebrowserMountpoint,
-      true,
-    )
+  if (pages.some((p) => p.source.selection === 'filebrowser')) {
+    mounts = mounts.mountDependency<typeof FilebrowserManifest>({
+      dependencyId: 'filebrowser',
+      volumeId: 'main',
+      subpath: 'files',
+      mountpoint: filebrowserMountpoint,
+      readonly: true,
+    })
   }
-  if (config.pages.some((p) => p.source.selection === 'nextcloud')) {
+  if (pages.some((p) => p.source.selection === 'nextcloud')) {
     // @TODO mounts.addDependency<typeof NextcloudManifest>
-    mounts = mounts.addDependency(
-      'nextcloud',
-      'main',
-      null,
-      nextcloudMountpoint,
-      true,
-    )
+    mounts = mounts.mountDependency({
+      dependencyId: 'nextcloud',
+      volumeId: 'main',
+      subpath: null,
+      mountpoint: nextcloudMountpoint,
+      readonly: true,
+    })
   }
 
   // ========================
@@ -98,7 +104,7 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
   const serverBlocks: string[] = []
 
   for (const i of interfaces) {
-    const page = config.pages.find((p: any) => p.id === i.id)
+    const page = pages.find((p: any) => p.id === i.id)
     if (!page) continue
 
     const { source, port, label, id } = page
