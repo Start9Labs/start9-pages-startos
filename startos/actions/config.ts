@@ -25,7 +25,7 @@ export const inputSpec = InputSpec.of({
           source: Value.union(
             {
               name: 'Source',
-              default: 'nextcloud',
+              default: 'filebrowser',
               description: 'The service that contains your website files.',
             },
             Variants.of({
