@@ -4,6 +4,7 @@ import { setInterfaces } from './interfaces'
 import { versions } from './versions'
 import { actions } from './actions'
 import { store } from './file-models/store.json'
+import { config } from './actions/config'
 
 // **** PreInstall ****
 const preInstall = sdk.setupPreInstall(async ({ effects }) => {
@@ -14,8 +15,11 @@ const preInstall = sdk.setupPreInstall(async ({ effects }) => {
 })
 
 // **** PostInstall ****
-const postInstall = sdk.setupPostInstall(async ({ effects }) => {})
-
+const postInstall = sdk.setupPostInstall(async ({ effects }) => {
+  await sdk.action.requestOwn(effects, config, 'important', {
+    reason: 'Create your first website!',
+  })
+})
 // **** Uninstall ****
 const uninstall = sdk.setupUninstall(async ({ effects }) => {})
 
