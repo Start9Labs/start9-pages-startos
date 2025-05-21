@@ -1,6 +1,6 @@
 import { sdk } from '../sdk'
 import { createPortGenerator, getLowercaseAlphaString } from '../utils'
-import { store } from '../file-models/store.json'
+import { store } from '../fileModels/store.json'
 
 const { InputSpec, Value, List, Variants } = sdk
 

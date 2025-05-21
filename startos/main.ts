@@ -2,7 +2,7 @@ import { sdk } from './sdk'
 import { SubContainer, T } from '@start9labs/start-sdk'
 import { writeFile, appendFile } from 'fs/promises'
 import { manifest as FilebrowserManifest } from 'filebrowser-startos/startos/manifest'
-import { store } from './file-models/store.json'
+import { store } from './fileModels/store.json'
 
 export const main = sdk.setupMain(async ({ effects, started }) => {
   /**
@@ -61,7 +61,7 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
   // Setup nginx
   // ========================
 
-  const pagesSub = await SubContainer.of(
+  const pagesSub = await sdk.SubContainer.of(
     effects,
     { imageId: 'pages' },
     mounts,
