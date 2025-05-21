@@ -14,6 +14,13 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
    */
   console.info('Starting Start9 Pages...')
 
+  // ========================
+  // Dependency checks
+  // ========================
+
+  const depResult = await sdk.checkDependencies(effects)
+  depResult.throwIfNotSatisfied()
+
   const pages = (await store.read((s) => s.pages).const(effects)) || []
 
   // ========================
