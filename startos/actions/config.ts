@@ -111,12 +111,12 @@ export const config = sdk.Action.withInput(
 
   // optionally pre-fill the input form
   async ({ effects }) => ({
-    pages: (await store.read().once())?.pages,
+    pages: (await store.read(s => s.pages).once()) || [],
   }),
 
   // the execution function
   async ({ effects, input }) => {
-    const usedPortsRaw = (await store.read().once())?.ports || []
+    const usedPortsRaw = (await store.read(s => s.ports).once()) || []
     const usedPorts = new Set(usedPortsRaw)
 
     await store.merge(effects, {
