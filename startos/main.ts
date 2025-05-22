@@ -1,5 +1,5 @@
 import { sdk } from './sdk'
-import { SubContainer, T } from '@start9labs/start-sdk'
+import { T } from '@start9labs/start-sdk'
 import { writeFile, appendFile } from 'fs/promises'
 import { manifest as FilebrowserManifest } from 'filebrowser-startos/startos/manifest'
 import { store } from './fileModels/store.json'
