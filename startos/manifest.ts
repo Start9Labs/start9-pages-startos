@@ -10,7 +10,7 @@ export const manifest = setupManifest({
   donationUrl: 'https://donate.start9.com/',
   marketingSite: 'https://start9.com',
   description: {
-    short: 'Create Tor websites, hosted on your personal server.',
+    short: 'Create websites, hosted on your personal server.',
     long: 'Start9 Pages is a simple web server that uses folders hosted on other internal services to serve websites over Tor and clearnet.',
   },
   volumes: ['main'],
