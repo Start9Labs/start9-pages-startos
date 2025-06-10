@@ -151,7 +151,9 @@ server {
     'primary',
     {
       subcontainer: pagesSub,
-      command: ['nginx', '-g', 'daemon off;'],
+      exec: {
+        command: ['nginx', '-g', 'daemon off;'],
+      },
       ready: {
         display: 'Hosting',
         fn: () =>
