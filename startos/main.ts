@@ -1,5 +1,4 @@
 import { sdk } from './sdk'
-import { T } from '@start9labs/start-sdk'
 import { writeFile, appendFile } from 'fs/promises'
 import { manifest as FilebrowserManifest } from 'filebrowser-startos/startos/manifest'
 import { store } from './fileModels/store.json'
@@ -8,7 +7,7 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
   /**
    * ======================== Additional Health Checks (optional) ========================
    */
-  const additionalChecks: T.HealthCheck[] = []
+  const additionalChecks = []
   /**
    * ======================== Setup ========================
    */
@@ -125,15 +124,20 @@ server {
 }
 `
     serverBlocks.push(block)
-    const healthCheck = sdk.HealthCheck.of(effects, {
-      id: `${id}-health-check`,
-      name: `${label}`,
-      fn: async () =>
-        sdk.healthCheck.checkPortListening(effects, port, {
-          successMessage: `Running`,
-          errorMessage: `Unavailable`,
-        }),
-    })
+    const healthCheck = {
+      id: `${id}-health-check` as const,
+      check: {
+        ready: {
+          display: label,
+          fn: async () =>
+            sdk.healthCheck.checkPortListening(effects, port, {
+              successMessage: `Running`,
+              errorMessage: `Unavailable`,
+            }),
+        },
+        requires: ['primary' as const],
+      },
+    }
     additionalChecks.push(healthCheck)
   }
 
@@ -147,22 +151,27 @@ server {
   /**
    *  ======================== Daemons ========================
    */
-  return sdk.Daemons.of(effects, started, additionalChecks).addDaemon(
-    'primary',
-    {
-      subcontainer: pagesSub,
-      exec: {
-        command: ['nginx', '-g', 'daemon off;'],
-      },
-      ready: {
-        display: 'Hosting',
-        fn: () =>
-          sdk.healthCheck.checkPortListening(effects, 80, {
-            successMessage: 'Ready to serve web pages',
-            errorMessage: 'Unavailable',
-          }),
-      },
-      requires: [],
+  const daemon = sdk.Daemons.of(effects, started).addDaemon('primary', {
+    subcontainer: pagesSub,
+    exec: {
+      command: ['nginx', '-g', 'daemon off;'],
     },
-  )
+    ready: {
+      display: 'Hosting',
+      fn: () =>
+        sdk.healthCheck.checkPortListening(effects, 80, {
+          successMessage: 'Ready to serve web pages',
+          errorMessage: 'Unavailable',
+        }),
+    },
+    requires: [],
+  })
+
+  if(additionalChecks.length) {
+    additionalChecks.forEach((h) => {
+      daemon.addHealthCheck(h.id, h.check)
+    })
+  }
+  
+  return daemon
 })

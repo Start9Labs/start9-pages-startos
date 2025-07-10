@@ -22,13 +22,11 @@ export const inputSpec = InputSpec.of({
             required: true,
             default: 'My website',
           }),
-          source: Value.union(
-            {
-              name: 'Source',
-              default: 'filebrowser',
-              description: 'The service that contains your website files.',
-            },
-            Variants.of({
+          source: Value.union({
+            name: 'Source',
+            default: 'filebrowser',
+            description: 'The service that contains your website files.',
+            variants: Variants.of({
               nextcloud: {
                 name: 'Nextcloud',
                 spec: InputSpec.of({
@@ -85,7 +83,7 @@ export const inputSpec = InputSpec.of({
                 }),
               },
             }),
-          ),
+          }),
         }),
       },
     ),
@@ -111,12 +109,12 @@ export const config = sdk.Action.withInput(
 
   // optionally pre-fill the input form
   async ({ effects }) => ({
-    pages: (await store.read(s => s.pages).once()) || [],
+    pages: (await store.read((s) => s.pages).once()) || [],
   }),
 
   // the execution function
   async ({ effects, input }) => {
-    const usedPortsRaw = (await store.read(s => s.ports).once()) || []
+    const usedPortsRaw = (await store.read((s) => s.ports).once()) || []
     const usedPorts = new Set(usedPortsRaw)
 
     await store.merge(effects, {
@@ -126,8 +124,8 @@ export const config = sdk.Action.withInput(
         usedPorts.add(newPort)
         return {
           ...p,
-          id: p.id || getLowercaseAlphaString(),
-          port: p.port || newPort,
+          id: (p.id as string) || getLowercaseAlphaString(),
+          port: (p.port as number) || newPort,
         }
       }),
     })

@@ -34,13 +34,12 @@ export const manifest = setupManifest({
     filebrowser: {
       description: 'Used to upload files to serve.',
       optional: true,
-      s9pk: '../filebrowser-startos/filebrowser.s9pk',
+      s9pk: 'https://github.com/Start9Labs/filebrowser-startos/releases/download/v2.32.0-040/filebrowser.s9pk',
     },
     nextcloud: {
       description: 'Used to upload files to serve.',
       optional: true,
-      // @TODO replace with nextcloud
-      s9pk: '../hello-world-startos/hello-world.s9pk',
+      s9pk: 'https://github.com/Start9Labs/nextcloud-startos/releases/download/v29.0.14.1/nextcloudV2.s9pk',
     },
   },
 })
