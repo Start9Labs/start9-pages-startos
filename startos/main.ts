@@ -105,14 +105,10 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
   } catch (e) {
     throw e
   }
-  const interfaces = await sdk.serviceInterface.getAllOwn(effects).const()
   const serverBlocks: string[] = []
 
-  for (const i of interfaces) {
-    const page = pages.find((p: any) => p.id === i.id)
-    if (!page) continue
-
-    const { source, port, label, id } = page
+  for (const page of pages) {
+    const { source, port } = page
     const block = `
 server {
     listen ${port};
@@ -126,21 +122,6 @@ server {
 }
 `
     serverBlocks.push(block)
-    const healthCheck = {
-      id: `${id}-health-check` as const,
-      check: {
-        ready: {
-          display: label,
-          fn: async () =>
-            sdk.healthCheck.checkPortListening(effects, port, { // check url
-              successMessage: `Running`,
-              errorMessage: `Unavailable`,
-            }),
-        },
-        requires: ['primary' as const],
-      },
-    }
-    additionalChecks.push(healthCheck)
   }
 
   // Write to file
@@ -168,12 +149,6 @@ server {
     },
     requires: [],
   })
-
-  if(additionalChecks.length) {
-    additionalChecks.forEach((h) => {
-      daemon.addHealthCheck(h.id, h.check)
-    })
-  }
   
   return daemon
 })
