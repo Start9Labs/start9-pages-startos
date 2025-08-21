@@ -22,6 +22,8 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
 
   const pages = (await store.read((s) => s.pages).const(effects)) || []
 
+  console.log('*** MAIN PAGES: ', pages)
+
   // ========================
   // Handle dependency mounts
   // ========================

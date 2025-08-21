@@ -31,6 +31,7 @@ export const inputSpec = InputSpec.of({
           id: Value.hidden(),
           port: Value.hidden(),
           label: Value.text({
+            // @TODO validate must be unique per page
             name: 'Label',
             description:
               "The friendly name of this page (e.g. 'My Marketing Site')",
@@ -120,6 +121,7 @@ export const config = sdk.Action.withInput(
   },
 )
 
+// @TODO
 // instructions with examples
 // update descriptions
 // input validation - looks like a path - no proceeding slash for uniformity
