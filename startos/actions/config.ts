@@ -4,6 +4,22 @@ import { store } from '../fileModels/store.json'
 
 const { InputSpec, Value, List, Variants } = sdk
 
+const path = Value.text({
+  name: 'Path to website folder',
+  required: true,
+  default: null,
+  description:
+    'The path to the folder that contains your website. The folder must contain one of these files: index index.html index.htm. For example, if the root of your source service has a folder called websites, the path "websites/resume" would tell Start9 Pages to look for the website files at that path.',
+  placeholder: 'e.g. websites/resume',
+  patterns: [
+    {
+      regex:
+        '^(\\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)(/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)*/?$',
+      description: 'Must be a valid relative file path, *not* a specific file name',
+    },
+  ],
+})
+
 export const inputSpec = InputSpec.of({
   pages: Value.list(
     List.obj(
@@ -45,41 +61,13 @@ export const inputSpec = InputSpec.of({
                       },
                     ],
                   }),
-                  path: Value.text({
-                    name: 'Path',
-                    required: true,
-                    default: null,
-                    description:
-                      'The path to the folder that contains the static files of your website. For example, a value of "projects/resume" would tell Embassy Pages to look for that folder path in the selected service.',
-                    placeholder: 'e.g. websites/resume',
-                    patterns: [
-                      {
-                        regex:
-                          '^(\\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)(/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)*/?$',
-                        description: 'Must be a valid relative file path',
-                      },
-                    ],
-                  }),
+                  path,
                 }),
               },
               filebrowser: {
                 name: 'Filebrowser',
                 spec: InputSpec.of({
-                  path: Value.text({
-                    name: 'Path',
-                    required: true,
-                    default: null,
-                    description:
-                      'The path to the folder that contains the static files of your website. For example, a value of "projects/resume" would tell Start9 Pages to look for that folder path in the selected service.',
-                    placeholder: 'e.g. websites/resume',
-                    patterns: [
-                      {
-                        regex:
-                          '^(\\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)(/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)*/?$',
-                        description: 'Must be a valid relative file path',
-                      },
-                    ],
-                  }),
+                  path,
                 }),
               },
             }),
@@ -131,3 +119,8 @@ export const config = sdk.Action.withInput(
     })
   },
 )
+
+// instructions with examples
+// update descriptions
+// input validation - looks like a path - no proceeding slash for uniformity
+// js validation on validity of the path - directory + contains any of index index.html index.htm

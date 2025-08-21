@@ -1,4 +1,10 @@
 import { setupManifest } from '@start9labs/start-sdk'
+import { SDKImageInputSpec } from '@start9labs/start-sdk/base/lib/types/ManifestTypes'
+
+const BUILD = process.env.BUILD || ''
+
+const architectures =
+  BUILD === 'x86_64' || BUILD === 'aarch64' ? [BUILD] : ['x86_64', 'aarch64']
 
 export const manifest = setupManifest({
   id: 'start9-pages',
@@ -9,6 +15,8 @@ export const manifest = setupManifest({
   supportSite: 'https://matrix.to/#/#start9-pages:start9.me',
   donationUrl: 'https://donate.start9.com/',
   marketingSite: 'https://start9.com',
+  docsUrl:
+    'https://github.com/Start9Labs/start9-pages-startos/blob/master/instructions.md',
   description: {
     short: 'Create websites, hosted on your personal server.',
     long: 'Start9 Pages is a simple web server that uses folders hosted on other internal services to serve websites over Tor and clearnet.',
@@ -19,7 +27,11 @@ export const manifest = setupManifest({
       source: {
         dockerTag: 'nginx:stable-alpine',
       },
-    },
+      arch: architectures,
+    } as SDKImageInputSpec,
+  },
+  hardwareRequirements: {
+    arch: architectures,
   },
   alerts: {
     install: null,

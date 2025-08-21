@@ -130,7 +130,7 @@ server {
         ready: {
           display: label,
           fn: async () =>
-            sdk.healthCheck.checkPortListening(effects, port, {
+            sdk.healthCheck.checkPortListening(effects, port, { // check url
               successMessage: `Running`,
               errorMessage: `Unavailable`,
             }),
