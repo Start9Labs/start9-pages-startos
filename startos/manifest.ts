@@ -3,7 +3,7 @@ import { SDKImageInputSpec } from '@start9labs/start-sdk/base/lib/types/Manifest
 
 const BUILD = process.env.BUILD || ''
 
-const architectures =
+const arch =
   BUILD === 'x86_64' || BUILD === 'aarch64' ? [BUILD] : ['x86_64', 'aarch64']
 
 export const manifest = setupManifest({
@@ -27,11 +27,11 @@ export const manifest = setupManifest({
       source: {
         dockerTag: 'nginx:stable-alpine',
       },
-      arch: architectures,
+      arch,
     } as SDKImageInputSpec,
   },
   hardwareRequirements: {
-    arch: architectures,
+    arch,
   },
   alerts: {
     install: null,
