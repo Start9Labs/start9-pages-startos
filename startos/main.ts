@@ -1,28 +1,24 @@
 import { sdk } from './sdk'
 import { writeFile, appendFile } from 'fs/promises'
 import { manifest as FilebrowserManifest } from 'filebrowser-startos/startos/manifest'
-import { store } from './fileModels/store.json'
+import { storeJson } from './fileModels/store.json'
 
 export const main = sdk.setupMain(async ({ effects, started }) => {
-  /**
-   * ======================== Additional Health Checks (optional) ========================
-   */
-  const additionalChecks = []
   /**
    * ======================== Setup ========================
    */
   console.info('Starting Start9 Pages...')
 
-  // ========================
+  const pages = (await storeJson.read((s) => s.pages).const(effects)) || []
+
+  console.log('*** PAGES *** ', JSON.stringify(pages))
+
+  // =================
   // Dependency checks
-  // ========================
+  // =================
 
   const depResult = await sdk.checkDependencies(effects)
   depResult.throwIfNotSatisfied()
-
-  const pages = (await store.read((s) => s.pages).const(effects)) || []
-
-  console.log('*** MAIN PAGES: ', pages)
 
   // ========================
   // Handle dependency mounts
@@ -48,7 +44,8 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
     })
   }
   if (pages.some((p) => p.source.selection === 'nextcloud')) {
-    // @TODO mounts.addDependency<typeof NextcloudManifest>
+    // @TODO
+    // mounts = mounts.mountDependency<typeof NextcloudManifest>
     mounts = mounts.mountDependency({
       dependencyId: 'nextcloud',
       volumeId: 'main',
@@ -58,9 +55,9 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
     })
   }
 
-  // ========================
+  // ===========
   // Setup nginx
-  // ========================
+  // ===========
 
   const pagesSub = await sdk.SubContainer.of(
     effects,
@@ -109,6 +106,7 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
 
   for (const page of pages) {
     const { source, port } = page
+
     const block = `
 server {
     listen ${port};
@@ -149,6 +147,6 @@ server {
     },
     requires: [],
   })
-  
+
   return daemon
 })

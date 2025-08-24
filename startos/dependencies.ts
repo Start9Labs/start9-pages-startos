@@ -1,11 +1,11 @@
 import { T } from '@start9labs/start-sdk'
 import { sdk } from './sdk'
-import { store } from './fileModels/store.json'
+import { storeJson } from './fileModels/store.json'
 
 export const setDependencies = sdk.setupDependencies(async ({ effects }) => {
-  const pages = (await store.read((s) => s.pages).const(effects)) || []
+  const pages = (await storeJson.read((s) => s.pages).const(effects)) || []
 
-  let currentDeps = {} as Record<
+  const currentDeps = {} as Record<
     'filebrowser' | 'nextcloud',
     T.DependencyRequirement
   >

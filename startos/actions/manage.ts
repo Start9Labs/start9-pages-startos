@@ -1,21 +1,20 @@
 import { sdk } from '../sdk'
-import { createPortGenerator, getLowercaseAlphaString } from '../utils'
-import { store } from '../fileModels/store.json'
+import { shape, storeJson } from '../fileModels/store.json'
 
 const { InputSpec, Value, List, Variants } = sdk
 
 const path = Value.text({
-  name: 'Path to website folder',
+  name: 'Folder Location',
   required: true,
   default: null,
   description:
-    'The path to the folder that contains your website. The folder must contain one of these files: index index.html index.htm. For example, if the root of your source service has a folder called websites, the path "websites/resume" would tell Start9 Pages to look for the website files at that path.',
-  placeholder: 'e.g. websites/resume',
+    'The full path to the Filebrowser/Nextcloud folder that contains your website files. The folder must contain one of: index, index.html, or index.htm.',
+  placeholder: 'e.g. websites/marketing-site',
   patterns: [
     {
       regex:
         '^(\\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)(/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)*/?$',
-      description: 'Must be a valid relative file path, *not* a specific file name',
+      description: 'Must be a valid file path',
     },
   ],
 })
@@ -23,32 +22,31 @@ const path = Value.text({
 export const inputSpec = InputSpec.of({
   pages: Value.list(
     List.obj(
-      { name: 'Pages' },
+      { name: 'Websites' },
       {
-        displayAs: '{{label}}',
-        uniqueBy: 'label',
+        displayAs: '{{name}}',
+        uniqueBy: { all: ['port', 'name'] },
         spec: InputSpec.of({
-          id: Value.hidden(),
-          port: Value.hidden(),
-          label: Value.text({
-            // @TODO validate must be unique per page
-            name: 'Label',
+          // @TODO Aiden how to type of number?
+          port: Value.hidden<number>(),
+          name: Value.text({
+            name: 'Name',
             description:
-              "The friendly name of this page (e.g. 'My Marketing Site')",
-            placeholder: 'My website',
+              'A unique name to identify this website (e.g. "Marketing Site")',
+            placeholder: 'My Website',
             required: true,
-            default: 'My website',
+            default: null,
           }),
           source: Value.union({
             name: 'Source',
             default: 'filebrowser',
-            description: 'The service that contains your website files.',
+            description: 'The service that contains your website files',
             variants: Variants.of({
               nextcloud: {
                 name: 'Nextcloud',
                 spec: InputSpec.of({
                   user: Value.text({
-                    name: 'User',
+                    name: 'Nextcloud User',
                     required: true,
                     default: 'admin',
                     description:
@@ -79,14 +77,14 @@ export const inputSpec = InputSpec.of({
   ),
 })
 
-export const config = sdk.Action.withInput(
+export const manage = sdk.Action.withInput(
   // id
-  'config',
+  'manage',
 
   // metadata
   async ({ effects }) => ({
-    name: 'Settings',
-    description: 'Add and manage your pages',
+    name: 'Manage Websites',
+    description: 'Add, edit, and remove websites',
     warning: null,
     allowedStatuses: 'any',
     group: null,
@@ -98,31 +96,29 @@ export const config = sdk.Action.withInput(
 
   // optionally pre-fill the input form
   async ({ effects }) => ({
-    pages: (await store.read((s) => s.pages).once()) || [],
+    pages: (await storeJson.read((s) => s.pages).once()) || [],
   }),
 
   // the execution function
   async ({ effects, input }) => {
-    const usedPortsRaw = (await store.read((s) => s.ports).once()) || []
-    const usedPorts = new Set(usedPortsRaw)
+    const usedPorts: number[] = []
+    const pages: (typeof shape._TYPE)['pages'] = []
 
-    await store.merge(effects, {
-      ports: [...usedPorts],
-      pages: input.pages.map((p) => {
-        const newPort = createPortGenerator(usedPorts)
-        usedPorts.add(newPort)
-        return {
-          ...p,
-          id: (p.id as string) || getLowercaseAlphaString(),
-          port: (p.port as number) || newPort,
-        }
-      }),
+    input.pages.forEach((page) => {
+      // @TODO Aiden validate path. Must be a directory that contains one of: index, index.html, index.htm
+      const port = (page.port as number) || getPort(usedPorts)
+      usedPorts.push(port)
+      pages.push({ ...page, port })
     })
+
+    await storeJson.write(effects, { pages })
   },
 )
 
-// @TODO
-// instructions with examples
-// update descriptions
-// input validation - looks like a path - no proceeding slash for uniformity
-// js validation on validity of the path - directory + contains any of index index.html index.htm
+function getPort(usedPorts: number[]) {
+  let port = 8000
+  while (usedPorts.includes(port)) {
+    port++
+  }
+  return port
+}

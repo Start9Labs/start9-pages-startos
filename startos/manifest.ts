@@ -16,7 +16,7 @@ export const manifest = setupManifest({
   donationUrl: 'https://donate.start9.com/',
   marketingSite: 'https://start9.com',
   docsUrl:
-    'https://github.com/Start9Labs/start9-pages-startos/blob/master/instructions.md',
+    'https://github.com/Start9Labs/start9-pages-startos/blob/master/docs/instructions.md',
   description: {
     short: 'Create websites, hosted on your personal server.',
     long: 'Start9 Pages is a simple web server that uses folders hosted on other internal services to serve websites over Tor and clearnet.',

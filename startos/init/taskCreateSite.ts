@@ -1,8 +1,13 @@
-import { config } from '../actions/config'
+import { manage } from '../actions/manage'
+import { storeJson } from '../fileModels/store.json'
 import { sdk } from '../sdk'
 
 export const taskCreateSite = sdk.setupOnInit(async (effects) => {
-  await sdk.action.createOwnTask(effects, config, 'optional', {
-    reason: 'Create your first website!',
-  })
+  const pages = await storeJson.read((s) => s.pages).const(effects)
+
+  if (!pages?.length) {
+    await sdk.action.createOwnTask(effects, manage, 'critical', {
+      reason: 'Add your first website!',
+    })
+  }
 })
