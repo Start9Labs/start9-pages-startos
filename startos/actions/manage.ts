@@ -105,8 +105,6 @@ export const manage = sdk.Action.withInput(
       input.pages.filter((p) => !!p.port).map((p) => p.port as number),
     )
 
-    console.log('&& PAGES &&', input.pages)
-
     const pages = input.pages.map((page) => {
       // @TODO Aiden validate path. Must be a directory that contains one of: index, index.html, index.htm
       const port = page.port || getPort(usedPorts)
