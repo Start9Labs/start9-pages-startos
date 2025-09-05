@@ -9,7 +9,7 @@ const path = Value.text({
   required: true,
   default: null,
   description:
-    'The full path to the Filebrowser/Nextcloud folder that contains your website files. The folder must contain one of: index, index.html, or index.htm.',
+    'The full path to the Filebrowser/Nextcloud folder you want to host. If the folder contains one of: index, index.html, or index.htm files, that web page will be served.',
   placeholder: 'e.g. websites/marketing-site',
   patterns: [
     {
@@ -106,7 +106,7 @@ export const manage = sdk.Action.withInput(
     )
 
     const pages = input.pages.map((page) => {
-      // @TODO Aiden validate path. Must be a directory that contains one of: index, index.html, index.htm
+      // @TODO Aiden validate path. Must be a directory
       const port = page.port || getPort(usedPorts)
       usedPorts.add(port)
       return { ...page, port }
