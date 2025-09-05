@@ -1,5 +1,6 @@
 import { sdk } from '../sdk'
-import { shape, storeJson } from '../fileModels/store.json'
+import { storeJson } from '../fileModels/store.json'
+import { matches } from '@start9labs/start-sdk'
 
 const { InputSpec, Value, List, Variants } = sdk
 
@@ -27,8 +28,7 @@ export const inputSpec = InputSpec.of({
         displayAs: '{{name}}',
         uniqueBy: { all: ['port', 'name'] },
         spec: InputSpec.of({
-          // @TODO Aiden how to type of number?
-          port: Value.hidden<number>(),
+          port: Value.hidden(matches.number.nullable()),
           name: Value.text({
             name: 'Name',
             description:
@@ -101,23 +101,26 @@ export const manage = sdk.Action.withInput(
 
   // the execution function
   async ({ effects, input }) => {
-    const usedPorts: number[] = []
-    const pages: (typeof shape._TYPE)['pages'] = []
+    const usedPorts = new Set(
+      input.pages.filter((p) => !!p.port).map((p) => p.port as number),
+    )
 
-    input.pages.forEach((page) => {
+    console.log('&& PAGES &&', input.pages)
+
+    const pages = input.pages.map((page) => {
       // @TODO Aiden validate path. Must be a directory that contains one of: index, index.html, index.htm
-      const port = (page.port as number) || getPort(usedPorts)
-      usedPorts.push(port)
-      pages.push({ ...page, port })
+      const port = page.port || getPort(usedPorts)
+      usedPorts.add(port)
+      return { ...page, port }
     })
 
     await storeJson.write(effects, { pages })
   },
 )
 
-function getPort(usedPorts: number[]) {
+export function getPort(usedPorts: Set<number>) {
   let port = 8000
-  while (usedPorts.includes(port)) {
+  while (usedPorts.has(port)) {
     port++
   }
   return port
