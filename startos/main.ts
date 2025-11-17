@@ -11,8 +11,6 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
 
   const pages = (await storeJson.read((s) => s.pages).const(effects)) || []
 
-  console.log('*** PAGES *** ', JSON.stringify(pages))
-
   // =================
   // Dependency checks
   // =================

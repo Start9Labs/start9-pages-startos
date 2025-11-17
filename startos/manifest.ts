@@ -18,8 +18,8 @@ export const manifest = setupManifest({
   docsUrl:
     'https://github.com/Start9Labs/start9-pages-startos/blob/master/docs/instructions.md',
   description: {
-    short: 'Create websites, hosted on your personal server.',
-    long: 'Start9 Pages is a simple web server that uses folders hosted on other internal services to serve websites over Tor and clearnet.',
+    short: 'A simple service for self-hosting static websites',
+    long: 'Self-host any number of static websites right from your StartOS server. Expose your websites over Tor, Clearnet, or both.',
   },
   volumes: ['main'],
   images: {
@@ -36,7 +36,7 @@ export const manifest = setupManifest({
   alerts: {
     install: null,
     update:
-      'This major release completely changes the configuration to utilize new OS functionality. Your previous configurations will be lost, but your website data will still exist. Please reconfigure your pages using the new options.',
+      'This release is not backwards compatible. Updating will cause your current websites to go offline. Your website data, however, will remain as-is in File Browser or NextCloud. Simply reconfigure your pages using the new options.',
     uninstall: null,
     restore: null,
     start: null,
@@ -44,12 +44,12 @@ export const manifest = setupManifest({
   },
   dependencies: {
     filebrowser: {
-      description: 'Used to upload files to serve.',
+      description: 'Used for storing static website files',
       optional: true,
       s9pk: 'https://github.com/Start9Labs/filebrowser-startos/releases/download/v2.32.0-040/filebrowser.s9pk',
     },
     nextcloud: {
-      description: 'Used to upload files to serve.',
+      description: 'Used for storing static website files',
       optional: true,
       s9pk: 'https://github.com/Start9Labs/nextcloud-startos/releases/download/v29.0.14.1/nextcloudV2.s9pk',
     },
