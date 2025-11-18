@@ -25,7 +25,7 @@ export const manifest = setupManifest({
   images: {
     pages: {
       source: {
-        dockerTag: 'nginx:stable-alpine',
+        dockerTag: 'fholzer/nginx-brotli',
       },
       arch,
     } as SDKImageInputSpec,

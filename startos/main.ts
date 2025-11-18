@@ -1,5 +1,5 @@
 import { sdk } from './sdk'
-import { writeFile, appendFile } from 'fs/promises'
+import { writeFile } from 'fs/promises'
 import { manifest as FilebrowserManifest } from 'filebrowser-startos/startos/manifest'
 import { storeJson } from './fileModels/store.json'
 
@@ -70,43 +70,112 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
   try {
     await writeFile(
       nginxConf,
-      `
-      user  nginx;
-      worker_processes  auto;
-  
-      error_log  /var/log/nginx/error.log notice;
-      pid        /var/run/nginx.pid;
-  
-      events {
-        worker_connections  1024;
-      }
-  
-      http {
-        include       /etc/nginx/mime.types;
-        default_type  application/octet-stream;
-        log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
-                          '$status $body_bytes_sent "$http_referer" '
-                          '"$http_user_agent" "$http_x_forwarded_for"';
-  
-        access_log  /var/log/nginx/access.log  main;
-        sendfile        on;
-        #tcp_nopush     on;
-        keepalive_timeout  65;
-        #gzip  on;
-        server_names_hash_bucket_size 128;
-        include /etc/nginx/conf.d/*.conf;
-      }`,
+      `user  nginx;
+worker_processes  auto;
+
+error_log  /var/log/nginx/error.log notice;
+pid        /var/run/nginx.pid;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                    '$status $body_bytes_sent "$http_referer" '
+                    '"$http_user_agent" "$http_x_forwarded_for"';
+
+    sendfile on;
+    tcp_nopush on;
+    tcp_nodelay on;
+    keepalive_timeout 65;
+    keepalive_requests 10000;
+    types_hash_max_size 4096;
+    server_names_hash_bucket_size 128;
+
+    access_log  /var/log/nginx/access.log  main;
+
+    brotli on;
+    brotli_comp_level 5;           # 1–11, 4–6 is a good balance
+    brotli_static on;              # serve precompressed .br files if present
+    brotli_types
+        text/plain
+        text/css
+        text/javascript
+        application/javascript
+        application/json
+        application/xml
+        application/xml+rss
+        image/svg+xml
+        font/woff
+        font/woff2;
+
+    gzip on;
+    gzip_disable "msie6";
+    gzip_vary on;
+    gzip_proxied any;
+    gzip_comp_level 6;
+    gzip_buffers 16 8k;
+    gzip_min_length 1024;
+    gzip_http_version 1.1;
+
+    gzip_types
+        text/plain
+        text/css
+        text/xml
+        text/javascript
+        application/javascript
+        application/json
+        application/xml
+        application/xml+rss
+        application/atom+xml
+        application/vnd.ms-fontobject
+        application/x-font-ttf
+        font/opentype
+        image/svg+xml
+        application/x-font-woff
+        application/font-woff
+        application/font-woff2;
+
+    # Cache static assets for 30 days
+    map $sent_http_content_type $expires {
+        "~*text/html"                 off;      # never cache HTML
+        "~*application/json"          off;      # usually dynamic
+        "~*text/javascript"           max;      # hash-named JS
+        "~*application/javascript"    max;
+        "~*text/css"                  max;      # hash-named CSS
+        "~*image/"                    max;
+        "~*font/"                     max;
+        default                       7d;
+    }
+    expires $expires;
+
+    add_header X-Frame-Options SAMEORIGIN;
+    add_header X-Content-Type-Options nosniff;
+    add_header Referrer-Policy strict-origin-when-cross-origin;
+    add_header X-XSS-Protection "1; mode=block";
+
+    include /etc/nginx/conf.d/*.conf;
+}`,
     )
   } catch (e) {
     throw e
   }
-  const serverBlocks: string[] = []
+  const serverBlocks: string[] = [
+    `server {
+    listen 80;
+    listen [::]:80;
+    server_name _;
+    return 444; # silently close connection
+}`,
+  ]
 
   for (const page of pages) {
     const { source, port } = page
 
-    const block = `
-server {
+    const block = `server {
     listen ${port};
     listen [::]:${port};
     server_name _;
@@ -116,14 +185,13 @@ server {
         try_files $uri $uri/ =404;
         autoindex on;
     }
-}
-`
+}`
     serverBlocks.push(block)
   }
 
   // Write to file
   try {
-    await appendFile(nginxDefaultConf, serverBlocks.join('\n\n'))
+    await writeFile(nginxDefaultConf, serverBlocks.join('\n\n'))
   } catch (e) {
     throw e
   }
