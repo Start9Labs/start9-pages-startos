@@ -1,22 +1,16 @@
 import { sdk } from './sdk'
 import { writeFile } from 'fs/promises'
 import { manifest as FilebrowserManifest } from 'filebrowser-startos/startos/manifest'
+import { manifest as NextcloudManifest } from 'nextcloud-startos/startos/manifest'
 import { storeJson } from './fileModels/store.json'
 
-export const main = sdk.setupMain(async ({ effects, started }) => {
+export const main = sdk.setupMain(async ({ effects }) => {
   /**
    * ======================== Setup ========================
    */
   console.info('Starting Start9 Pages...')
 
   const pages = (await storeJson.read((s) => s.pages).const(effects)) || []
-
-  // =================
-  // Dependency checks
-  // =================
-
-  const depResult = await sdk.checkDependencies(effects)
-  depResult.throwIfNotSatisfied()
 
   // ========================
   // Handle dependency mounts
@@ -28,25 +22,23 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
   let mounts = sdk.Mounts.of().mountVolume({
     volumeId: 'main',
     subpath: null,
-    mountpoint: '/root',
+    mountpoint: '/data',
     readonly: false,
   })
 
   if (pages.some((p) => p.source.selection === 'filebrowser')) {
     mounts = mounts.mountDependency<typeof FilebrowserManifest>({
       dependencyId: 'filebrowser',
-      volumeId: 'main',
-      subpath: 'files',
+      volumeId: 'data',
+      subpath: null,
       mountpoint: filebrowserMountpoint,
       readonly: true,
     })
   }
   if (pages.some((p) => p.source.selection === 'nextcloud')) {
-    // @TODO
-    // mounts = mounts.mountDependency<typeof NextcloudManifest>
-    mounts = mounts.mountDependency({
+    mounts = mounts.mountDependency<typeof NextcloudManifest>({
       dependencyId: 'nextcloud',
-      volumeId: 'main',
+      volumeId: 'nextcloud',
       subpath: null,
       mountpoint: nextcloudMountpoint,
       readonly: true,
@@ -67,10 +59,65 @@ export const main = sdk.setupMain(async ({ effects, started }) => {
   const nginxDefaultConf = `${pagesSub.rootfs}/etc/nginx/conf.d/default.conf`
   const nginxConf = `${pagesSub.rootfs}/etc/nginx/nginx.conf`
 
-  try {
-    await writeFile(
-      nginxConf,
-      `user  nginx;
+  await writeFile(nginxConf, nginxFile)
+
+  const serverBlocks: string[] = [
+    `server {
+    listen 80;
+    listen [::]:80;
+    server_name _;
+    return 444; # silently close connection
+}`,
+  ]
+
+  for (const page of pages) {
+    const { source, port } = page
+
+    const root =
+      source.selection === 'nextcloud'
+        ? `${nextcloudMountpoint}/data/${source.value.user}/files/${source.value.path}`
+        : `${filebrowserMountpoint}/${source.value.path}`
+
+    const block = `server {
+    listen ${port};
+    listen [::]:${port};
+    server_name _;
+    root ${root};
+    index index.html index.htm;
+    location / {
+        try_files $uri $uri/ =404;
+        autoindex on;
+    }
+}`
+    serverBlocks.push(block)
+  }
+
+  // Write to file
+  await writeFile(nginxDefaultConf, serverBlocks.join('\n\n'))
+
+  /**
+   *  ======================== Daemons ========================
+   */
+  const daemon = sdk.Daemons.of(effects).addDaemon('primary', {
+    subcontainer: pagesSub,
+    exec: {
+      command: ['nginx', '-g', 'daemon off;'],
+    },
+    ready: {
+      display: 'Hosting',
+      fn: () =>
+        sdk.healthCheck.checkPortListening(effects, 80, {
+          successMessage: 'Ready to serve web pages',
+          errorMessage: 'Unavailable',
+        }),
+    },
+    requires: [],
+  })
+
+  return daemon
+})
+
+const nginxFile = `user  nginx;
 worker_processes  auto;
 
 error_log  /var/log/nginx/error.log notice;
@@ -158,62 +205,4 @@ http {
     add_header X-XSS-Protection "1; mode=block";
 
     include /etc/nginx/conf.d/*.conf;
-}`,
-    )
-  } catch (e) {
-    throw e
-  }
-  const serverBlocks: string[] = [
-    `server {
-    listen 80;
-    listen [::]:80;
-    server_name _;
-    return 444; # silently close connection
-}`,
-  ]
-
-  for (const page of pages) {
-    const { source, port } = page
-
-    const block = `server {
-    listen ${port};
-    listen [::]:${port};
-    server_name _;
-    root ${source.selection === 'filebrowser' ? filebrowserMountpoint : nextcloudMountpoint}/${source.value.path};
-    index index.html index.htm;
-    location / {
-        try_files $uri $uri/ =404;
-        autoindex on;
-    }
 }`
-    serverBlocks.push(block)
-  }
-
-  // Write to file
-  try {
-    await writeFile(nginxDefaultConf, serverBlocks.join('\n\n'))
-  } catch (e) {
-    throw e
-  }
-
-  /**
-   *  ======================== Daemons ========================
-   */
-  const daemon = sdk.Daemons.of(effects, started).addDaemon('primary', {
-    subcontainer: pagesSub,
-    exec: {
-      command: ['nginx', '-g', 'daemon off;'],
-    },
-    ready: {
-      display: 'Hosting',
-      fn: () =>
-        sdk.healthCheck.checkPortListening(effects, 80, {
-          successMessage: 'Ready to serve web pages',
-          errorMessage: 'Unavailable',
-        }),
-    },
-    requires: [],
-  })
-
-  return daemon
-})

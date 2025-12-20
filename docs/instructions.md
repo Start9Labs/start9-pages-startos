@@ -1,8 +1,6 @@
-# About
+# Start9 Pages Instructions
 
-Start9 Pages provides a simple way to host static websites on StartOS.
-
-# Adding a Website
+## Adding a Website
 
 1. Start9 Pages reads from File Browser or Nextcloud. So at least one of these must be installed.
 1. Upload a single folder containing your website files to File Browser or NextCloud. A typical website folder will look like the following. The folder _must_ contain one of: `index`, `index.html`, or `index.htm`.
