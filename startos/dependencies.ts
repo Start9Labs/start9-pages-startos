@@ -5,24 +5,20 @@ import { storeJson } from './fileModels/store.json'
 export const setDependencies = sdk.setupDependencies(async ({ effects }) => {
   const pages = (await storeJson.read((s) => s.pages).const(effects)) || []
 
-  const currentDeps = {} as Record<
-    'filebrowser' | 'nextcloud',
-    T.DependencyRequirement
-  >
+  const deps: T.CurrentDependenciesResult<any> = {}
+
   if (pages.some((p) => p.source.selection === 'filebrowser')) {
-    currentDeps['filebrowser'] = {
-      id: 'filebrowser',
+    deps['filebrowser'] = {
       kind: 'exists',
       versionRange: '>=2.52.0:2-beta.0',
     }
   }
   if (pages.some((p) => p.source.selection === 'nextcloud')) {
-    currentDeps['nextcloud'] = {
-      id: 'nextcloud',
+    deps['nextcloud'] = {
       kind: 'exists',
       versionRange: '>=31.0.12:2-alpha.0',
     }
   }
 
-  return currentDeps
+  return deps
 })
