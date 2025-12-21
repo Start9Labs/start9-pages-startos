@@ -35,12 +35,18 @@ export const manifest = setupManifest({
     filebrowser: {
       description: 'Used for storing static website files',
       optional: true,
-      s9pk: 'https://github.com/Start9Labs/filebrowser-startos/releases/download/v2.52.0_1-beta.1/filebrowser.s9pk',
+      metadata: {
+        title: 'File Browser',
+        icon: 'https://filebrowser.org/static/logo.png',
+      },
     },
     nextcloud: {
       description: 'Used for storing static website files',
       optional: true,
-      s9pk: 'https://github.com/Start9Labs/nextcloud-startos/releases/download/v31.0.12_1-alpha.0/nextcloud.s9pk',
+      metadata: {
+        title: 'Nextcloud',
+        icon: './nextcloud-icon.svg',
+      },
     },
   },
 })
