@@ -2,10 +2,14 @@
   <img src="icon.png" alt="Project Logo" width="21%">
 </p>
 
-# Start9 Pages for StartOS
+## Building from source
 
-Start9 Pages is a simple web server that uses folders hosted on other internal services to serve websites over Tor and clearnet. This repository creates the `s9pk` package that is installed to run Start9 Pages on [StartOS](https://github.com/Start9Labs/start-os/).
+1. Set up your [environment](https://docs.start9.com/packaging-guide/environment-setup.html).
 
-## Setup
+1. Clone this repository and `cd` into it.
 
-Follow the documentation [guides](https://staging.docs.start9.com/packaging-guide/environment-setup.html).
+1. run `make`.
+
+1. The resulting `.s9pk` can be side loaded into StartOS.
+
+For a complete list of build options, see the [docs](https://docs.start9.com/packaging-guide/building.html)
