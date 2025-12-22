@@ -19,17 +19,9 @@ export const manifest = setupManifest({
   images: {
     pages: {
       source: {
-        dockerTag: 'fholzer/nginx-brotli',
+        dockerBuild: {},
       },
     },
-  },
-  alerts: {
-    install: null,
-    update: null,
-    uninstall: null,
-    restore: null,
-    start: null,
-    stop: null,
   },
   dependencies: {
     filebrowser: {

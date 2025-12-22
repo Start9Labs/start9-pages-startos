@@ -98,36 +98,21 @@ export const main = sdk.setupMain(async ({ effects }) => {
   /**
    *  ======================== Daemons ========================
    */
-  const daemon = sdk.Daemons.of(effects)
-    .addOneshot('perm', {
-      subcontainer: pagesSub,
-      exec: {
-        fn: async () => {
-          await pagesSub.exec(['addgroup', '-g', '33', 'nextcloud-data'])
-          await pagesSub.exec(['addgroup', '-g', '1000', 'filebrowser-data'])
-          await pagesSub.execFail(['adduser', 'nginx', 'nextcloud-data'])
-          await pagesSub.execFail(['adduser', 'nginx', 'filebrowser-data'])
-
-          return null
-        },
-      },
-      requires: [],
-    })
-    .addDaemon('primary', {
-      subcontainer: pagesSub,
-      exec: {
-        command: ['nginx', '-g', 'daemon off;'],
-      },
-      ready: {
-        display: 'Hosting',
-        fn: () =>
-          sdk.healthCheck.checkPortListening(effects, 80, {
-            successMessage: 'Ready to serve web pages',
-            errorMessage: 'Unavailable',
-          }),
-      },
-      requires: ['perm'],
-    })
+  const daemon = sdk.Daemons.of(effects).addDaemon('primary', {
+    subcontainer: pagesSub,
+    exec: {
+      command: ['nginx', '-g', 'daemon off;'],
+    },
+    ready: {
+      display: 'Hosting',
+      fn: () =>
+        sdk.healthCheck.checkPortListening(effects, 80, {
+          successMessage: 'Ready to serve web pages',
+          errorMessage: 'Unavailable',
+        }),
+    },
+    requires: [],
+  })
 
   return daemon
 })
