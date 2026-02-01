@@ -1,4 +1,5 @@
 import { matches, FileHelper } from '@start9labs/start-sdk'
+import { sdk } from '../sdk'
 
 const { object, arrayOf, string, natural, oneOf, literal } = matches
 
@@ -27,6 +28,6 @@ export const shape = object({
 })
 
 export const storeJson = FileHelper.json(
-  { volumeId: 'main', subpath: './store.json' },
+  { base: sdk.volumes.main, subpath: './store.json' },
   shape,
 )

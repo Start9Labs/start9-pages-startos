@@ -3,12 +3,13 @@ import { writeFile } from 'fs/promises'
 import { manifest as FilebrowserManifest } from 'filebrowser-startos/startos/manifest'
 import { manifest as NextcloudManifest } from 'nextcloud-startos/startos/manifest'
 import { storeJson } from './fileModels/store.json'
+import { i18n } from './i18n'
 
 export const main = sdk.setupMain(async ({ effects }) => {
   /**
    * ======================== Setup ========================
    */
-  console.info('Starting Start9 Pages...')
+  console.info(i18n('Starting Start9 Pages...'))
 
   const pages = (await storeJson.read((s) => s.pages).const(effects)) || []
 
@@ -104,11 +105,11 @@ export const main = sdk.setupMain(async ({ effects }) => {
       command: ['nginx', '-g', 'daemon off;'],
     },
     ready: {
-      display: 'Hosting',
+      display: i18n('Hosting'),
       fn: () =>
         sdk.healthCheck.checkPortListening(effects, 80, {
-          successMessage: 'Ready to serve web pages',
-          errorMessage: 'Unavailable',
+          successMessage: i18n('Ready to serve web pages'),
+          errorMessage: i18n('Unavailable'),
         }),
     },
     requires: [],

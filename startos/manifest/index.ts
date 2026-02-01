@@ -1,4 +1,5 @@
 import { setupManifest } from '@start9labs/start-sdk'
+import i18n from './i18n'
 
 export const manifest = setupManifest({
   id: 'start9-pages',
@@ -11,16 +12,14 @@ export const manifest = setupManifest({
   marketingSite: 'https://github.com/Start9Labs/start9-pages-startos',
   docsUrl:
     'https://github.com/Start9Labs/start9-pages-startos/blob/master/docs/instructions.md',
-  description: {
-    short: 'Self-host static websites',
-    long: 'Self-host any number of static websites right from your StartOS server. Expose your websites over Tor, Clearnet, or both.',
-  },
+  description: i18n.description,
   volumes: ['main'],
   images: {
     pages: {
       source: {
         dockerBuild: {},
       },
+      arch: ['x86_64', 'aarch64'],
     },
   },
   dependencies: {

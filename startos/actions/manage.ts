@@ -1,21 +1,23 @@
 import { sdk } from '../sdk'
 import { storeJson } from '../fileModels/store.json'
 import { matches } from '@start9labs/start-sdk'
+import { i18n } from '../i18n'
 
 const { InputSpec, Value, List, Variants } = sdk
 
 const path = Value.text({
-  name: 'Folder Location',
+  name: i18n('Folder Location'),
   required: true,
   default: null,
-  description:
+  description: i18n(
     'The full path to the Filebrowser/Nextcloud folder you want to host. If the folder contains one of: index, index.html, or index.htm files, that web page will be served.',
+  ),
   placeholder: 'e.g. websites/marketing-site',
   patterns: [
     {
       regex:
         '^(\\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)(/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)*/?$',
-      description: 'Must be a valid file path',
+      description: i18n('Must be a valid file path'),
     },
   ],
 })
@@ -23,40 +25,43 @@ const path = Value.text({
 export const inputSpec = InputSpec.of({
   pages: Value.list(
     List.obj(
-      { name: 'Websites' },
+      { name: i18n('Websites') },
       {
         displayAs: '{{name}}',
         uniqueBy: { all: ['port', 'name'] },
         spec: InputSpec.of({
           port: Value.hidden(matches.number.nullable()),
           name: Value.text({
-            name: 'Name',
-            description:
+            name: i18n('Name'),
+            description: i18n(
               'A unique name to identify this website (e.g. "Marketing Site")',
+            ),
             placeholder: 'My Website',
             required: true,
             default: null,
           }),
           source: Value.union({
-            name: 'Source',
+            name: i18n('Source'),
             default: 'filebrowser',
-            description: 'The service that contains your website files',
+            description: i18n('The service that contains your website files'),
             variants: Variants.of({
               nextcloud: {
-                name: 'Nextcloud',
+                name: i18n('Nextcloud'),
                 spec: InputSpec.of({
                   user: Value.text({
-                    name: 'Nextcloud User',
+                    name: i18n('Nextcloud User'),
                     required: true,
                     default: 'admin',
-                    description:
+                    description: i18n(
                       'The user account in Nextcloud where the website files are saved.',
+                    ),
                     placeholder: 'e.g. admin',
                     patterns: [
                       {
                         regex: '^[a-zA-Z0-9-.]+$',
-                        description:
-                          '"May only contain alphanumeric characters, hyphens, and periods.',
+                        description: i18n(
+                          'May only contain alphanumeric characters, hyphens, and periods.',
+                        ),
                       },
                     ],
                   }),
@@ -64,7 +69,7 @@ export const inputSpec = InputSpec.of({
                 }),
               },
               filebrowser: {
-                name: 'Filebrowser',
+                name: i18n('Filebrowser'),
                 spec: InputSpec.of({
                   path,
                 }),
@@ -83,8 +88,8 @@ export const manage = sdk.Action.withInput(
 
   // metadata
   async ({ effects }) => ({
-    name: 'Manage Websites',
-    description: 'Add, edit, and remove websites',
+    name: i18n('Manage Websites'),
+    description: i18n('Add, edit, and remove websites'),
     warning: null,
     allowedStatuses: 'any',
     group: null,
