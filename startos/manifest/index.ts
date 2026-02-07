@@ -11,7 +11,7 @@ export const manifest = setupManifest({
   donationUrl: 'https://donate.start9.com/',
   marketingSite: 'https://github.com/Start9Labs/start9-pages-startos',
   docsUrl:
-    'https://github.com/Start9Labs/start9-pages-startos/blob/master/docs/instructions.md',
+    'https://github.com/Start9Labs/start9-pages-startos/blob/master/INSTRUCTIONS.md',
   description: i18n.description,
   volumes: ['main'],
   images: {
