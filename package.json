@@ -11,7 +11,6 @@
     "nextcloud-startos": "git+https://github.com/Start9Labs/nextcloud-startos.git#update/040"
   },
   "devDependencies": {
-    "@types/js-yaml": "^4.0.9",
     "@types/node": "^22.19.1",
     "@types/uuid": "^9.0.8",
     "@vercel/ncc": "^0.38.4",
