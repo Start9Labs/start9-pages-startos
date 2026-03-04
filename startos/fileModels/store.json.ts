@@ -1,31 +1,31 @@
-import { matches, FileHelper } from '@start9labs/start-sdk'
+import { FileHelper, z } from '@start9labs/start-sdk'
 import { sdk } from '../sdk'
 
-const { object, arrayOf, string, natural, oneOf, literal } = matches
-
-export const shape = object({
-  pages: arrayOf(
-    object({
-      port: natural,
-      name: string,
-      source: oneOf(
-        object({
-          selection: literal('nextcloud'),
-          value: object({
-            user: string,
-            path: string,
+const shape = z.object({
+  pages: z.array(
+    z.object({
+      port: z.number().int().nonnegative(),
+      name: z.string(),
+      source: z.discriminatedUnion('selection', [
+        z.object({
+          selection: z.literal('nextcloud'),
+          value: z.object({
+            user: z.string(),
+            path: z.string(),
           }),
         }),
-        object({
-          selection: literal('filebrowser'),
-          value: object({
-            path: string,
+        z.object({
+          selection: z.literal('filebrowser'),
+          value: z.object({
+            path: z.string(),
           }),
         }),
-      ),
+      ]),
     }),
   ),
 })
+
+export type StoreConfig = z.infer<typeof shape>
 
 export const storeJson = FileHelper.json(
   { base: sdk.volumes.main, subpath: './store.json' },

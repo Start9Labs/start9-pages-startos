@@ -1,6 +1,6 @@
 import { sdk } from '../sdk'
 import { storeJson } from '../fileModels/store.json'
-import { matches } from '@start9labs/start-sdk'
+import { z } from '@start9labs/start-sdk'
 import { i18n } from '../i18n'
 
 const { InputSpec, Value, List, Variants } = sdk
@@ -30,7 +30,7 @@ export const inputSpec = InputSpec.of({
         displayAs: '{{name}}',
         uniqueBy: { all: ['port', 'name'] },
         spec: InputSpec.of({
-          port: Value.hidden(matches.number.nullable()),
+          port: Value.hidden(z.number().nullable()),
           name: Value.text({
             name: i18n('Name'),
             description: i18n(

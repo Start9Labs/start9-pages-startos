@@ -6,14 +6,14 @@
     "check": "tsc --noEmit"
   },
   "dependencies": {
-    "@start9labs/start-sdk": "0.4.0-beta.48",
-    "filebrowser-startos": "git+https://github.com/Start9Labs/filebrowser-startos.git#update/040",
-    "nextcloud-startos": "git+https://github.com/Start9Labs/nextcloud-startos.git#update/040"
+    "@start9labs/start-sdk": "0.4.0-beta.55"
   },
   "devDependencies": {
     "@types/node": "^22.19.1",
     "@types/uuid": "^9.0.8",
     "@vercel/ncc": "^0.38.4",
+    "filebrowser-startos": "git+https://github.com/Start9Labs/filebrowser-startos.git#update/040",
+    "nextcloud-startos": "git+https://github.com/Start9Labs/nextcloud-startos.git#update/040",
     "prettier": "^3.6.2",
     "typescript": "^5.9.3"
   },

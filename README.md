@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="icon.png" alt="Project Logo" width="21%">
+  <img src="icon.svg" alt="Project Logo" width="21%">
 </p>
 
 # Start9 Pages for StartOS

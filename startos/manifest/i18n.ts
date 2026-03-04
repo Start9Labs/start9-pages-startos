@@ -20,6 +20,20 @@ export default {
         "Auto-hébergez autant de sites web statiques que vous le souhaitez directement depuis votre serveur StartOS. Exposez vos sites web via Tor, Clearnet ou les deux.",
     },
   },
+  depFilebrowserDescription: {
+    en_US: 'Used for storing static website files',
+    es_ES: 'Utilizado para almacenar archivos de sitios web estáticos',
+    de_DE: 'Zum Speichern statischer Website-Dateien verwendet',
+    pl_PL: 'Używany do przechowywania plików statycznych stron internetowych',
+    fr_FR: 'Utilisé pour stocker les fichiers de sites web statiques',
+  },
+  depNextcloudDescription: {
+    en_US: 'Used for storing static website files',
+    es_ES: 'Utilizado para almacenar archivos de sitios web estáticos',
+    de_DE: 'Zum Speichern statischer Website-Dateien verwendet',
+    pl_PL: 'Używany do przechowywania plików statycznych stron internetowych',
+    fr_FR: 'Utilisé pour stocker les fichiers de sites web statiques',
+  },
   releaseNotes: {
     'v1_0_0_1_a0': {
       en_US: 'Initial release for StartOS v0.4.0',
