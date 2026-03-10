@@ -2,12 +2,12 @@ build = ["make"]
 id = "embassy-pages"
 license = "MIT"
 release-notes = """
-* Adjust version bounds for dependencies\n
+* Fix nginx 403 errors when serving websites from Nextcloud\n
 """
 support-site = "https://matrix.to/#/!lMnRwPWnyQvOfAoEnD:matrix.start9labs.com"
 title = "Start9 Pages"
 upstream-repo = "https://github.com/Start9Labs/start9-pages-startos"
-version = "0.1.7.6"
+version = "0.1.7.7"
 wrapper-repo = "https://github.com/Start9Labs/start9-pages-startos"
 
 [description]
