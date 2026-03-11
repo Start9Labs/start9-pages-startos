@@ -3,8 +3,8 @@ FROM alpine:latest
 RUN echo https://dl-cdn.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories
 RUN apk update
 RUN apk add bash curl nginx tini yq && \
-    addgroup -g 33 www-data && \
-    adduser nginx www-data
+    addgroup -g 33 nextcloud && \
+    addgroup nginx nextcloud
 
 ADD www /var/www
 RUN cp /var/www/assets/main.css /var/www/index/main.css
