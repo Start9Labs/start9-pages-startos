@@ -30,5 +30,5 @@ docker-images/x86_64.tar: Dockerfile docker_entrypoint.sh
 	mkdir -p docker-images
 	DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --tag start9/$(PKG_ID)/main:$(PKG_VERSION) --platform=linux/amd64 -o type=docker,dest=docker-images/x86_64.tar .
 
-scripts/embassy.js: $(SCRIPTS_SRC)
-	deno bundle scripts/embassy.ts scripts/embassy.js
+scripts/embassy.js: $(TS_FILES)
+	deno run --allow-read --allow-write --allow-env --allow-net scripts/bundle.ts
