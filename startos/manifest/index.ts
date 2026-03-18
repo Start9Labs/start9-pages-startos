@@ -5,12 +5,13 @@ export const manifest = setupManifest({
   id: 'start9-pages',
   title: 'Start9 Pages V2',
   license: 'mit',
-  packageRepo: 'https://github.com/Start9Labs/start9-pages-startos/tree/update/040',
+  packageRepo:
+    'https://github.com/Start9Labs/start9-pages-startos/tree/update/040',
   upstreamRepo: 'https://github.com/Start9Labs/start9-pages-startos',
   donationUrl: 'https://donate.start9.com/',
   marketingUrl: 'https://github.com/Start9Labs/start9-pages-startos',
   docsUrls: [
-    'https://github.com/Start9Labs/start9-pages-startos/blob/master/INSTRUCTIONS.md',
+    'https://github.com/Start9Labs/start9-pages-startos/tree/update/040',
   ],
   description: i18n.description,
   volumes: ['main'],
