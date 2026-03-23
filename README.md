@@ -6,8 +6,6 @@
 
 This repository packages Start9 Pages for StartOS. This is a Start9-developed service for hosting static websites.
 
-For usage instructions, see the [instructions](https://github.com/Start9Labs/start9-pages-startos/blob/master/INSTRUCTIONS.md).
-
 ## How This Differs from Generic Static Hosting
 
 Start9 Pages is purpose-built for StartOS. It integrates directly with File Browser and Nextcloud to serve static websites from files you've already uploaded. Each website gets its own network interface with Tor, LAN, and custom domain support.
