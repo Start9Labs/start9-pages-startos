@@ -6,12 +6,12 @@ export const manifest = setupManifest({
   title: 'Start9 Pages V2',
   license: 'mit',
   packageRepo:
-    'https://github.com/Start9Labs/start9-pages-startos/tree/update/040',
+    'https://github.com/Start9Labs/start9-pages-startos',
   upstreamRepo: 'https://github.com/Start9Labs/start9-pages-startos',
   donationUrl: 'https://donate.start9.com/',
   marketingUrl: 'https://github.com/Start9Labs/start9-pages-startos',
   docsUrls: [
-    'https://github.com/Start9Labs/start9-pages-startos/tree/update/040',
+    'https://github.com/Start9Labs/start9-pages-startos',
   ],
   description: i18n.description,
   volumes: ['main'],
@@ -29,7 +29,7 @@ export const manifest = setupManifest({
       optional: true,
       metadata: {
         title: 'File Browser',
-        icon: 'https://raw.githubusercontent.com/Start9Labs/filebrowser-startos/refs/heads/update/040/icon.svg',
+        icon: 'https://raw.githubusercontent.com/Start9Labs/filebrowser-startos/refs/heads/master/icon.svg',
       },
     },
     nextcloud: {
