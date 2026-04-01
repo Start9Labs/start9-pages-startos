@@ -1,184 +1,167 @@
 <p align="center">
-  <img src="icon.svg" alt="Project Logo" width="21%">
+  <img src="icon.svg" alt="Start9 Pages Logo" width="21%">
 </p>
 
-# Start9 Pages for StartOS
+# Start9 Pages on StartOS
 
-This repository packages Start9 Pages for StartOS. This is a Start9-developed service for hosting static websites.
+> **Upstream docs:** <https://github.com/Start9Labs/start9-pages-startos>
+>
+> Start9 Pages is a Start9-developed service. This document describes its
+> behavior on StartOS.
 
-## How This Differs from Generic Static Hosting
-
-Start9 Pages is purpose-built for StartOS. It integrates directly with File Browser and Nextcloud to serve static websites from files you've already uploaded. Each website gets its own network interface with Tor, LAN, and custom domain support.
-
-## Container Runtime
-
-This package runs **1 custom container**:
-
-| Container | Image | Purpose |
-|-----------|-------|---------|
-| pages | Custom (nginx + brotli) | Static file server |
-
-The container is based on nginx with Brotli compression support for optimal performance.
-
-## Volumes
-
-| Volume | Contents | Backed Up |
-|--------|----------|-----------|
-| `main` | Website configuration (store.json) | Yes |
-
-Website files are not stored in this volume - they're read directly from File Browser or Nextcloud.
-
-## Install Flow
-
-On installation:
-1. Creates task prompting to "Add your first website!" if no sites configured
-
-## Configuration Management
-
-### Auto-Configured Settings
-
-Nginx is configured with:
-
-| Setting | Value | Purpose |
-|---------|-------|---------|
-| Brotli compression | Level 5 | Modern compression for text/CSS/JS |
-| Gzip compression | Level 6 | Fallback compression |
-| Static asset cache | 30 days | CSS, JS, images, fonts |
-| Security headers | X-Frame-Options, CSP, etc. | XSS protection |
-| Default server | Returns 444 | Silently close unknown hosts |
-
-### User-Configurable Settings
-
-All configuration is done through the **Manage Websites** action.
-
-## Network Interfaces
-
-Interfaces are **dynamic** - one per configured website:
-
-| Interface | Type | Port | Description |
-|-----------|------|------|-------------|
-| (per website) | ui | 8000+ | Each website gets unique port |
-
-Ports are auto-assigned starting at 8000. Each website gets its own set of addresses (LAN, Tor, custom domains).
-
-## Actions
-
-### Manage Websites
-
-Add, edit, and remove static websites.
-
-**Per-website options:**
-- **Name**: Display name for the website
-- **Source**: File Browser or Nextcloud
-- **User** (Nextcloud only): Which Nextcloud user's files to use
-- **Folder Location**: Path to the folder containing your website files
-
-Websites are served if they contain `index.html`, `index.htm`, or `index`. Directory listing is enabled for folders without an index file.
-
-**Creates task on install** if no websites are configured.
-
-## Dependencies
-
-| Dependency | Requirement | When Required |
-|------------|-------------|---------------|
-| File Browser | >=2.52.0, exists | When any website uses File Browser source |
-| Nextcloud | >=31.0.12, exists | When any website uses Nextcloud source |
-
-Dependencies are **conditional** - only required when you configure a website to use that source. You need at least one of File Browser or Nextcloud to host websites.
-
-## Backups
-
-Only configuration is backed up:
-- `main` volume - website configuration
-
-Website files are stored in File Browser or Nextcloud and backed up with those services.
-
-## Health Checks
-
-| Check | Method | Success Condition |
-|-------|--------|-------------------|
-| Hosting | Port listening | Port 80 responds |
-
-The health check monitors nginx availability, not individual websites.
-
-## How to Use
-
-1. Upload your static website files to File Browser or Nextcloud
-2. Run the **Manage Websites** action
-3. Add a new website:
-   - Give it a name
-   - Select source (File Browser or Nextcloud)
-   - Enter the path to your website folder
-4. Save and restart the service
-5. Access your website via the new interface that appears
-
-## Limitations
-
-1. **Static sites only**: No server-side processing (PHP, Node.js, etc.)
-2. **No SSL certificates per site**: SSL handled by StartOS at the network level
-3. **Requires external storage**: Must use File Browser or Nextcloud for files
-4. **No build process**: Sites must be pre-built (HTML/CSS/JS ready to serve)
-
-## What's Included
-
-- Nginx with Brotli compression
-- Automatic gzip fallback
-- Security headers (XSS protection, content-type sniffing prevention)
-- Static asset caching
-- Directory listing for non-index folders
-- Multiple website support
+Start9 Pages is a purpose-built static website hosting service for StartOS. It integrates directly with File Browser and Nextcloud to serve static websites from files you've already uploaded. Each website gets its own network interface with Tor, LAN, and custom domain support.
 
 ---
 
-## Quick Reference (YAML)
+## Table of Contents
+
+- [Image and Container Runtime](#image-and-container-runtime)
+- [Volume and Data Layout](#volume-and-data-layout)
+- [Installation and First-Run Flow](#installation-and-first-run-flow)
+- [Configuration Management](#configuration-management)
+- [Network Access and Interfaces](#network-access-and-interfaces)
+- [Actions (StartOS UI)](#actions-startos-ui)
+- [Backups and Restore](#backups-and-restore)
+- [Health Checks](#health-checks)
+- [Dependencies](#dependencies)
+- [Limitations and Differences](#limitations-and-differences)
+- [What Is Unchanged from Upstream](#what-is-unchanged-from-upstream)
+- [Contributing](#contributing)
+- [Quick Reference for AI Consumers](#quick-reference-for-ai-consumers)
+
+---
+
+## Image and Container Runtime
+
+| Property | Value |
+|----------|-------|
+| Image | Custom Dockerfile (nginx with Brotli compression) |
+| Architectures | x86_64, aarch64 |
+| Entrypoint | `nginx -g 'daemon off;'` |
+
+## Volume and Data Layout
+
+| Volume | Mount Point | Contents |
+|--------|-------------|---------|
+| `main` | `/data` | Website configuration (`store.json`) |
+
+Website files are not stored in this volume — they are read directly from File Browser's `data` volume or Nextcloud's `nextcloud` volume via dependency mounts.
+
+## Installation and First-Run Flow
+
+On install:
+
+1. A **critical setup task** is created prompting the user to run the **Manage Websites** action if no websites are configured
+
+No credentials are generated — the service is ready to use once at least one website is configured.
+
+## Configuration Management
+
+| StartOS-Managed | User-Managed |
+|-----------------|--------------|
+| Nginx Brotli compression (level 5) | Website list (via Manage Websites action) |
+| Nginx gzip compression (level 6, fallback) | Website names, sources, and folder paths |
+| Static asset caching (30 days for CSS/JS/images/fonts) | |
+| Security headers (X-Frame-Options, X-Content-Type-Options, Referrer-Policy, X-XSS-Protection) | |
+| Default server returns 444 (silently closes unknown hosts) | |
+| Auto-assigned ports (starting at 8000) | |
+
+## Network Access and Interfaces
+
+Interfaces are **dynamic** — one per configured website:
+
+| Interface | ID | Type | Port | Protocol | Description |
+|-----------|----|------|------|----------|-------------|
+| (per website) | `<port>` | ui | 8000+ (auto-assigned) | HTTP | Each website gets its own interface and port |
+
+Ports are auto-assigned starting at 8000. Each website gets its own set of addresses (LAN, Tor, custom domains).
+
+## Actions (StartOS UI)
+
+### Manage Websites (`manage`)
+
+Add, edit, and remove static websites.
+
+| Property | Value |
+|----------|-------|
+| **Name** | Manage Websites |
+| **Purpose** | Add, edit, and remove hosted websites |
+| **Visibility** | Enabled |
+| **Availability** | Any (running or stopped) |
+| **Inputs** | List of websites, each with: Name (text, required), Source (union: Filebrowser or Nextcloud), Folder Location (text, required), User (text, Nextcloud only, default: "admin"). Port is hidden/auto-assigned. |
+| **Outputs** | Website list saved to `store.json`; service restarts to apply nginx configuration |
+
+Websites are served if they contain `index.html`, `index.htm`, or `index`. Directory listing is enabled for folders without an index file.
+
+## Backups and Restore
+
+- **Backed up:** `main` volume (website configuration in `store.json`)
+- **Not backed up:** Website files (stored in File Browser or Nextcloud and backed up with those services)
+- **Restore behavior:** Configuration is restored in place; service resumes serving previously configured websites
+
+## Health Checks
+
+| Check | Daemon | Method | Success Condition |
+|-------|--------|--------|-------------------|
+| Hosting | primary | Port listening (80) | Port 80 responds |
+
+The health check monitors nginx availability, not individual websites.
+
+## Dependencies
+
+### File Browser (optional)
+
+| Property | Value |
+|----------|-------|
+| **Service** | File Browser |
+| **Required/Optional** | Optional — only required when any website uses the Filebrowser source |
+| **Health checks** | None (kind: `exists`) |
+| **Mounted volumes** | `data` volume mounted at `/mnt/filebrowser` (read-only) |
+| **Purpose** | Provides static website files for hosting |
+
+### Nextcloud (optional)
+
+| Property | Value |
+|----------|-------|
+| **Service** | Nextcloud |
+| **Required/Optional** | Optional — only required when any website uses the Nextcloud source |
+| **Health checks** | None (kind: `exists`) |
+| **Mounted volumes** | `nextcloud` volume mounted at `/mnt/nextcloud` (read-only) |
+| **Purpose** | Provides static website files for hosting; files accessed at `data/<user>/files/<path>` |
+
+You need at least one of File Browser or Nextcloud installed to host websites.
+
+## Limitations and Differences
+
+1. **Static sites only** — no server-side processing (PHP, Node.js, etc.)
+2. **Requires external file storage** — must use File Browser or Nextcloud for website files
+3. **No build process** — sites must be pre-built (HTML/CSS/JS ready to serve)
+4. **No per-site SSL certificates** — TLS is terminated by StartOS at the network level
+
+## What Is Unchanged from Upstream
+
+This is a Start9-developed service with no upstream equivalent. All features are documented above.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for build instructions and development workflow.
+
+---
+
+## Quick Reference for AI Consumers
 
 ```yaml
 package_id: start9-pages
-containers:
-  - name: pages
-    image: custom (nginx + brotli)
-
+image: custom (nginx + brotli)
+architectures: [x86_64, aarch64]
 volumes:
-  main:
-    backup: true
-    contents: website configuration
-
-interfaces:
-  dynamic: true
-  per_website:
-    type: ui
-    port: 8000+
-
-actions:
-  - id: manage
-    name: Manage Websites
-    has_input: true
-    options:
-      - name
-      - source (filebrowser | nextcloud)
-      - path
-      - user (nextcloud only)
-
+  main: /data
+ports:
+  dynamic: 8000+ (one per website)
 dependencies:
-  filebrowser:
-    optional: true
-    required_when: website uses filebrowser source
-  nextcloud:
-    optional: true
-    required_when: website uses nextcloud source
-
-auto_configure:
-  - nginx security headers
-  - brotli compression (level 5)
-  - gzip compression (level 6)
-  - static asset caching (30 days)
-  - auto port assignment (8000+)
-
-health_checks:
-  - name: Hosting
-    method: port_listening
-    port: 80
-
-install_tasks:
-  - Manage Websites (if no sites configured)
+  - filebrowser (optional, mounts data volume read-only)
+  - nextcloud (optional, mounts nextcloud volume read-only)
+startos_managed_env_vars: []
+actions:
+  - manage
 ```
