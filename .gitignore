@@ -1,9 +1,9 @@
-.DS_Store
-www/.DS_Store
 *.s9pk
-image.tar
-test_config.yaml
-.vscode
-scripts/embassy.js
+startos/*.js
+node_modules/
+.DS_Store
+.vscode/
 docker-images
-TODO.md
+javascript
+ncc-cache
+notes.md

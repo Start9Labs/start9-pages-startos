@@ -1,19 +1,7 @@
-FROM alpine:latest
+FROM fholzer/nginx-brotli
 
-RUN echo https://dl-cdn.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories
-RUN apk update
-RUN apk add bash curl nginx tini yq && \
-    addgroup -g 33 nextcloud && \
-    addgroup nginx nextcloud
-
-ADD www /var/www
-RUN cp /var/www/assets/main.css /var/www/index/main.css
-RUN cp /var/www/assets/main.css /var/www/welcome/main.css
-ADD ./docker_entrypoint.sh /usr/local/bin/docker_entrypoint.sh
-RUN chmod a+x /usr/local/bin/docker_entrypoint.sh
-
-WORKDIR /root
-
-EXPOSE 80
-
-ENTRYPOINT ["/usr/local/bin/docker_entrypoint.sh"]
+RUN \
+  addgroup -g 33 nextcloud-data && \
+  addgroup -g 1000 filebrowser-data && \
+  adduser nginx nextcloud-data && \
+  adduser nginx filebrowser-data
