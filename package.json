@@ -6,9 +6,9 @@
     "check": "tsc --noEmit"
   },
   "dependencies": {
-    "@start9labs/start-sdk": "1.0.0",
-    "filebrowser-startos": "git+https://github.com/Start9Labs/filebrowser-startos.git#master",
-    "nextcloud-startos": "git+https://github.com/Start9Labs/nextcloud-startos.git#master"
+    "@start9labs/start-sdk": "1.3.2",
+    "filebrowser-startos": "github:Start9Labs/filebrowser-startos#master",
+    "nextcloud-startos": "github:Start9Labs/nextcloud-startos#master"
   },
   "devDependencies": {
     "@types/node": "^22.19.1",
