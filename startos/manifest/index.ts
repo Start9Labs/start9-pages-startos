@@ -9,7 +9,6 @@ export const manifest = setupManifest({
   upstreamRepo: 'https://github.com/Start9Labs/start9-pages-startos',
   donationUrl: 'https://donate.start9.com/',
   marketingUrl: 'https://github.com/Start9Labs/start9-pages-startos',
-  docsUrls: ['https://github.com/Start9Labs/start9-pages-startos'],
   description: i18n.description,
   volumes: ['main'],
   images: {

@@ -1,4 +1,3 @@
-## How the upstream version is pulled
-- Image is `dockerBuild` from root (no dockerTag to update)
+# CLAUDE.md
 
-> This is a Start9-maintained package. Source is in this repo.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the doc map and contribution workflow.
