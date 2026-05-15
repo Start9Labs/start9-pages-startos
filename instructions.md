@@ -1,36 +1,55 @@
 # Start9 Pages
 
+## Documentation
+
+- [Start9 Pages on GitHub](https://github.com/Start9Labs/start9-pages-startos) — package source, full reference README, and issue tracker.
+
 ## What you get on StartOS
 
-- A static-site host that serves websites directly from files already stored in **File Browser** or **Nextcloud** on your server.
-- One **interface per website** — every site you add gets its own LAN, Tor, and custom-domain addresses, on its own auto-assigned port.
-- Built-in compression (Brotli and gzip), long-lived caching for hashed assets, and standard security headers — applied to every site you host.
+Start9 Pages is a static website host. Point it at folders that already live in **File Browser** or **Nextcloud** on your server and each folder becomes a published site:
+
+- **One interface per site.** Every site you add gets its own set of network addresses — LAN IP, WAN IP, mDNS — on an auto-assigned port, plus the option to attach public domains and Tor `.onion` addresses.
+- **No file copying.** Files are read directly from File Browser or Nextcloud (read-only mounts) — uploads, renames, and replacements there are reflected immediately.
+- **Sensible defaults baked in.** Brotli and gzip compression, long-lived caching for hashed JS/CSS/image/font assets, and standard security headers (`X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `X-XSS-Protection`) apply to every site.
 
 ## Getting set up
 
-You need at least one of **File Browser** or **Nextcloud** installed and running, with your website files already uploaded there. Install whichever you plan to use first, then upload each site's files into a folder you can name.
+**You need one of File Browser or Nextcloud installed and running first**, with your website files already uploaded there. Install whichever you plan to use, then place each site's files in a folder you can name.
 
-After install, Start9 Pages posts a critical task — **Add your first website!** — that opens the **Manage Websites** action. To add a site:
+After install, Start9 Pages posts a critical task — **Add your first website!** — which opens the **Manage Websites** action. To add a site:
 
 1. Click **Add** under **Websites**.
-2. Give the site a **Name** (used to label its interface).
-3. Pick a **Source** — Filebrowser or Nextcloud. For Nextcloud, enter the **Nextcloud User** whose files you're serving (default `admin`).
-4. Enter the **Folder Location** — the path to the folder, relative to the source's root, e.g. `websites/marketing-site`. For Nextcloud this is the path inside that user's files.
-5. Save. Start9 Pages assigns a port (starting at 8000), generates an nginx config, and exposes the site as a new interface.
+2. Give the site a **Name** — this labels its interface in StartOS.
+3. Choose a **Source** — File Browser or Nextcloud. For Nextcloud, also enter the **Nextcloud User** whose files you want served (default `admin`).
+4. Enter the **Folder Location** — the path to the folder, relative to the source's data root. For File Browser this is e.g. `websites/marketing-site`. For Nextcloud, it's the path inside that user's files (Start9 Pages resolves it to `data/<user>/files/<path>` under the hood).
+5. Save. Start9 Pages auto-assigns a port (starting at 8000), regenerates its nginx config, and exposes the site as a new interface.
 
-If the folder contains `index.html`, `index.htm`, or `index`, that page is served at the root. Folders without an index file are served as a browsable directory listing.
+If the folder contains `index.html` or `index.htm`, that file is served at the root. Folders without one are served as a browsable directory listing.
+
+You can host as many sites as you want by repeating the **Add** flow.
 
 ## Using Start9 Pages
 
-### Hosted websites
+### Visiting your hosted sites
 
-Each site you've added shows up as its own interface, named after the site. Open the interface to find that site's LAN address, Tor `.onion`, and the controls to attach a custom domain. The site is served as soon as Start9 Pages is running.
+Each site you add appears as its own interface in StartOS, named after the site. Each interface exposes the site in three ways:
 
-### Actions
+- **Built-in addresses** — LAN IP, WAN IP, and mDNS, all on the site's auto-assigned port. To reach the site at these addresses you must (a) include the port in the URL and (b) trust your server's Root CA in your browser, since StartOS signs its own TLS certs for these.
+- **Custom public domains** — attach one or more domains (e.g. `mydomain.com`) to the interface. This is what most people actually want: once a domain is bound you visit `https://mydomain.com` directly, no port and no Root CA trust required.
+- **Tor `.onion` addresses** *(optional)* — install the **Tor** service on your StartOS, then click **Add onion service** on the site's interface page to publish it as a hidden service. Visit the resulting `.onion` URL from any Tor-enabled browser; no port and no Root CA trust required.
 
-- **Manage Websites** — add, rename, remove, or repoint your hosted sites, and switch a site between File Browser and Nextcloud sources. Saving applies a new nginx config and the interfaces update to match.
+### Editing or removing a site
+
+Open **Manage Websites** again. Sites are listed in the order you added them; rename, repoint, or remove any of them from this same form. **Save** applies the new nginx config — the service briefly restarts and interfaces update to match.
+
+You can also switch a site between File Browser and Nextcloud (or change the Nextcloud user) without removing and re-adding it — change the Source on that row and save.
+
+### Auto-assigned ports
+
+Ports start at 8000 and increment as you add sites. Once assigned, a site keeps its port even if you reorder or rename it; removing a site frees its port for the next one you add.
 
 ## Limitations
 
-- **Static files only.** There is no server-side runtime — no PHP, no Node, no CGI. Build your site to plain HTML/CSS/JS before uploading it.
-- **Files live in File Browser or Nextcloud, not here.** Start9 Pages only stores the website list; the actual files are read from the source service. Backups of Start9 Pages preserve your site list, but the file contents are backed up by File Browser or Nextcloud.
+- **Static files only.** There is no server-side runtime — no PHP, Node, CGI, or rewrites. Build dynamic sites to plain HTML/CSS/JS before uploading.
+- **Files live in File Browser or Nextcloud, not in Start9 Pages.** Start9 Pages only stores the website list (which folder, which source, which port). Backups of Start9 Pages preserve that list; the file contents are backed up wherever they live.
+- **The folder must exist before you add it.** Start9 Pages does not create folders in File Browser or Nextcloud; if the path doesn't exist, the site will 404 until you create or upload to it.
