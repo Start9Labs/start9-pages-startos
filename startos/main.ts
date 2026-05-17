@@ -72,19 +72,32 @@ export const main = sdk.setupMain(async ({ effects }) => {
   ]
 
   for (const page of pages) {
-    const { source, port } = page
+    const { source, port, cors } = page
 
     const root =
       source.selection === 'nextcloud'
         ? `${nextcloudMountpoint}/data/${source.value.user}/files/${source.value.path}`
         : `${filebrowserMountpoint}/${source.value.path}`
 
+    // Adding any `add_header` in a server block replaces the http-level set
+    // for that server, so when CORS is on we repeat the security headers.
+    const corsHeaders = cors
+      ? `
+    add_header X-Frame-Options SAMEORIGIN;
+    add_header X-Content-Type-Options nosniff;
+    add_header Referrer-Policy strict-origin-when-cross-origin;
+    add_header X-XSS-Protection "1; mode=block";
+    add_header Access-Control-Allow-Origin "*";
+    add_header Access-Control-Allow-Methods "GET, HEAD, OPTIONS";
+    add_header Access-Control-Allow-Headers "*";`
+      : ''
+
     const block = `server {
     listen ${port};
     listen [::]:${port};
     server_name _;
     root ${root};
-    index index.html index.htm;
+    index index.html index.htm;${corsHeaders}
     location / {
         try_files $uri $uri/ =404;
         autoindex on;

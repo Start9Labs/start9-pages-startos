@@ -6,6 +6,7 @@ const shape = z.object({
     z.object({
       port: z.number().int().nonnegative(),
       name: z.string(),
+      cors: z.boolean().optional(),
       source: z.discriminatedUnion('selection', [
         z.object({
           selection: z.literal('nextcloud'),

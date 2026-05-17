@@ -22,7 +22,8 @@ After install, Start9 Pages posts a critical task — **Add your first website!*
 2. Give the site a **Name** — this labels its interface in StartOS.
 3. Choose a **Source** — File Browser or Nextcloud. For Nextcloud, also enter the **Nextcloud User** whose files you want served (default `admin`).
 4. Enter the **Folder Location** — the path to the folder, relative to the source's data root. For File Browser this is e.g. `websites/marketing-site`. For Nextcloud, it's the path inside that user's files (Start9 Pages resolves it to `data/<user>/files/<path>` under the hood).
-5. Save. Start9 Pages auto-assigns a port (starting at 8000), regenerates its nginx config, and exposes the site as a new interface.
+5. *(Optional)* Toggle **Allow CORS** on if the site needs to be readable by browsers running on other domains — most commonly for **Nostr NIP-05 identity verification**, where clients fetch `/.well-known/nostr.json` from your site. Off is the right default; only enable it on sites where you specifically need cross-origin access.
+6. Save. Start9 Pages auto-assigns a port (starting at 8000), regenerates its nginx config, and exposes the site as a new interface.
 
 If the folder contains `index.html` or `index.htm`, that file is served at the root. Folders without one are served as a browsable directory listing.
 

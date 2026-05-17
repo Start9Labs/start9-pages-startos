@@ -23,6 +23,8 @@ export default {
     18: 'Administrar sitios web',
     19: 'Agregar, editar y eliminar sitios web',
     20: '¡Agregue su primer sitio web!',
+    21: 'Permitir CORS',
+    22: 'Permite solicitudes de origen cruzado desde cualquier dominio. Necesario para casos de uso como la verificación Nostr NIP-05. Deje desactivado a menos que sepa que lo necesita.',
   },
   de_DE: {
     0: 'Start9 Pages wird gestartet...',
@@ -46,6 +48,8 @@ export default {
     18: 'Websites verwalten',
     19: 'Websites hinzufügen, bearbeiten und entfernen',
     20: 'Fügen Sie Ihre erste Website hinzu!',
+    21: 'CORS zulassen',
+    22: 'Erlaubt Cross-Origin-Anfragen von beliebigen Domains. Erforderlich für Anwendungsfälle wie die Nostr NIP-05-Verifizierung. Lassen Sie dies deaktiviert, sofern Sie es nicht benötigen.',
   },
   pl_PL: {
     0: 'Uruchamianie Start9 Pages...',
@@ -69,6 +73,8 @@ export default {
     18: 'Zarządzaj stronami',
     19: 'Dodawaj, edytuj i usuwaj strony internetowe',
     20: 'Dodaj swoją pierwszą stronę internetową!',
+    21: 'Zezwalaj na CORS',
+    22: 'Zezwala na żądania międzydomenowe (cross-origin) z dowolnej domeny. Wymagane w przypadkach takich jak weryfikacja Nostr NIP-05. Pozostaw wyłączone, chyba że wiesz, że tego potrzebujesz.',
   },
   fr_FR: {
     0: 'Démarrage de Start9 Pages...',
@@ -92,5 +98,7 @@ export default {
     18: 'Gérer les sites web',
     19: 'Ajouter, modifier et supprimer des sites web',
     20: 'Ajoutez votre premier site web !',
+    21: 'Autoriser CORS',
+    22: 'Autorise les requêtes cross-origin depuis n’importe quel domaine. Nécessaire pour des cas comme la vérification Nostr NIP-05. Laissez désactivé sauf si vous savez en avoir besoin.',
   },
 } satisfies Record<string, LangDict>
