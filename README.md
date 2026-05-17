@@ -61,7 +61,7 @@ No credentials are generated — the service is ready to use once at least one w
 |-----------------|--------------|
 | Nginx Brotli compression (level 5) | Website list (via Manage Websites action) |
 | Nginx gzip compression (level 6, fallback) | Website names, sources, and folder paths |
-| Static asset caching (30 days for CSS/JS/images/fonts) | |
+| Static asset caching (30 days for CSS/JS/images/fonts) | Per-website CORS toggle (e.g. for Nostr NIP-05 verification) |
 | Security headers (X-Frame-Options, X-Content-Type-Options, Referrer-Policy, X-XSS-Protection) | |
 | Default server returns 444 (silently closes unknown hosts) | |
 | Auto-assigned ports (starting at 8000) | |
@@ -88,10 +88,12 @@ Add, edit, and remove static websites.
 | **Purpose** | Add, edit, and remove hosted websites |
 | **Visibility** | Enabled |
 | **Availability** | Any (running or stopped) |
-| **Inputs** | List of websites, each with: Name (text, required), Source (union: Filebrowser or Nextcloud), Folder Location (text, required), User (text, Nextcloud only, default: "admin"). Port is hidden/auto-assigned. |
+| **Inputs** | List of websites, each with: Name (text, required), Source (union: Filebrowser or Nextcloud), Folder Location (text, required), User (text, Nextcloud only, default: "admin"), Allow CORS (toggle, default off). Port is hidden/auto-assigned. |
 | **Outputs** | Website list saved to `store.json`; service restarts to apply nginx configuration |
 
 Websites are served if they contain `index.html`, `index.htm`, or `index`. Directory listing is enabled for folders without an index file.
+
+Enabling **Allow CORS** on a website adds `Access-Control-Allow-Origin: *` (plus `Access-Control-Allow-Methods` and `Access-Control-Allow-Headers`) to every response from that site. This makes the page reachable from cross-origin browser fetches — useful for protocols like Nostr NIP-05 that require fetching `/.well-known/nostr.json` from arbitrary clients. Leave it off unless you need it.
 
 ## Backups and Restore
 

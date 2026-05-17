@@ -22,6 +22,8 @@ const dict = {
   'Manage Websites': 18,
   'Add, edit, and remove websites': 19,
   'Add your first website!': 20,
+  'Allow CORS': 21,
+  'Allow cross-origin requests from any domain. Required for use cases like Nostr NIP-05 verification. Leave off unless you know you need it.': 22,
 } as const
 
 export type I18nKey = keyof typeof dict

@@ -76,6 +76,13 @@ export const inputSpec = InputSpec.of({
               },
             }),
           }),
+          cors: Value.toggle({
+            name: i18n('Allow CORS'),
+            description: i18n(
+              'Allow cross-origin requests from any domain. Required for use cases like Nostr NIP-05 verification. Leave off unless you know you need it.',
+            ),
+            default: false,
+          }),
         }),
       },
     ),
