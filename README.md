@@ -26,7 +26,6 @@ Start9 Pages is a purpose-built static website hosting service for StartOS. It i
 - [Dependencies](#dependencies)
 - [Limitations and Differences](#limitations-and-differences)
 - [What Is Unchanged from Upstream](#what-is-unchanged-from-upstream)
-- [Contributing](#contributing)
 - [Quick Reference for AI Consumers](#quick-reference-for-ai-consumers)
 
 ---
@@ -37,13 +36,15 @@ Start9 Pages is a purpose-built static website hosting service for StartOS. It i
 |----------|-------|
 | Image | Custom Dockerfile (nginx with Brotli compression) |
 | Architectures | x86_64, aarch64 |
-| Entrypoint | `nginx -g 'daemon off;'` |
+| Entrypoint | `nginx -c /data/nginx/nginx.conf -g 'daemon off;'` |
+
+The runtime (`startos/main.ts`) is a **reconciled** daemon set (`sdk.Daemons.dynamic`): the `pages` list is read inside the builder, so a website add/remove/edit drives a reconcile rather than a whole-service restart. nginx serves every website from a single process, so this is one daemon (`primary`). The nginx config is regenerated from `store.json` and written to the `main` volume (`/data/nginx/`, mounted into the container); a sha256 of the effective config is passed as the daemon's `CONF_HASH` env var, which the reconciler hashes — so nginx restarts exactly when the config changes. The File Browser / Nextcloud dependency mounts are part of the (also hashed) subcontainer descriptor.
 
 ## Volume and Data Layout
 
 | Volume | Mount Point | Contents |
 |--------|-------------|---------|
-| `main` | `/data` | Website configuration (`store.json`) |
+| `main` | `/data` | Website configuration (`store.json`) and generated nginx config (`nginx/nginx.conf`, `nginx/conf.d/default.conf`) |
 
 Website files are not stored in this volume — they are read directly from File Browser's `data` volume or Nextcloud's `nextcloud` volume via dependency mounts.
 
@@ -89,7 +90,7 @@ Add, edit, and remove static websites.
 | **Visibility** | Enabled |
 | **Availability** | Any (running or stopped) |
 | **Inputs** | List of websites, each with: Name (text, required), Source (union: Filebrowser or Nextcloud), Folder Location (text, required), User (text, Nextcloud only, default: "admin"), Allow CORS (toggle, default off). Port is hidden/auto-assigned. |
-| **Outputs** | Website list saved to `store.json`; service restarts to apply nginx configuration |
+| **Outputs** | Website list saved to `store.json`; the nginx daemon reconciles (restarts) to apply the regenerated config |
 
 Websites are served if they contain `index.html`, `index.htm`, or `index`. Directory listing is enabled for folders without an index file.
 
@@ -143,10 +144,6 @@ You need at least one of File Browser or Nextcloud installed to host websites.
 ## What Is Unchanged from Upstream
 
 This is a Start9-developed service with no upstream equivalent. All features are documented above.
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for build instructions and development workflow.
 
 ---
 

@@ -1,14 +1,21 @@
-import { sdk } from './sdk'
-import { writeFile } from 'fs/promises'
+import { createHash } from 'crypto'
 import { manifest as FilebrowserManifest } from 'filebrowser-startos/startos/manifest'
 import { manifest as NextcloudManifest } from 'nextcloud-startos/startos/manifest'
 import { storeJson } from './fileModels/store.json'
 import { i18n } from './i18n'
+import { sdk } from './sdk'
 
-export const main = sdk.setupMain(async ({ effects }) => {
-  /**
-   * ======================== Setup ========================
-   */
+// Reactive nginx daemon, built with `Daemons.dynamic` so the stored `pages`
+// list is read INSIDE the builder — its `constRetry` drives a reconcile
+// instead of a whole-`main` restart. nginx serves every page from one process
+// (all `listen` ports live in a single config), so a single reconciled daemon
+// is the right shape: per-page daemons would mean N nginx containers each
+// binding one of the MultiHost ports, more moving parts for no correctness
+// gain. What the reconciler must react to is surfaced through HASHED fields —
+// the dependency mounts ride in the subcontainer descriptor, and the effective
+// nginx config content rides in `exec.env.CONF_HASH` — so nginx restarts
+// exactly when a page add/remove/edit changes the config it serves.
+export const main = sdk.Daemons.dynamic(async ({ effects }) => {
   console.info(i18n('Starting Start9 Pages...'))
 
   const pages = (await storeJson.read((s) => s.pages).const(effects)) || []
@@ -49,18 +56,6 @@ export const main = sdk.setupMain(async ({ effects }) => {
   // ===========
   // Setup nginx
   // ===========
-
-  const pagesSub = await sdk.SubContainer.of(
-    effects,
-    { imageId: 'pages' },
-    mounts,
-    'primary',
-  )
-
-  const nginxDefaultConf = `${pagesSub.rootfs}/etc/nginx/conf.d/default.conf`
-  const nginxConf = `${pagesSub.rootfs}/etc/nginx/nginx.conf`
-
-  await writeFile(nginxConf, nginxFile)
 
   const serverBlocks: string[] = [
     `server {
@@ -106,16 +101,34 @@ export const main = sdk.setupMain(async ({ effects }) => {
     serverBlocks.push(block)
   }
 
-  // Write to file
-  await writeFile(nginxDefaultConf, serverBlocks.join('\n\n'))
+  const defaultConf = serverBlocks.join('\n\n')
+
+  // The daemon runs off a lazy subcontainer, so the config can't be written
+  // into its rootfs from here. Instead we write it to the `main` volume (also
+  // mounted at /data in the container) and point nginx at it with `-c`. A
+  // sha256 of the effective config rides in `exec.env.CONF_HASH`, which the
+  // reconciler hashes — so nginx restarts precisely when the config changes.
+  await sdk.volumes.main.writeFile('nginx/nginx.conf', nginxFile)
+  await sdk.volumes.main.writeFile('nginx/conf.d/default.conf', defaultConf)
+
+  const confHash = createHash('sha256')
+    .update(nginxFile)
+    .update(defaultConf)
+    .digest('hex')
 
   /**
    *  ======================== Daemons ========================
    */
-  const daemon = sdk.Daemons.of(effects).addDaemon('primary', {
-    subcontainer: pagesSub,
+  return sdk.Daemons.of(effects).addDaemon('primary', {
+    subcontainer: sdk.SubContainer.of(
+      effects,
+      { imageId: 'pages' },
+      mounts,
+      'primary',
+    ),
     exec: {
-      command: ['nginx', '-g', 'daemon off;'],
+      command: ['nginx', '-c', '/data/nginx/nginx.conf', '-g', 'daemon off;'],
+      env: { CONF_HASH: confHash },
     },
     ready: {
       display: i18n('Hosting'),
@@ -127,8 +140,6 @@ export const main = sdk.setupMain(async ({ effects }) => {
     },
     requires: [],
   })
-
-  return daemon
 })
 
 const nginxFile = `user  nginx;
@@ -219,5 +230,5 @@ http {
     add_header Referrer-Policy strict-origin-when-cross-origin;
     add_header X-XSS-Protection "1; mode=block";
 
-    include /etc/nginx/conf.d/*.conf;
+    include /data/nginx/conf.d/*.conf;
 }`
