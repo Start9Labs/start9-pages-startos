@@ -38,7 +38,7 @@ Start9 Pages is a purpose-built static website hosting service for StartOS. It i
 | Architectures | x86_64, aarch64 |
 | Entrypoint | `nginx -c /data/nginx/nginx.conf -g 'daemon off;'` |
 
-The runtime (`startos/main.ts`) is a **reconciled** daemon set (`sdk.Daemons.dynamic`): the `pages` list is read inside the builder, so a website add/remove/edit drives a reconcile rather than a whole-service restart. nginx serves every website from a single process, so this is one daemon (`primary`). The nginx config is regenerated from `store.json` and written to the `main` volume (`/data/nginx/`, mounted into the container); a sha256 of the effective config is passed as the daemon's `CONF_HASH` env var, which the reconciler hashes — so nginx restarts exactly when the config changes. The File Browser / Nextcloud dependency mounts are part of the (also hashed) subcontainer descriptor.
+The runtime (`startos/main.ts`) is `setupMain` returning a **`Daemons.dynamic` reconciler** (requires start-sdk ≥ 2.0.4): the `pages` list is read inside the builder, so a website add/remove/edit reconciles the daemon in place — the service stays `running` rather than restarting. nginx serves every website from a single process, so this is one daemon (`primary`). The nginx config is regenerated from `store.json` and written to the `main` volume (`/data/nginx/`, mounted into the container); a sha256 of the effective config is passed as the daemon's `CONF_HASH` env var, which the reconciler hashes — so nginx restarts exactly when the config changes. The File Browser / Nextcloud dependency mounts are part of the (also hashed) subcontainer descriptor.
 
 ## Volume and Data Layout
 
