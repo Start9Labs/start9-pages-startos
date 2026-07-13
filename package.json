@@ -1,5 +1,5 @@
 {
-  "name": "start9-pages",
+  "name": "start9-pages-startos",
   "scripts": {
     "build": "rm -rf ./javascript && ncc build startos/index.ts -o ./javascript",
     "prettier": "prettier --write startos",
