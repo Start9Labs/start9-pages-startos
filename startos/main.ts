@@ -96,6 +96,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
     absolute_redirect off;
     root ${root};
     index index.html index.htm;${corsHeaders}
+    error_page 404 /404.html;
     location / {
         try_files $uri $uri/ =404;
         autoindex on;

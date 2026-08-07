@@ -27,6 +27,8 @@ After install, Start9 Pages posts a critical task — **Add your first website!*
 
 If the folder contains `index.html` or `index.htm`, that file is served at the root. Folders without one are served as a browsable directory listing.
 
+If the folder contains `404.html`, that page is served whenever a visitor requests a path that doesn't exist. Sites without one fall back to nginx's stock 404 page.
+
 You can host as many sites as you want by repeating the **Add** flow.
 
 ## Using Start9 Pages
