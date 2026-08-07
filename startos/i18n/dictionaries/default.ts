@@ -7,7 +7,7 @@ const dict = {
   Unavailable: 3,
   'The hosted website for ${name}': 4,
   'Folder Location': 5,
-  'The full path to the Filebrowser/Nextcloud folder you want to host. If the folder contains one of: index, index.html, or index.htm files, that web page will be served.': 6,
+  'The full path to the Filebrowser/Nextcloud folder you want to host. If the folder contains an index.html or index.htm file, that web page will be served.': 6,
   'Must be a valid file path': 7,
   Websites: 8,
   Name: 9,

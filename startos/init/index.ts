@@ -12,7 +12,7 @@ export const init = sdk.setupInit(
   setInterfaces,
   setDependencies,
   actions,
-  taskCreateSite
+  taskCreateSite,
 )
 
 export const uninit = sdk.setupUninit(versionGraph)
