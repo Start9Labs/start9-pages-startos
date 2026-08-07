@@ -93,6 +93,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
     listen ${port};
     listen [::]:${port};
     server_name _;
+    absolute_redirect off;
     root ${root};
     index index.html index.htm;${corsHeaders}
     location / {
