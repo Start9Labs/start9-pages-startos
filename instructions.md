@@ -22,7 +22,7 @@ After install, Start9 Pages posts a critical task — **Add your first website!*
 2. Give the site a **Name** — this labels its interface in StartOS.
 3. Choose a **Source** — File Browser or Nextcloud. For Nextcloud, also enter the **Nextcloud User** whose files you want served (default `admin`).
 4. Enter the **Folder Location** — the path to the folder, relative to the source's data root. For File Browser this is e.g. `websites/marketing-site`. For Nextcloud, it's the path inside that user's files (Start9 Pages resolves it to `data/<user>/files/<path>` under the hood).
-5. *(Optional)* Toggle **Allow CORS** on if the site needs to be readable by browsers running on other domains — most commonly for **Nostr NIP-05 identity verification**, where clients fetch `/.well-known/nostr.json` from your site. Off is the right default; only enable it on sites where you specifically need cross-origin access.
+5. _(Optional)_ Toggle **Allow CORS** on if the site needs to be readable by browsers running on other domains — most commonly for **Nostr NIP-05 identity verification**, where clients fetch `/.well-known/nostr.json` from your site. Off is the right default; only enable it on sites where you specifically need cross-origin access.
 6. Save. Start9 Pages auto-assigns a port (starting at 8000), regenerates its nginx config, and exposes the site as a new interface.
 
 If the folder contains `index.html` or `index.htm`, that file is served at the root. Folders without one are served as a browsable directory listing.
@@ -39,7 +39,7 @@ Each site you add appears as its own interface in StartOS, named after the site.
 
 - **Built-in addresses** — LAN IP, WAN IP, and mDNS, all on the site's auto-assigned port. To reach the site at these addresses you must (a) include the port in the URL and (b) trust your server's Root CA in your browser, since StartOS signs its own TLS certs for these.
 - **Custom public domains** — attach one or more domains (e.g. `mydomain.com`) to the interface. This is what most people actually want: once a domain is bound you visit `https://mydomain.com` directly, no port and no Root CA trust required.
-- **Tor `.onion` addresses** *(optional)* — install the **Tor** service on your StartOS, then click **Add onion service** on the site's interface page to publish it as a hidden service. Visit the resulting `.onion` URL from any Tor-enabled browser; no port and no Root CA trust required.
+- **Tor `.onion` addresses** _(optional)_ — install the **Tor** service on your StartOS, then click **Add onion service** on the site's interface page to publish it as a hidden service. Visit the resulting `.onion` URL from any Tor-enabled browser; no port and no Root CA trust required.
 
 ### Editing or removing a site
 
