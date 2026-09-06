@@ -10,7 +10,7 @@ const path = Value.text({
   required: true,
   default: null,
   description: i18n(
-    'The full path to the Filebrowser/Nextcloud folder you want to host. If the folder contains an index.html or index.htm file, that web page will be served.',
+    'The full path to the FileBrowser Quantum/Nextcloud folder you want to host. If the folder contains an index.html or index.htm file, that web page will be served.',
   ),
   placeholder: 'e.g. websites/marketing-site',
   patterns: [
@@ -69,7 +69,7 @@ export const inputSpec = InputSpec.of({
                 }),
               },
               filebrowser: {
-                name: i18n('Filebrowser'),
+                name: i18n('FileBrowser Quantum'),
                 spec: InputSpec.of({
                   path,
                 }),
