@@ -7,7 +7,7 @@ const dict = {
   Unavailable: 3,
   'The hosted website for ${name}': 4,
   'Folder Location': 5,
-  'The full path to the FileBrowser Quantum/Nextcloud folder you want to host. If the folder contains an index.html or index.htm file, that web page will be served.': 6,
+  'The full path to the folder you want to host. If the folder contains an index.html or index.htm file, that web page will be served.': 6,
   'Must be a valid file path': 7,
   Websites: 8,
   Name: 9,
@@ -24,6 +24,8 @@ const dict = {
   'Add your first website!': 20,
   'Allow CORS': 21,
   'Allow cross-origin requests from any domain. Required for use cases like Nostr NIP-05 verification. Leave off unless you know you need it.': 22,
+  NextExplorer: 23,
+  'The full path to the folder you want to host, starting with the drive name (usually Files). If the folder contains an index.html or index.htm file, that web page will be served.': 24,
 } as const
 
 export type I18nKey = keyof typeof dict

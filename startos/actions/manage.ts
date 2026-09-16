@@ -5,22 +5,28 @@ import { i18n } from '../i18n'
 
 const { InputSpec, Value, List, Variants } = sdk
 
-const path = Value.text({
-  name: i18n('Folder Location'),
-  required: true,
-  default: null,
-  description: i18n(
-    'The full path to the FileBrowser Quantum/Nextcloud folder you want to host. If the folder contains an index.html or index.htm file, that web page will be served.',
+const folderLocation = (description: string, placeholder: string) =>
+  Value.text({
+    name: i18n('Folder Location'),
+    required: true,
+    default: null,
+    description,
+    placeholder,
+    patterns: [
+      {
+        regex:
+          '^(\\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)(/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)*/?$',
+        description: i18n('Must be a valid file path'),
+      },
+    ],
+  })
+
+const path = folderLocation(
+  i18n(
+    'The full path to the folder you want to host. If the folder contains an index.html or index.htm file, that web page will be served.',
   ),
-  placeholder: 'e.g. websites/marketing-site',
-  patterns: [
-    {
-      regex:
-        '^(\\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)(/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)*/?$',
-      description: i18n('Must be a valid file path'),
-    },
-  ],
-})
+  'e.g. websites/marketing-site',
+)
 
 export const inputSpec = InputSpec.of({
   pages: Value.list(
@@ -72,6 +78,17 @@ export const inputSpec = InputSpec.of({
                 name: i18n('FileBrowser Quantum'),
                 spec: InputSpec.of({
                   path,
+                }),
+              },
+              nextexplorer: {
+                name: i18n('NextExplorer'),
+                spec: InputSpec.of({
+                  path: folderLocation(
+                    i18n(
+                      'The full path to the folder you want to host, starting with the drive name (usually Files). If the folder contains an index.html or index.htm file, that web page will be served.',
+                    ),
+                    'e.g. Files/websites/marketing-site',
+                  ),
                 }),
               },
             }),

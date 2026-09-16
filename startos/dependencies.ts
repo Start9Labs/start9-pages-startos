@@ -19,6 +19,12 @@ export const setDependencies = sdk.setupDependencies(async ({ effects }) => {
       versionRange: '>=33.0.6:1',
     }
   }
+  if (pages.some((p) => p.source.selection === 'nextexplorer')) {
+    deps['nextexplorer'] = {
+      kind: 'exists',
+      versionRange: '>=2.2.7:0',
+    }
+  }
 
   return deps
 })

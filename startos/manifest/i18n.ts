@@ -34,4 +34,11 @@ export default {
     pl_PL: 'Używany do przechowywania plików statycznych stron internetowych',
     fr_FR: 'Utilisé pour stocker les fichiers de sites web statiques',
   },
+  depNextexplorerDescription: {
+    en_US: 'Used for storing static website files',
+    es_ES: 'Utilizado para almacenar archivos de sitios web estáticos',
+    de_DE: 'Zum Speichern statischer Website-Dateien verwendet',
+    pl_PL: 'Używany do przechowywania plików statycznych stron internetowych',
+    fr_FR: 'Utilisé pour stocker les fichiers de sites web statiques',
+  },
 }
