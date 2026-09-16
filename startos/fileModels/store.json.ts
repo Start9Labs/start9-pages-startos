@@ -21,6 +21,12 @@ const shape = z.object({
             path: z.string(),
           }),
         }),
+        z.object({
+          selection: z.literal('nextexplorer'),
+          value: z.object({
+            path: z.string(),
+          }),
+        }),
       ]),
     }),
   ),

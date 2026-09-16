@@ -1,6 +1,7 @@
 import { createHash } from 'crypto'
 import { manifest as FilebrowserManifest } from 'filebrowser-startos/startos/manifest'
 import { manifest as NextcloudManifest } from 'nextcloud-startos/startos/manifest'
+import { manifest as NextexplorerManifest } from 'nextexplorer-startos/startos/manifest'
 import { storeJson } from './fileModels/store.json'
 import { i18n } from './i18n'
 import { sdk } from './sdk'
@@ -26,8 +27,11 @@ export const main = sdk.setupMain(async ({ effects }) => {
     // Handle dependency mounts
     // ========================
 
-    const filebrowserMountpoint = '/mnt/filebrowser'
-    const nextcloudMountpoint = '/mnt/nextcloud'
+    const mountpoints = {
+      filebrowser: '/mnt/filebrowser',
+      nextcloud: '/mnt/nextcloud',
+      nextexplorer: '/mnt/nextexplorer',
+    }
 
     let mounts = sdk.Mounts.of().mountVolume({
       volumeId: 'main',
@@ -41,7 +45,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
         dependencyId: 'filebrowser',
         volumeId: 'data',
         subpath: null,
-        mountpoint: filebrowserMountpoint,
+        mountpoint: mountpoints.filebrowser,
         readonly: true,
       })
     }
@@ -50,7 +54,16 @@ export const main = sdk.setupMain(async ({ effects }) => {
         dependencyId: 'nextcloud',
         volumeId: 'nextcloud',
         subpath: null,
-        mountpoint: nextcloudMountpoint,
+        mountpoint: mountpoints.nextcloud,
+        readonly: true,
+      })
+    }
+    if (pages.some((p) => p.source.selection === 'nextexplorer')) {
+      mounts = mounts.mountDependency<typeof NextexplorerManifest>({
+        dependencyId: 'nextexplorer',
+        volumeId: 'data',
+        subpath: null,
+        mountpoint: mountpoints.nextexplorer,
         readonly: true,
       })
     }
@@ -73,8 +86,8 @@ export const main = sdk.setupMain(async ({ effects }) => {
 
       const root =
         source.selection === 'nextcloud'
-          ? `${nextcloudMountpoint}/data/${source.value.user}/files/${source.value.path}`
-          : `${filebrowserMountpoint}/${source.value.path}`
+          ? `${mountpoints.nextcloud}/data/${source.value.user}/files/${source.value.path}`
+          : `${mountpoints[source.selection]}/${source.value.path}`
 
       // Adding any `add_header` in a server block replaces the http-level set
       // for that server, so when CORS is on we repeat the security headers.

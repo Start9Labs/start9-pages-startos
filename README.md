@@ -9,7 +9,7 @@
 > upstream documentation is accurate and fully applicable — see the
 > Documentation section of `instructions.md` for links.
 
-Start9 Pages is static web hosting for files you already have on this server. Point it at a folder in FileBrowser Quantum or Nextcloud and it serves that folder as a website — one nginx process, one port and one address per site.
+Start9 Pages is static web hosting for files you already have on this server. Point it at a folder in FileBrowser Quantum, Nextcloud, or NextExplorer and it serves that folder as a website — one nginx process, one port and one address per site.
 
 - **Upstream repo:** <https://github.com/Start9Labs/start9-pages-startos>
 - **Wrapper repo:** <https://github.com/Start9Labs/start9-pages-startos>
@@ -63,7 +63,7 @@ One volume of its own, plus a read-only view of whichever source each site uses.
 | ------ | ----------- | ------------------------------------------- |
 | `main` | `/data`     | `store.json` and the generated nginx config |
 
-**None of the website content is here.** Each site's files stay on the source service's own volume, mounted read-only into this container — FileBrowser Quantum's at `/mnt/filebrowser`, Nextcloud's at `/mnt/nextcloud`. This package serves them; it never copies them.
+**None of the website content is here.** Each site's files stay on the source service's own volume, mounted read-only into this container — FileBrowser Quantum's at `/mnt/filebrowser`, Nextcloud's at `/mnt/nextcloud`, NextExplorer's at `/mnt/nextexplorer`. This package serves them; it never copies them.
 
 ## File Models
 
@@ -73,7 +73,7 @@ One model, holding the whole site list.
 | ------------ | ------ | ----------------------- | -------------------------- |
 | `store.json` | JSON   | Yes — `FileHelper.json` | The Manage Websites action |
 
-Each entry carries a port, a display name, whether CORS is on, and a source — either a Nextcloud user and path, or a FileBrowser Quantum path. That list drives everything: the interfaces published, the dependencies declared, the mounts attached, and the nginx config generated.
+Each entry carries a port, a display name, whether CORS is on, and a source — a Nextcloud user and path, or a FileBrowser Quantum or NextExplorer path. That list drives everything: the interfaces published, the dependencies declared, the mounts attached, and the nginx config generated.
 
 **The nginx config is generated, never edited.** Both files are rewritten from the site list on every reconcile, so a hand edit is replaced the next time anything changes.
 
@@ -84,14 +84,17 @@ Two things the generated config does that are worth knowing:
 
 ## Dependencies
 
-Two, both optional, and each declared only while a site actually uses it.
+Three, all optional, and each declared only while a site actually uses it.
 
-| Dependency    | Kind     | Required when                                |
-| ------------- | -------- | -------------------------------------------- |
-| `filebrowser` | `exists` | Any site is sourced from FileBrowser Quantum |
-| `nextcloud`   | `exists` | Any site is sourced from Nextcloud           |
+| Dependency     | Kind     | Required when                                |
+| -------------- | -------- | -------------------------------------------- |
+| `filebrowser`  | `exists` | Any site is sourced from FileBrowser Quantum |
+| `nextcloud`    | `exists` | Any site is sourced from Nextcloud           |
+| `nextexplorer` | `exists` | Any site is sourced from NextExplorer        |
 
-Both volumes are mounted **read-only**: this package can serve those files but never modify them.
+Every source volume is mounted **read-only**: this package can serve those files but never modify them.
+
+A site's path is resolved from the root of the source's own volume. For FileBrowser Quantum that root is what its UI shows; for Nextcloud the package prefixes `data/<user>/files/`; for NextExplorer the root is the directory whose subdirectories the UI presents as drives, so the path starts with the drive name — `Files/...` for the default drive.
 
 ## Network Access and Interfaces
 
@@ -109,7 +112,7 @@ None are masked. A fresh install with no sites publishes nothing at all.
 
 Install starts nginx with no sites and raises a `critical` task: add your first website.
 
-Before that is useful, the content has to exist somewhere this package can read — a folder in FileBrowser Quantum or Nextcloud with an `index.html` in it. Then Manage Websites points a port at that folder.
+Before that is useful, the content has to exist somewhere this package can read — a folder in FileBrowser Quantum, Nextcloud, or NextExplorer with an `index.html` in it. Then Manage Websites points a port at that folder.
 
 The task is checked on every start, so removing every site brings it back.
 
@@ -155,7 +158,7 @@ The port checked is the catch-all block's, not any site's, so this reports that 
 The `main` volume is copied wholesale — `sdk.Backups.ofVolumes('main')`. No dump step and nothing excluded.
 
 - **Included:** `store.json` with the site list, and the generated nginx config.
-- **Not included: none of the website content.** Those files belong to FileBrowser Quantum or Nextcloud, and are in _their_ backups. A restore of this package alone gives you the site definitions pointing at folders that may not exist.
+- **Not included: none of the website content.** Those files belong to FileBrowser Quantum, Nextcloud, or NextExplorer, and are in _their_ backups. A restore of this package alone gives you the site definitions pointing at folders that may not exist.
 - **Restore:** the sites and their ports come back, and the config is regenerated on the first start. Restore the source services alongside it, or the sites will serve nothing.
 
 ## Limitations and Differences
@@ -163,7 +166,7 @@ The `main` volume is copied wholesale — `sdk.Backups.ofVolumes('main')`. No du
 1. **Static files only.** There is no scripting, no database, and no server-side anything — nginx serves what is in the folder.
 2. **Content is never copied.** A site is a read-only view of another service's folder, and disappears if that folder does.
 3. **The website content is not in this package's backup.**
-4. **Sources are limited to FileBrowser Quantum and Nextcloud.**
+4. **Sources are limited to FileBrowser Quantum, Nextcloud, and NextExplorer.**
 5. **The generated nginx config is not editable** — it is rewritten on every reconcile.
 6. **Each site needs a distinct port**, chosen when you add it.
 7. **No riscv64 build.** x86_64 and aarch64 only.
@@ -186,9 +189,10 @@ file_models:
   - store.json
 startos_managed_env_vars:
   - CONF_HASH # sha256 of the effective nginx config; drives the reconcile
-dependencies: # each declared only while a site uses it; both mounted read-only
+dependencies: # each declared only while a site uses it; all mounted read-only
   - filebrowser # exists
   - nextcloud # exists
+  - nextexplorer # exists
 interfaces: {} # one ui interface per configured site, on that site's port
 actions:
   - manage
