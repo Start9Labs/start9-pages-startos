@@ -1,17 +1,18 @@
 import { VersionInfo, IMPOSSIBLE } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '1.0.0:13',
+  version: '1.0.0:14',
   releaseNotes: {
-    en_US: 'Websites can now be served from a NextExplorer folder.',
+    en_US:
+      'Byte-range requests now return partial responses for compressed file types, enabling media seeking and resumable downloads.',
     es_ES:
-      'Ahora los sitios web pueden servirse desde una carpeta de NextExplorer.',
+      'Las solicitudes de intervalos de bytes ahora devuelven respuestas parciales para los tipos de archivo comprimidos, lo que permite desplazarse por contenido multimedia y reanudar descargas.',
     de_DE:
-      'Websites können jetzt aus einem NextExplorer-Ordner bereitgestellt werden.',
+      'Bytebereichsanfragen liefern jetzt Teilantworten für komprimierte Dateitypen, sodass Medien durchsucht und Downloads fortgesetzt werden können.',
     pl_PL:
-      'Strony internetowe mogą być teraz serwowane z folderu NextExplorer.',
+      'Żądania zakresów bajtów zwracają teraz częściowe odpowiedzi dla kompresowanych typów plików, umożliwiając przewijanie multimediów i wznawianie pobierania.',
     fr_FR:
-      'Les sites web peuvent désormais être servis depuis un dossier NextExplorer.',
+      'Les requêtes de plages d’octets renvoient désormais des réponses partielles pour les types de fichiers compressés, ce qui permet de parcourir les médias et de reprendre les téléchargements.',
   },
   migrations: {
     up: async ({ effects }) => {},
