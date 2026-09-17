@@ -110,7 +110,19 @@ export const main = sdk.setupMain(async ({ effects }) => {
     root ${root};
     index index.html index.htm;${corsHeaders}
     error_page 404 /404.html;
+    error_page 418 = @range_request;
     location / {
+        if ($http_range) {
+            return 418;
+        }
+        try_files $uri $uri/ =404;
+        autoindex on;
+    }
+    location @range_request {
+        # Compression turns range responses into full 200 responses.
+        gzip off;
+        brotli off;
+        brotli_static off;
         try_files $uri $uri/ =404;
         autoindex on;
     }

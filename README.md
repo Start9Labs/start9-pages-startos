@@ -81,6 +81,7 @@ Two things the generated config does that are worth knowing:
 
 - **A catch-all server block closes any connection that does not match a site**, silently, rather than serving something by accident.
 - **Turning CORS on re-states the security headers.** nginx's `add_header` replaces the inherited set for a server block rather than adding to it, so the CORS block repeats the frame, sniffing, referrer, and XSS headers it would otherwise drop.
+- **Byte-range requests bypass dynamic compression.** This preserves `206 Partial Content` responses for media seeking and resumable downloads, including file types normally compressed with gzip or Brotli.
 
 ## Dependencies
 

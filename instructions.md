@@ -10,7 +10,7 @@ Start9 Pages is a static website host. Point it at folders that already live in 
 
 - **One interface per site.** Every site you add gets its own set of network addresses — LAN IP, WAN IP, mDNS — on an auto-assigned port, plus the option to attach public domains and Tor `.onion` addresses.
 - **No file copying.** Files are read directly from FileBrowser Quantum, Nextcloud, or NextExplorer (read-only mounts) — uploads, renames, and replacements there are reflected immediately.
-- **Sensible defaults baked in.** Brotli and gzip compression, long-lived caching for hashed JS/CSS/image/font assets, and standard security headers (`X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `X-XSS-Protection`) apply to every site.
+- **Sensible defaults baked in.** Brotli and gzip compression, byte-range responses for media seeking and resumable downloads, long-lived caching for hashed JS/CSS/image/font assets, and standard security headers (`X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `X-XSS-Protection`) apply to every site.
 
 ## Getting set up
 
@@ -43,7 +43,7 @@ Each site you add appears as its own interface in StartOS, named after the site.
 
 ### Editing or removing a site
 
-Open **Manage Websites** again. Sites are listed in the order you added them; rename, repoint, or remove any of them from this same form. **Save** applies the new nginx config — the service briefly restarts and interfaces update to match.
+Open **Manage Websites** again. Sites are listed in the order you added them; rename, repoint, or remove any of them from this same form. **Save** applies the new nginx config — nginx briefly restarts while the service remains running, and interfaces update to match.
 
 You can also switch a site between sources (or change the Nextcloud user) without removing and re-adding it — change the Source on that row and save.
 
