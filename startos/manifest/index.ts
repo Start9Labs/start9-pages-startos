@@ -41,7 +41,7 @@ export const manifest = setupManifest({
       optional: true,
       metadata: {
         title: 'NextExplorer',
-        icon: 'https://raw.githubusercontent.com/Start9-Community/nextexplorer-startos/04f7ecbfc31ad2205e0222dd7568fb881aa06c79/icon.svg',
+        icon: 'https://raw.githubusercontent.com/Start9Labs/nextexplorer-startos/04f7ecbfc31ad2205e0222dd7568fb881aa06c79/icon.svg',
       },
     },
   },

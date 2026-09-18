@@ -9,7 +9,7 @@
 > upstream documentation is accurate and fully applicable — see the
 > Documentation section of `instructions.md` for links.
 
-Start9 Pages is static web hosting for files you already have on this server. Point it at a folder in FileBrowser Quantum, Nextcloud, or NextExplorer and it serves that folder as a website — one nginx process, one port and one address per site.
+Start9 Pages is static web hosting for files you already have on this server. Point it at a folder in NextExplorer, FileBrowser Quantum, or Nextcloud and it serves that folder as a website — one nginx process, one port and one address per site.
 
 - **Upstream repo:** <https://github.com/Start9Labs/start9-pages-startos>
 - **Wrapper repo:** <https://github.com/Start9Labs/start9-pages-startos>
@@ -85,7 +85,7 @@ Two things the generated config does that are worth knowing:
 
 ## Dependencies
 
-Three, all optional, and each declared only while a site actually uses it.
+Three, all optional, and each declared only while a site actually uses it. NextExplorer is the default source for a new site.
 
 | Dependency     | Kind     | Required when                                |
 | -------------- | -------- | -------------------------------------------- |

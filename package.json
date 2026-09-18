@@ -9,7 +9,7 @@
     "@start9labs/start-sdk": "2.0.9",
     "filebrowser-startos": "github:Start9Labs/filebrowser-startos#next",
     "nextcloud-startos": "github:Start9Labs/nextcloud-startos#next",
-    "nextexplorer-startos": "github:Start9-Community/nextexplorer-startos#next"
+    "nextexplorer-startos": "github:Start9Labs/nextexplorer-startos#next"
   },
   "devDependencies": {
     "@types/node": "^22.19.1",
