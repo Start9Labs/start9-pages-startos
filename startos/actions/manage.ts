@@ -48,9 +48,20 @@ export const inputSpec = InputSpec.of({
           }),
           source: Value.union({
             name: i18n('Source'),
-            default: 'filebrowser',
+            default: 'nextexplorer',
             description: i18n('The service that contains your website files'),
             variants: Variants.of({
+              nextexplorer: {
+                name: i18n('NextExplorer'),
+                spec: InputSpec.of({
+                  path: folderLocation(
+                    i18n(
+                      'The full path to the folder you want to host, starting with the drive name (usually Files). If the folder contains an index.html or index.htm file, that web page will be served.',
+                    ),
+                    'e.g. Files/websites/marketing-site',
+                  ),
+                }),
+              },
               nextcloud: {
                 name: i18n('Nextcloud'),
                 spec: InputSpec.of({
@@ -78,17 +89,6 @@ export const inputSpec = InputSpec.of({
                 name: i18n('FileBrowser Quantum'),
                 spec: InputSpec.of({
                   path,
-                }),
-              },
-              nextexplorer: {
-                name: i18n('NextExplorer'),
-                spec: InputSpec.of({
-                  path: folderLocation(
-                    i18n(
-                      'The full path to the folder you want to host, starting with the drive name (usually Files). If the folder contains an index.html or index.htm file, that web page will be served.',
-                    ),
-                    'e.g. Files/websites/marketing-site',
-                  ),
                 }),
               },
             }),
