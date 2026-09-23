@@ -1,23 +1,13 @@
 import { VersionInfo, IMPOSSIBLE } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '1.0.0:15',
+  version: '1.0.0:16',
   releaseNotes: {
-    en_US: `NextExplorer, now published on the Start9 Registry, is the default source for a new website. Existing websites are unchanged.
-
-Byte-range requests now return partial responses for compressed file types, enabling media seeking and resumable downloads.`,
-    es_ES: `NextExplorer, ahora publicado en el Registro de Start9, es el origen predeterminado para un sitio web nuevo. Los sitios web existentes no cambian.
-
-Las solicitudes de intervalos de bytes ahora devuelven respuestas parciales para los tipos de archivo comprimidos, lo que permite desplazarse por contenido multimedia y reanudar descargas.`,
-    de_DE: `NextExplorer, jetzt in der Start9-Registry veröffentlicht, ist die Standardquelle für eine neue Website. Bestehende Websites bleiben unverändert.
-
-Bytebereichsanfragen liefern jetzt Teilantworten für komprimierte Dateitypen, sodass Medien durchsucht und Downloads fortgesetzt werden können.`,
-    pl_PL: `NextExplorer, publikowany teraz w rejestrze Start9, jest domyślnym źródłem nowej strony internetowej. Istniejące strony pozostają bez zmian.
-
-Żądania zakresów bajtów zwracają teraz częściowe odpowiedzi dla kompresowanych typów plików, umożliwiając przewijanie multimediów i wznawianie pobierania.`,
-    fr_FR: `NextExplorer, désormais publié sur le registre Start9, est la source par défaut d’un nouveau site web. Les sites existants ne changent pas.
-
-Les requêtes de plages d’octets renvoient désormais des réponses partielles pour les types de fichiers compressés, ce qui permet de parcourir les médias et de reprendre les téléchargements.`,
+    en_US: `Link previews, such as LinkedIn's, now work for a website's home page and for any subfolder's index page.`,
+    es_ES: `Las vistas previas de enlaces, como las de LinkedIn, ahora funcionan para la página de inicio de un sitio web y para la página índice de cualquier subcarpeta.`,
+    de_DE: `Linkvorschauen, etwa die von LinkedIn, funktionieren jetzt für die Startseite einer Website und für die Indexseite jedes Unterordners.`,
+    pl_PL: `Podglądy linków, takie jak w LinkedIn, działają teraz dla strony głównej witryny i dla strony indeksu każdego podfolderu.`,
+    fr_FR: `Les aperçus de liens, comme ceux de LinkedIn, fonctionnent désormais pour la page d’accueil d’un site web et pour la page d’index de tout sous-dossier.`,
   },
   migrations: {
     up: async ({ effects }) => {},

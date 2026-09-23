@@ -30,4 +30,5 @@ verified, tried, and decided belongs in the commit message and the PR body.
 - **One nginx process serves every site.** All `listen` directives live in one config — don't split this into per-page daemons, which would mean N containers each binding one MultiHost port for no correctness gain.
 - **The config goes on the `main` volume, not the container rootfs.** The daemon runs off a lazy subcontainer, so nothing can be written into its rootfs from `main.ts`; nginx is pointed at the volume copy with `-c`.
 - **Repeat the security headers inside a CORS server block.** nginx's `add_header` in a server block replaces the http-level set rather than adding to it, so omitting them silently drops frame, sniffing, referrer, and XSS protection on exactly the sites that are cross-origin readable.
+- **Keep `recursive_error_pages` off.** With it on, a site without its own `404.html` loops on `error_page 404 /404.html` and answers every missing path with a 500.
 - **`kind: 'exists'` for every source is correct** — the files are read off their volumes, which does not require those services to be running. Every mount must stay read-only.
