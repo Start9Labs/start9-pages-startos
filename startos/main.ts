@@ -112,14 +112,10 @@ export const main = sdk.setupMain(async ({ effects }) => {
     error_page 404 /404.html;
     error_page 418 = @range_request;
     location / {
-        # Let index redirect directories first: error_page diverts a request only once.
-        if (-d $request_filename) {
-            break;
-        }
         if ($http_range) {
             return 418;
         }
-        try_files $uri $uri/ =404;
+        try_files $uri $uri.html $uri/ =404;
         autoindex on;
     }
     location @range_request {
@@ -127,7 +123,9 @@ export const main = sdk.setupMain(async ({ effects }) => {
         gzip off;
         brotli off;
         brotli_static off;
-        try_files $uri =404;
+        # Index files resolve here: an index redirect would re-enter location / with error_page spent.
+        try_files $uri $uri.html \${uri}index.html \${uri}index.htm $uri/ =404;
+        autoindex on;
     }
 }`
       serverBlocks.push(block)
