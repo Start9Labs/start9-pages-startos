@@ -2,7 +2,7 @@ import { createHash } from 'crypto'
 import { manifest as FilebrowserManifest } from 'filebrowser-startos/startos/manifest'
 import { manifest as NextcloudManifest } from 'nextcloud-startos/startos/manifest'
 import { manifest as NextexplorerManifest } from 'nextexplorer-startos/startos/manifest'
-import { storeJson } from './fileModels/store.json'
+import { StoreConfig, storeJson } from './fileModels/store.json'
 import { i18n } from './i18n'
 import { sdk } from './sdk'
 
@@ -26,12 +26,6 @@ export const main = sdk.setupMain(async ({ effects }) => {
     // ========================
     // Handle dependency mounts
     // ========================
-
-    const mountpoints = {
-      filebrowser: '/mnt/filebrowser',
-      nextcloud: '/mnt/nextcloud',
-      nextexplorer: '/mnt/nextexplorer',
-    }
 
     let mounts = sdk.Mounts.of().mountVolume({
       volumeId: 'main',
@@ -82,12 +76,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
     ]
 
     for (const page of pages) {
-      const { source, port, cors } = page
-
-      const root =
-        source.selection === 'nextcloud'
-          ? `${mountpoints.nextcloud}/data/${source.value.user}/files/${source.value.path}`
-          : `${mountpoints[source.selection]}/${source.value.path}`
+      const { port, cors } = page
 
       // Adding any `add_header` in a server block replaces the http-level set
       // for that server, so when CORS is on we repeat the security headers.
@@ -107,19 +96,15 @@ export const main = sdk.setupMain(async ({ effects }) => {
     listen [::]:${port};
     server_name _;
     absolute_redirect off;
-    root ${root};
+    root ${rootOf(page)};
     index index.html index.htm;${corsHeaders}
     error_page 404 /404.html;
     error_page 418 = @range_request;
     location / {
-        # Let index redirect directories first: error_page diverts a request only once.
-        if (-d $request_filename) {
-            break;
-        }
         if ($http_range) {
             return 418;
         }
-        try_files $uri $uri/ =404;
+        try_files $uri $uri.html $uri/ =404;
         autoindex on;
     }
     location @range_request {
@@ -127,7 +112,9 @@ export const main = sdk.setupMain(async ({ effects }) => {
         gzip off;
         brotli off;
         brotli_static off;
-        try_files $uri =404;
+        # Index files resolve here: an index redirect would re-enter location / with error_page spent.
+        try_files $uri $uri.html \${uri}index.html \${uri}index.htm $uri/ =404;
+        autoindex on;
     }
 }`
       serverBlocks.push(block)
@@ -151,13 +138,15 @@ export const main = sdk.setupMain(async ({ effects }) => {
     /**
      *  ======================== Daemons ========================
      */
-    return sdk.Daemons.of(effects).addDaemon('primary', {
-      subcontainer: sdk.SubContainer.of(
-        effects,
-        { imageId: 'pages' },
-        mounts,
-        'primary',
-      ),
+    const primary = sdk.SubContainer.of(
+      effects,
+      { imageId: 'pages' },
+      mounts,
+      'primary',
+    )
+
+    const daemons = sdk.Daemons.of(effects).addDaemon('primary', {
+      subcontainer: primary,
       exec: {
         command: ['nginx', '-c', '/data/nginx/nginx.conf', '-g', 'daemon off;'],
         env: { CONF_HASH: confHash },
@@ -172,8 +161,50 @@ export const main = sdk.setupMain(async ({ effects }) => {
       },
       requires: [],
     })
+
+    if (!pages.length) return daemons
+
+    return daemons.addHealthCheck('folders', {
+      ready: {
+        display: i18n('Website Folders'),
+        trigger: sdk.trigger.cooldownTrigger(30_000),
+        fn: async () => {
+          const current = (await storeJson.read((s) => s.pages).once()) || []
+          const found = await Promise.all(
+            current.map(
+              async (page) =>
+                (await primary.exec(['test', '-d', rootOf(page)])).exitCode ===
+                0,
+            ),
+          )
+          const missing = current.filter((_, i) => !found[i])
+          return missing.length
+            ? {
+                result: 'failure',
+                message: i18n('Folder not found for ${sites}', {
+                  sites: missing
+                    .map((s) => `${s.name} (${s.source.value.path})`)
+                    .join(', '),
+                }),
+              }
+            : { result: 'success', message: i18n('All website folders found') }
+        },
+      },
+      requires: ['primary'],
+    })
   })
 })
+
+const mountpoints = {
+  filebrowser: '/mnt/filebrowser',
+  nextcloud: '/mnt/nextcloud',
+  nextexplorer: '/mnt/nextexplorer',
+}
+
+const rootOf = ({ source }: StoreConfig['pages'][number]) =>
+  source.selection === 'nextcloud'
+    ? `${mountpoints.nextcloud}/data/${source.value.user}/files/${source.value.path}`
+    : `${mountpoints[source.selection]}/${source.value.path}`
 
 const nginxFile = `user  nginx;
 worker_processes  auto;

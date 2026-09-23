@@ -27,6 +27,8 @@ After install, Start9 Pages posts a critical task — **Add your first website!*
 
 If the folder contains `index.html` or `index.htm`, that file is served at the root. Folders without one are served as a browsable directory listing.
 
+Pages can be flat files too: `about.html` is served at `/about` as well as `/about.html`. If both `about.html` and an `about` folder exist, `/about` serves `about.html`.
+
 If the folder contains `404.html`, that page is served whenever a visitor requests a path that doesn't exist. Sites without one fall back to nginx's stock 404 page.
 
 You can host as many sites as you want by repeating the **Add** flow.
@@ -55,4 +57,4 @@ Ports start at 8000 and increment as you add sites. Once assigned, a site keeps 
 
 - **Static files only.** There is no server-side runtime — no PHP, Node, CGI, or rewrites. Build dynamic sites to plain HTML/CSS/JS before uploading.
 - **Files live in NextExplorer, FileBrowser Quantum, or Nextcloud, not in Start9 Pages.** Start9 Pages only stores the website list (which folder, which source, which port). Backups of Start9 Pages preserve that list; the file contents are backed up wherever they live.
-- **The folder must exist before you add it.** Start9 Pages does not create folders in the source service; if the path doesn't exist, the site will 404 until you create or upload to it.
+- **Start9 Pages does not create folders.** If a site's folder doesn't exist in the source service — never created, renamed, or deleted — the site returns 404 and the **Website Folders** health check fails, naming the site.

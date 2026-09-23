@@ -135,7 +135,6 @@ export const manage = sdk.Action.withInput(
     )
 
     const pages = input.pages.map((page) => {
-      // @TODO Aiden validate path. Must be a directory
       const port = page.port || getPort(usedPorts)
       usedPorts.add(port)
       return { ...page, port }

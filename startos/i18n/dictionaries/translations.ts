@@ -27,6 +27,9 @@ export default {
     22: 'Permite solicitudes de origen cruzado desde cualquier dominio. Necesario para casos de uso como la verificación Nostr NIP-05. Deje desactivado a menos que sepa que lo necesita.',
     23: 'NextExplorer',
     24: 'La ruta completa a la carpeta que desea alojar, comenzando por el nombre de la unidad (normalmente Files). Si la carpeta contiene un archivo index.html o index.htm, esa página web será servida.',
+    25: 'Carpetas de sitios web',
+    26: 'Se encontraron todas las carpetas de los sitios web',
+    27: 'Carpeta no encontrada para ${sites}',
   },
   de_DE: {
     0: 'Start9 Pages wird gestartet...',
@@ -54,6 +57,9 @@ export default {
     22: 'Erlaubt Cross-Origin-Anfragen von beliebigen Domains. Erforderlich für Anwendungsfälle wie die Nostr NIP-05-Verifizierung. Lassen Sie dies deaktiviert, sofern Sie es nicht benötigen.',
     23: 'NextExplorer',
     24: 'Der vollständige Pfad zum Ordner, den Sie hosten möchten, beginnend mit dem Namen des Laufwerks (normalerweise Files). Wenn der Ordner eine index.html- oder index.htm-Datei enthält, wird diese Webseite bereitgestellt.',
+    25: 'Website-Ordner',
+    26: 'Alle Website-Ordner gefunden',
+    27: 'Ordner nicht gefunden für ${sites}',
   },
   pl_PL: {
     0: 'Uruchamianie Start9 Pages...',
@@ -81,6 +87,9 @@ export default {
     22: 'Zezwala na żądania międzydomenowe (cross-origin) z dowolnej domeny. Wymagane w przypadkach takich jak weryfikacja Nostr NIP-05. Pozostaw wyłączone, chyba że wiesz, że tego potrzebujesz.',
     23: 'NextExplorer',
     24: 'Pełna ścieżka do folderu, który chcesz hostować, zaczynająca się od nazwy dysku (zwykle Files). Jeśli folder zawiera plik index.html lub index.htm, ta strona internetowa zostanie wyświetlona.',
+    25: 'Foldery witryn',
+    26: 'Znaleziono wszystkie foldery witryn',
+    27: 'Nie znaleziono folderu dla ${sites}',
   },
   fr_FR: {
     0: 'Démarrage de Start9 Pages...',
@@ -108,5 +117,8 @@ export default {
     22: 'Autorise les requêtes cross-origin depuis n’importe quel domaine. Nécessaire pour des cas comme la vérification Nostr NIP-05. Laissez désactivé sauf si vous savez en avoir besoin.',
     23: 'NextExplorer',
     24: 'Le chemin complet vers le dossier que vous souhaitez héberger, en commençant par le nom du lecteur (généralement Files). Si le dossier contient un fichier index.html ou index.htm, cette page web sera servie.',
+    25: 'Dossiers des sites web',
+    26: 'Tous les dossiers des sites web ont été trouvés',
+    27: 'Dossier introuvable pour ${sites}',
   },
 } satisfies Record<string, LangDict>
