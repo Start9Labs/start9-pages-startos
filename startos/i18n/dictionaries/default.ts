@@ -26,6 +26,9 @@ const dict = {
   'Allow cross-origin requests from any domain. Required for use cases like Nostr NIP-05 verification. Leave off unless you know you need it.': 22,
   NextExplorer: 23,
   'The full path to the folder you want to host, starting with the drive name (usually Files). If the folder contains an index.html or index.htm file, that web page will be served.': 24,
+  'Website Folders': 25,
+  'All website folders found': 26,
+  'Folder not found for ${sites}': 27,
 } as const
 
 export type I18nKey = keyof typeof dict

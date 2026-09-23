@@ -145,15 +145,18 @@ Checked on every init rather than only at install. `critical` because with no si
 
 ## Health Checks
 
-One check, on the only daemon.
+Two checks.
 
-| Check     | Displayed | Method               |
-| --------- | --------- | -------------------- |
-| `primary` | "Hosting" | Port 80 is listening |
+| Check     | Displayed         | Method                                        |
+| --------- | ----------------- | --------------------------------------------- |
+| `primary` | "Hosting"         | Port 80 is listening                          |
+| `folders` | "Website Folders" | Every site's folder exists, polled every 30 s |
 
-The port checked is the catch-all block's, not any site's, so this reports that nginx came up rather than that a given site works. A failure means nginx rejected the generated config, and the service logs name the directive.
+The port checked is the catch-all block's, not any site's, so "Hosting" reports that nginx came up rather than that a given site works. A failure means nginx rejected the generated config, and the service logs name the directive.
 
-**A green check with a site returning 404** is a path problem, not a service problem: the folder is empty, has no `index.html`, or the path within the source service is wrong.
+**"Website Folders" fails naming each site whose folder is gone** — never created, renamed, or deleted in the source service — with the path as entered in Manage Websites. It tests existence only, through the container's read-only mounts, and is absent while no site exists.
+
+**Both checks green with a page returning 404** means the file is not in that folder: nothing at that path, as `<path>.html`, or as a folder.
 
 ## Backups and Restore
 
@@ -202,4 +205,5 @@ tasks:
   - { action: manage, severity: critical } # re-raises whenever no site exists
 health_checks:
   - primary # displayed "Hosting"; the catch-all block's port
+  - folders # displayed "Website Folders"; fails naming each site whose folder is missing
 ```
