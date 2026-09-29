@@ -96,7 +96,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
     listen [::]:${port};
     server_name _;
     absolute_redirect off;
-    root ${rootOf(page)};
+    root "${rootOf(page)}";
     index index.html index.htm;${corsHeaders}
     error_page 404 /404.html;
     error_page 418 = @range_request;
@@ -183,7 +183,11 @@ export const main = sdk.setupMain(async ({ effects }) => {
                 result: 'failure',
                 message: i18n('Folder not found for ${sites}', {
                   sites: missing
-                    .map((s) => `${s.name} (${s.source.value.path})`)
+                    .map(({ name, source }) =>
+                      source.selection === 'nextcloud'
+                        ? `${name} (${source.value.user}: ${source.value.path})`
+                        : `${name} (${source.value.path})`,
+                    )
                     .join(', '),
                 }),
               }
