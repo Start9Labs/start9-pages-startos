@@ -132,6 +132,7 @@ Add, edit, and remove the sites this package serves.
 - **Removing a site removes its interface and its address.** The files themselves are untouched, since they live on the source service.
 - **CORS is per site**, off unless you turn it on. Turn it on only for a site whose assets are meant to be fetched from another origin.
 - **Each site needs its own port**, and that port is what its address is built from.
+- **Folder paths and Nextcloud account names are checked on save**, from `start-cli` as well as the form. A path may use letters, digits, spaces, `_`, `.`, `-` and `/`, and an account name the characters Nextcloud allows in one; anything else is refused, and the error names the site.
 
 ## Tasks
 
@@ -154,7 +155,7 @@ Two checks.
 
 The port checked is the catch-all block's, not any site's, so "Hosting" reports that nginx came up rather than that a given site works. A failure means nginx rejected the generated config, and the service logs name the directive.
 
-**"Website Folders" fails naming each site whose folder is gone** — never created, renamed, or deleted in the source service — with the path as entered in Manage Websites. It tests existence only, through the container's read-only mounts, and is absent while no site exists.
+**"Website Folders" fails naming each site whose folder is gone** — never created, renamed, or deleted in the source service — with the path as entered in Manage Websites, preceded by the account name for a Nextcloud site. A wrong account name therefore shows here as a missing folder. It tests existence only, through the container's read-only mounts, and is absent while no site exists.
 
 **Both checks green with a page returning 404** means the file is not in that folder: nothing at that path, as `<path>.html`, or as a folder.
 

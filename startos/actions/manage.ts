@@ -5,6 +5,19 @@ import { i18n } from '../i18n'
 
 const { InputSpec, Value, List, Variants } = sdk
 
+const pathPattern = {
+  regex:
+    '^(\\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)(/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)*/?$',
+  description: i18n('Must be a valid file path'),
+}
+
+const userPattern = {
+  regex: "^(?! )(?!.* $)(?!\\.\\.?$)[a-zA-Z0-9 _.@'-]+$",
+  description: i18n(
+    "May only contain letters, digits, spaces and the characters _ . @ - ', with no space at the start or end.",
+  ),
+}
+
 const folderLocation = (description: string, placeholder: string) =>
   Value.text({
     name: i18n('Folder Location'),
@@ -12,13 +25,7 @@ const folderLocation = (description: string, placeholder: string) =>
     default: null,
     description,
     placeholder,
-    patterns: [
-      {
-        regex:
-          '^(\\.|[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)(/[a-zA-Z0-9_ -][a-zA-Z0-9_ .-]*|/([a-zA-Z0-9_ .-][a-zA-Z0-9_ -]+\\.*)+)*/?$',
-        description: i18n('Must be a valid file path'),
-      },
-    ],
+    patterns: [pathPattern],
   })
 
 const path = folderLocation(
@@ -70,17 +77,10 @@ export const inputSpec = InputSpec.of({
                     required: true,
                     default: 'admin',
                     description: i18n(
-                      'The user account in Nextcloud where the website files are saved.',
+                      'The account name, not the display name, of the Nextcloud user whose files hold the website.',
                     ),
                     placeholder: 'e.g. admin',
-                    patterns: [
-                      {
-                        regex: '^[a-zA-Z0-9-.]+$',
-                        description: i18n(
-                          'May only contain alphanumeric characters, hyphens, and periods.',
-                        ),
-                      },
-                    ],
+                    patterns: [userPattern],
                   }),
                   path,
                 }),
@@ -130,6 +130,19 @@ export const manage = sdk.Action.withInput(
 
   // the execution function
   async ({ effects, input }) => {
+    // SDK 2.0.9 enforces `patterns` only in the form.
+    for (const { name, source } of input.pages) {
+      if (!new RegExp(pathPattern.regex).test(source.value.path)) {
+        throw new Error(`${name}: ${pathPattern.description}`)
+      }
+      if (
+        source.selection === 'nextcloud' &&
+        !new RegExp(userPattern.regex).test(source.value.user)
+      ) {
+        throw new Error(`${name}: ${userPattern.description}`)
+      }
+    }
+
     const usedPorts = new Set(
       input.pages.filter((p) => !!p.port).map((p) => p.port as number),
     )
