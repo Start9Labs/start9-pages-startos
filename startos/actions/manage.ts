@@ -56,14 +56,16 @@ export const inputSpec = InputSpec.of({
           source: Value.union({
             name: i18n('Source'),
             default: 'nextexplorer',
-            description: i18n('The service that contains your website files'),
+            description: i18n(
+              "Where this website's files are stored. Start9 Pages serves them from there, read-only, and never copies them.\n- NextExplorer: a folder in one of its locations\n- Nextcloud: a folder in one Nextcloud user's files\n- FileBrowser Quantum: a folder in its file storage",
+            ),
             variants: Variants.of({
               nextexplorer: {
                 name: i18n('NextExplorer'),
                 spec: InputSpec.of({
                   path: folderLocation(
                     i18n(
-                      'The full path to the folder you want to host, starting with the drive name (usually Files). If the folder contains an index.html or index.htm file, that web page will be served.',
+                      'The full path to the folder you want to host, starting with the location name (usually Files). If the folder contains an index.html or index.htm file, that web page will be served.',
                     ),
                     'e.g. Files/websites/marketing-site',
                   ),
@@ -130,19 +132,6 @@ export const manage = sdk.Action.withInput(
 
   // the execution function
   async ({ effects, input }) => {
-    // SDK 2.0.9 enforces `patterns` only in the form.
-    for (const { name, source } of input.pages) {
-      if (!new RegExp(pathPattern.regex).test(source.value.path)) {
-        throw new Error(`${name}: ${pathPattern.description}`)
-      }
-      if (
-        source.selection === 'nextcloud' &&
-        !new RegExp(userPattern.regex).test(source.value.user)
-      ) {
-        throw new Error(`${name}: ${userPattern.description}`)
-      }
-    }
-
     const usedPorts = new Set(
       input.pages.filter((p) => !!p.port).map((p) => p.port as number),
     )

@@ -73,7 +73,7 @@ One model, holding the whole site list.
 | ------------ | ------ | ----------------------- | -------------------------- |
 | `store.json` | JSON   | Yes — `FileHelper.json` | The Manage Websites action |
 
-Each entry carries a port, a display name, whether CORS is on, and a source — a Nextcloud user and path, or a FileBrowser Quantum or NextExplorer path. That list drives everything: the interfaces published, the dependencies declared, the mounts attached, and the nginx config generated.
+Each entry carries a port, a display name, whether CORS is on, and a source — a Nextcloud user and path, or a FileBrowser Quantum or NextExplorer path. That list drives everything: the interfaces published, the dependencies enabled, the mounts attached, and the nginx config generated.
 
 **The nginx config is generated, never edited.** Both files are rewritten from the site list on every reconcile, so a hand edit is replaced the next time anything changes.
 
@@ -86,17 +86,19 @@ What the generated config does that is worth knowing:
 
 ## Dependencies
 
-Three, all optional, and each declared only while a site actually uses it. NextExplorer is the default source for a new site.
+Three, all optional, defined in `startos/dependencies.ts`, and each enabled only while a site actually uses it — a disabled one imposes nothing. NextExplorer is the default source for a new site.
 
-| Dependency     | Kind     | Required when                                |
-| -------------- | -------- | -------------------------------------------- |
-| `filebrowser`  | `exists` | Any site is sourced from FileBrowser Quantum |
-| `nextcloud`    | `exists` | Any site is sourced from Nextcloud           |
-| `nextexplorer` | `exists` | Any site is sourced from NextExplorer        |
+| Dependency     | Kind     | Version       | Enabled when                                 |
+| -------------- | -------- | ------------- | -------------------------------------------- |
+| `filebrowser`  | `exists` | `>=2.63.18:3` | Any site is sourced from FileBrowser Quantum |
+| `nextcloud`    | `exists` | `>=33.0.6:1`  | Any site is sourced from Nextcloud           |
+| `nextexplorer` | `exists` | `>=2.2.7:0`   | Any site is sourced from NextExplorer        |
+
+The `filebrowser` range admits File Browser and its FileBrowser Quantum flavor alike.
 
 Every source volume is mounted **read-only**: this package can serve those files but never modify them.
 
-A site's path is resolved from the root of the source's own volume. For FileBrowser Quantum that root is what its UI shows; for Nextcloud the package prefixes `data/<user>/files/`; for NextExplorer the root is the directory whose subdirectories the UI presents as drives, so the path starts with the drive name — `Files/...` for the default drive.
+A site's path is resolved from the root of the source's own volume. For FileBrowser Quantum that root is what its UI shows; for Nextcloud the package prefixes `data/<user>/files/`; for NextExplorer the root is the directory whose subdirectories the UI lists under Locations, so the path starts with the location name — `Files/...` for the default location.
 
 ## Network Access and Interfaces
 
@@ -126,13 +128,13 @@ One action.
 
 Add, edit, and remove the sites this package serves.
 
-- **What it changes:** the `pages` list in `store.json`, and through it the published interfaces, the declared dependencies, the container's mounts, and the generated nginx config.
+- **What it changes:** the `pages` list in `store.json`, and through it the published interfaces, the enabled dependencies, the container's mounts, and the generated nginx config.
 - **Cost:** seconds. **No restart of the service** — the daemon reconciles in place, and nginx restarts only if the config content actually changed.
 - **Repeat safety:** idempotent; the form is pre-filled with the current list.
 - **Removing a site removes its interface and its address.** The files themselves are untouched, since they live on the source service.
 - **CORS is per site**, off unless you turn it on. Turn it on only for a site whose assets are meant to be fetched from another origin.
 - **Each site needs its own port**, and that port is what its address is built from.
-- **Folder paths and Nextcloud account names are checked on save**, from `start-cli` as well as the form. A path may use letters, digits, spaces, `_`, `.`, `-` and `/`, and an account name the characters Nextcloud allows in one; anything else is refused, and the error names the site.
+- **Folder paths and Nextcloud account names are checked on save**, from `start-cli` as well as the form. A path may use letters, digits, spaces, `_`, `.`, `-` and `/`, and an account name the characters Nextcloud allows in one; anything else is refused.
 
 ## Tasks
 
@@ -195,10 +197,10 @@ file_models:
   - store.json
 startos_managed_env_vars:
   - CONF_HASH # sha256 of the effective nginx config; drives the reconcile
-dependencies: # each declared only while a site uses it; all mounted read-only
-  - filebrowser # exists
-  - nextcloud # exists
-  - nextexplorer # exists
+dependencies: # all optional, each enabled only while a site uses it; all mounted read-only
+  - filebrowser # exists, >=2.63.18:3
+  - nextcloud # exists, >=33.0.6:1
+  - nextexplorer # exists, >=2.2.7:0
 interfaces: {} # one ui interface per configured site, on that site's port
 actions:
   - manage

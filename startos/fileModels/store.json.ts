@@ -1,29 +1,29 @@
 import { FileHelper, z } from '@start9labs/start-sdk'
 import { sdk } from '../sdk'
 
-const shape = z.object({
+const shape = z.looseObject({
   pages: z.array(
-    z.object({
+    z.looseObject({
       port: z.number().int().nonnegative(),
       name: z.string(),
       cors: z.boolean().optional(),
       source: z.discriminatedUnion('selection', [
-        z.object({
+        z.looseObject({
           selection: z.literal('nextcloud'),
-          value: z.object({
+          value: z.looseObject({
             user: z.string(),
             path: z.string(),
           }),
         }),
-        z.object({
+        z.looseObject({
           selection: z.literal('filebrowser'),
-          value: z.object({
+          value: z.looseObject({
             path: z.string(),
           }),
         }),
-        z.object({
+        z.looseObject({
           selection: z.literal('nextexplorer'),
-          value: z.object({
+          value: z.looseObject({
             path: z.string(),
           }),
         }),
