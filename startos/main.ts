@@ -280,16 +280,11 @@ http {
         application/font-woff
         application/font-woff2;
 
-    # Cache static assets for 30 days
+    # Site files keep their names when replaced, so nothing may be cached for long
     map $sent_http_content_type $expires {
-        "~*text/html"                 off;      # never cache HTML
-        "~*application/json"          off;      # usually dynamic
-        "~*text/javascript"           max;      # hash-named JS
-        "~*application/javascript"    max;
-        "~*text/css"                  max;      # hash-named CSS
-        "~*image/"                    max;
-        "~*font/"                     max;
-        default                       7d;
+        "~*text/html"                 epoch;
+        "~*application/json"          epoch;
+        default                       1h;
     }
     expires $expires;
 
