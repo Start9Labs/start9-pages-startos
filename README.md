@@ -9,7 +9,7 @@
 > upstream documentation is accurate and fully applicable — see the
 > Documentation section of `instructions.md` for links.
 
-Start9 Pages is static web hosting for files you already have on this server. Point it at a folder in NextExplorer, FileBrowser Quantum, or Nextcloud and it serves that folder as a website — one nginx process, one port and one address per site.
+Start9 Pages is static web hosting for files you already have on this server. Point it at a folder in NextExplorer, FileBrowser Quantum, or Nextcloud and it serves that folder as a website — one nginx process, one port and one address per site. A site can instead redirect: every request to its address is sent on to another URL.
 
 - **Upstream repo:** <https://github.com/Start9Labs/start9-pages-startos>
 - **Wrapper repo:** <https://github.com/Start9Labs/start9-pages-startos>
@@ -73,13 +73,14 @@ One model, holding the whole site list.
 | ------------ | ------ | ----------------------- | -------------------------- |
 | `store.json` | JSON   | Yes — `FileHelper.json` | The Manage Websites action |
 
-Each entry carries a port, a display name, whether CORS is on, and a source — a Nextcloud user and path, or a FileBrowser Quantum or NextExplorer path. That list drives everything: the interfaces published, the dependencies enabled, the mounts attached, and the nginx config generated.
+Each entry carries a port, a display name, whether CORS is on, and a source — a Nextcloud user and path, a FileBrowser Quantum or NextExplorer path, or a redirect's target URL with whether the path is kept and whether the redirect is permanent. That list drives everything: the interfaces published, the dependencies enabled, the mounts attached, and the nginx config generated.
 
 **The nginx config is generated, never edited.** Both files are rewritten from the site list on every reconcile, so a hand edit is replaced the next time anything changes.
 
 What the generated config does that is worth knowing:
 
 - **An extensionless URL falls back to a flat `.html` file before a folder.** `/about` serves `about.html` when there is no file named `about`, even if an `about/` folder exists; `/about/` still serves that folder's index.
+- **A redirect site is a single `return`** — `301`, or `302` when it is not permanent, to the target URL, with `$request_uri` appended when the path is kept (after any trailing `/` on the target is dropped). CORS has no effect on it, and it mounts nothing.
 - **A catch-all server block closes any connection that does not match a site**, silently, rather than serving something by accident.
 - **Turning CORS on re-states the security headers.** nginx's `add_header` replaces the inherited set for a server block rather than adding to it, so the CORS block repeats the frame, sniffing, referrer, and XSS headers it would otherwise drop.
 - **Byte-range requests bypass dynamic compression.** This preserves `206 Partial Content` responses for media seeking and resumable downloads, including file types normally compressed with gzip or Brotli.
@@ -134,7 +135,7 @@ Add, edit, and remove the sites this package serves.
 - **Removing a site removes its interface and its address.** The files themselves are untouched, since they live on the source service.
 - **CORS is per site**, off unless you turn it on. Turn it on only for a site whose assets are meant to be fetched from another origin.
 - **Each site needs its own port**, and that port is what its address is built from.
-- **Folder paths and Nextcloud account names are checked on save**, from `start-cli` as well as the form. A path may use letters, digits, spaces, `_`, `.`, `-` and `/`, and an account name the characters Nextcloud allows in one; anything else is refused.
+- **Folder paths, Nextcloud account names and redirect targets are checked on save**, from `start-cli` as well as the form. A path may use letters, digits, spaces, `_`, `.`, `-` and `/`, and an account name the characters Nextcloud allows in one; a target must start with `http://` or `https://` and may not contain whitespace, `"`, `$`, `\`, braces or `;`. Anything else is refused.
 
 ## Tasks
 
@@ -153,11 +154,11 @@ Two checks.
 | Check     | Displayed         | Method                                        |
 | --------- | ----------------- | --------------------------------------------- |
 | `primary` | "Hosting"         | Port 80 is listening                          |
-| `folders` | "Website Folders" | Every site's folder exists, polled every 30 s |
+| `folders` | "Website Folders" | Every folder site's folder exists, polled every 30 s |
 
 The port checked is the catch-all block's, not any site's, so "Hosting" reports that nginx came up rather than that a given site works. A failure means nginx rejected the generated config, and the service logs name the directive.
 
-**"Website Folders" fails naming each site whose folder is gone** — never created, renamed, or deleted in the source service — with the path as entered in Manage Websites, preceded by the account name for a Nextcloud site. A wrong account name therefore shows here as a missing folder. It tests existence only, through the container's read-only mounts, and is absent while no site exists.
+**"Website Folders" fails naming each site whose folder is gone** — never created, renamed, or deleted in the source service — with the path as entered in Manage Websites, preceded by the account name for a Nextcloud site. A wrong account name therefore shows here as a missing folder. It tests existence only, through the container's read-only mounts, ignores redirect sites, and is absent while no site serves a folder.
 
 **Both checks green with a page returning 404** means the file is not in that folder: nothing at that path, as `<path>.html`, or as a folder.
 
@@ -174,7 +175,7 @@ The `main` volume is copied wholesale — `sdk.Backups.ofVolumes('main')`. No du
 1. **Static files only.** There is no scripting, no database, and no server-side anything — nginx serves what is in the folder.
 2. **Content is never copied.** A site is a read-only view of another service's folder, and disappears if that folder does.
 3. **The website content is not in this package's backup.**
-4. **Sources are limited to FileBrowser Quantum, Nextcloud, and NextExplorer.**
+4. **Sources are limited to FileBrowser Quantum, Nextcloud, and NextExplorer**, besides redirects.
 5. **The generated nginx config is not editable** — it is rewritten on every reconcile.
 6. **Each site needs a distinct port**, chosen when you add it.
 7. **No riscv64 build.** x86_64 and aarch64 only.
@@ -208,5 +209,5 @@ tasks:
   - { action: manage, severity: critical } # re-raises whenever no site exists
 health_checks:
   - primary # displayed "Hosting"; the catch-all block's port
-  - folders # displayed "Website Folders"; fails naming each site whose folder is missing
+  - folders # displayed "Website Folders"; fails naming each site whose folder is missing; absent with no folder site
 ```

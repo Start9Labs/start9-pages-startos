@@ -18,10 +18,18 @@ const userPattern = {
   ),
 }
 
+const targetPattern = {
+  regex: '^https?://[^\\s"$\\\\{};]+$',
+  description: i18n(
+    'Must start with http:// or https://, with no spaces, quotes, $, backslashes, braces or semicolons',
+  ),
+}
+
 const folderLocation = (description: string, placeholder: string) =>
   Value.text({
     name: i18n('Folder Location'),
     required: true,
+    minLength: 1,
     default: null,
     description,
     placeholder,
@@ -46,6 +54,7 @@ export const inputSpec = InputSpec.of({
           port: Value.hidden(z.number().nullable()),
           name: Value.text({
             name: i18n('Name'),
+            minLength: 1,
             description: i18n(
               'A unique name to identify this website (e.g. "Marketing Site")',
             ),
@@ -57,7 +66,7 @@ export const inputSpec = InputSpec.of({
             name: i18n('Source'),
             default: 'nextexplorer',
             description: i18n(
-              "Where this website's files are stored. Start9 Pages serves them from there, read-only, and never copies them.\n- NextExplorer: a folder in one of its locations\n- Nextcloud: a folder in one Nextcloud user's files\n- FileBrowser Quantum: a folder in its file storage",
+              "Where this website's files are stored. Start9 Pages serves them from there, read-only, and never copies them.\n- NextExplorer: a folder in one of its locations\n- Nextcloud: a folder in one Nextcloud user's files\n- FileBrowser Quantum: a folder in its file storage\n- Redirect: no files; every request is sent on to another URL",
             ),
             variants: Variants.of({
               nextexplorer: {
@@ -77,6 +86,7 @@ export const inputSpec = InputSpec.of({
                   user: Value.text({
                     name: i18n('Nextcloud User'),
                     required: true,
+                    minLength: 1,
                     default: 'admin',
                     description: i18n(
                       'The account name, not the display name, of the Nextcloud user whose files hold the website.',
@@ -91,6 +101,36 @@ export const inputSpec = InputSpec.of({
                 name: i18n('FileBrowser Quantum'),
                 spec: InputSpec.of({
                   path,
+                }),
+              },
+              redirect: {
+                name: i18n('Redirect'),
+                spec: InputSpec.of({
+                  target: Value.text({
+                    name: i18n('Target URL'),
+                    required: true,
+                    minLength: 1,
+                    default: null,
+                    description: i18n(
+                      'Where visitors are sent, e.g. https://example.com',
+                    ),
+                    placeholder: 'https://example.com',
+                    patterns: [targetPattern],
+                  }),
+                  keepPath: Value.toggle({
+                    name: i18n('Keep Path'),
+                    description: i18n(
+                      'Send each visitor to the same path and query on the target, so /docs?page=2 goes to the target URL followed by /docs?page=2. Off sends every request to the target URL as written.',
+                    ),
+                    default: true,
+                  }),
+                  permanent: Value.toggle({
+                    name: i18n('Permanent'),
+                    description: i18n(
+                      'Answer with 301 (permanent), which browsers and search engines remember. Off answers with 302 (temporary), for a move that may still change.',
+                    ),
+                    default: true,
+                  }),
                 }),
               },
             }),
@@ -132,6 +172,19 @@ export const manage = sdk.Action.withInput(
 
   // the execution function
   async ({ effects, input }) => {
+    // The SDK's validator lets an empty string past `required` and `patterns`.
+    if (
+      input.pages.some(
+        ({ name, source }) => !name || Object.values(source.value).includes(''),
+      )
+    ) {
+      throw new Error(
+        i18n(
+          'Every website needs a name and every field of its source filled in',
+        ),
+      )
+    }
+
     const usedPorts = new Set(
       input.pages.filter((p) => !!p.port).map((p) => p.port as number),
     )
