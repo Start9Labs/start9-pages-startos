@@ -234,6 +234,7 @@ const rootOf = (source: FolderSource) =>
 
 const nginxFile = `user  nginx;
 worker_processes  auto;
+include /etc/nginx/modules/*.conf;
 
 error_log  /var/log/nginx/error.log notice;
 pid        /var/run/nginx.pid;
