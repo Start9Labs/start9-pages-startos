@@ -38,3 +38,4 @@ verified, tried, and decided belongs in the commit message and the PR body.
 - **Quote every user-supplied value in the nginx config, and keep `"`, `\` and `$` out of the input patterns that feed it.** A space outside quotes, or any of those three inside them, makes nginx reject the whole config and takes every site down.
 - **Keep `recursive_error_pages` off.** With it on, a site without its own `404.html` loops on `error_page 404 /404.html` and answers every missing path with a 500.
 - **Keep every source mount read-only and every source dependency `kind: 'exists'`.** The files are only read off the volumes, which does not need those services running.
+- **Keep `include /etc/nginx/modules/*.conf;` at the top of `nginxFile`.** Alpine ships brotli as a dynamic module; without that line nginx rejects the `brotli` directives and every site goes down.
