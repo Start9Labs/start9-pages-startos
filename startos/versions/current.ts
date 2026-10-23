@@ -1,7 +1,7 @@
 import { VersionInfo, IMPOSSIBLE } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '1.0.0:20',
+  version: '1.1.0:0',
   releaseNotes: {
     en_US: `- A website can be a redirect: choose Redirect as its source in Manage Websites to send every visitor to its address on to another URL.
 - Updates nginx to 1.30.6 with security fixes.`,
