@@ -6,7 +6,7 @@
 
 ## What you get on StartOS
 
-Start9 Pages is a static website host. Point it at folders that already live in **NextExplorer**, **FileBrowser Quantum**, or **Nextcloud** on your server and each folder becomes a published site:
+Start9 Pages is a static website host. Point it at folders that already live in **NextExplorer**, **FileBrowser Quantum**, or **Nextcloud** on your server and each folder becomes a published site. A site can also be a **redirect**, sending everyone who visits its address on to another URL:
 
 - **One interface per site.** Every site you add gets its own set of network addresses — LAN IP, WAN IP, mDNS — on an auto-assigned port, plus the option to attach public domains and Tor `.onion` addresses.
 - **No file copying.** Files are read directly from NextExplorer, FileBrowser Quantum, or Nextcloud (read-only mounts) — uploads, renames, and replacements there are reflected immediately.
@@ -14,13 +14,13 @@ Start9 Pages is a static website host. Point it at folders that already live in 
 
 ## Getting set up
 
-**You need one of NextExplorer, FileBrowser Quantum, or Nextcloud installed and running first**, with your website files already uploaded there. NextExplorer is the recommended one. Install whichever you plan to use, then place each site's files in a folder you can name.
+**To host files, you need one of NextExplorer, FileBrowser Quantum, or Nextcloud installed and running first**, with your website files already uploaded there. A redirect needs none of them. NextExplorer is the recommended one. Install whichever you plan to use, then place each site's files in a folder you can name.
 
 After install, Start9 Pages posts a critical task — **Add your first website!** — which opens the **Manage Websites** action. To add a site:
 
 1. Click **Add** under **Websites**.
 2. Give the site a **Name** — this labels its interface in StartOS.
-3. Choose a **Source** — NextExplorer (the default), FileBrowser Quantum, or Nextcloud. For Nextcloud, also enter the **Nextcloud User** whose files you want served: the **Account name** Nextcloud lists for them, not their display name (default `admin`).
+3. Choose a **Source** — NextExplorer (the default), FileBrowser Quantum, Nextcloud, or Redirect (see [Redirecting an address](#redirecting-an-address)). For Nextcloud, also enter the **Nextcloud User** whose files you want served: the **Account name** Nextcloud lists for them, not their display name (default `admin`).
 4. Enter the **Folder Location** — the path to the folder, relative to the source's data root. For NextExplorer, start with the location name, e.g. `Files/websites/marketing-site`. For FileBrowser Quantum this is e.g. `websites/marketing-site`. For Nextcloud, it's the path inside that user's files (Start9 Pages resolves it to `data/<user>/files/<path>` under the hood).
 5. _(Optional)_ Toggle **Allow CORS** on if the site needs to be readable by browsers running on other domains — most commonly for **Nostr NIP-05 identity verification**, where clients fetch `/.well-known/nostr.json` from your site. Off is the right default; only enable it on sites where you specifically need cross-origin access.
 6. Save. Start9 Pages auto-assigns a port (starting at 8000), regenerates its nginx config, and exposes the site as a new interface.
@@ -42,6 +42,16 @@ Each site you add appears as its own interface in StartOS, named after the site.
 - **Built-in addresses** — LAN IP, WAN IP, and mDNS, all on the site's auto-assigned port. To reach the site at these addresses you must (a) include the port in the URL and (b) trust your server's Root CA in your browser, since StartOS signs its own TLS certs for these.
 - **Custom public domains** — attach one or more domains (e.g. `mydomain.com`) to the interface. This is what most people actually want: once a domain is bound you visit `https://mydomain.com` directly, no port and no Root CA trust required.
 - **Tor `.onion` addresses** _(optional)_ — install the **Tor** service on your StartOS, then click **Add onion service** on the site's interface page to publish it as a hidden service. Visit the resulting `.onion` URL from any Tor-enabled browser; no port and no Root CA trust required.
+
+### Redirecting an address
+
+Choose **Redirect** as a site's **Source** to send its visitors somewhere else — for example an old domain you are retiring, attached to the site's interface, pointed at the site that replaced it.
+
+- **Target URL** — where visitors go, starting with `https://` (or `http://`), e.g. `https://example.com`.
+- **Keep Path** _(on by default)_ — a visitor to `/docs?page=2` goes to the target followed by `/docs?page=2`. Turn it off to send every visitor to the target URL exactly as written.
+- **Permanent** _(on by default)_ — answers with a permanent redirect (301), which browsers and search engines remember. Turn it off for a temporary one (302) while the destination might still change.
+
+Then attach the old domain to the site's interface as described above. StartOS issues its certificate, so the redirect works over `https://` as well as `http://`. **Allow CORS** has no effect on a redirect.
 
 ### Editing or removing a site
 

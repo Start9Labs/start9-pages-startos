@@ -27,6 +27,14 @@ const shape = z.looseObject({
             path: z.string(),
           }),
         }),
+        z.looseObject({
+          selection: z.literal('redirect'),
+          value: z.looseObject({
+            target: z.string(),
+            keepPath: z.boolean(),
+            permanent: z.boolean(),
+          }),
+        }),
       ]),
     }),
   ),

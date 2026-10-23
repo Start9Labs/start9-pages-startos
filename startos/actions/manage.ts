@@ -57,7 +57,7 @@ export const inputSpec = InputSpec.of({
             name: i18n('Source'),
             default: 'nextexplorer',
             description: i18n(
-              "Where this website's files are stored. Start9 Pages serves them from there, read-only, and never copies them.\n- NextExplorer: a folder in one of its locations\n- Nextcloud: a folder in one Nextcloud user's files\n- FileBrowser Quantum: a folder in its file storage",
+              "Where this website's files are stored. Start9 Pages serves them from there, read-only, and never copies them.\n- NextExplorer: a folder in one of its locations\n- Nextcloud: a folder in one Nextcloud user's files\n- FileBrowser Quantum: a folder in its file storage\n- Redirect: no files; every request is sent on to another URL",
             ),
             variants: Variants.of({
               nextexplorer: {
@@ -91,6 +91,42 @@ export const inputSpec = InputSpec.of({
                 name: i18n('FileBrowser Quantum'),
                 spec: InputSpec.of({
                   path,
+                }),
+              },
+              redirect: {
+                name: i18n('Redirect'),
+                spec: InputSpec.of({
+                  target: Value.text({
+                    name: i18n('Target URL'),
+                    required: true,
+                    default: null,
+                    description: i18n(
+                      'Where visitors are sent, e.g. https://example.com',
+                    ),
+                    placeholder: 'https://example.com',
+                    patterns: [
+                      {
+                        regex: '^https?://[^\\s"$\\\\{};]+$',
+                        description: i18n(
+                          'Must start with http:// or https://, with no spaces, quotes, $, backslashes, braces or semicolons',
+                        ),
+                      },
+                    ],
+                  }),
+                  keepPath: Value.toggle({
+                    name: i18n('Keep Path'),
+                    description: i18n(
+                      'Send each visitor to the same path and query on the target, so /docs?page=2 goes to the target URL followed by /docs?page=2. Off sends every request to the target URL as written.',
+                    ),
+                    default: true,
+                  }),
+                  permanent: Value.toggle({
+                    name: i18n('Permanent'),
+                    description: i18n(
+                      'Answer with 301 (permanent), which browsers and search engines remember. Off answers with 302 (temporary), for a move that may still change.',
+                    ),
+                    default: true,
+                  }),
                 }),
               },
             }),

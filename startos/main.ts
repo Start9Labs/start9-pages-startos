@@ -76,7 +76,21 @@ export const main = sdk.setupMain(async ({ effects }) => {
     ]
 
     for (const page of pages) {
-      const { port, cors } = page
+      const { port, cors, source } = page
+
+      if (source.selection === 'redirect') {
+        const { target, keepPath, permanent } = source.value
+        const to = keepPath
+          ? `${target.replace(/\/+$/, '')}$request_uri`
+          : target
+        serverBlocks.push(`server {
+    listen ${port};
+    listen [::]:${port};
+    server_name _;
+    return ${permanent ? 301 : 302} "${to}";
+}`)
+        continue
+      }
 
       // Adding any `add_header` in a server block replaces the http-level set
       // for that server, so when CORS is on we repeat the security headers.
@@ -96,7 +110,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
     listen [::]:${port};
     server_name _;
     absolute_redirect off;
-    root "${rootOf(page)}";
+    root "${rootOf(source)}";
     index index.html index.htm;${corsHeaders}
     error_page 404 /404.html;
     error_page 418 = @range_request;
@@ -162,19 +176,21 @@ export const main = sdk.setupMain(async ({ effects }) => {
       requires: [],
     })
 
-    if (!pages.length) return daemons
+    if (!pages.some(hasFolder)) return daemons
 
     return daemons.addHealthCheck('folders', {
       ready: {
         display: i18n('Website Folders'),
         trigger: sdk.trigger.cooldownTrigger(30_000),
         fn: async () => {
-          const current = (await storeJson.read((s) => s.pages).once()) || []
+          const current = (
+            (await storeJson.read((s) => s.pages).once()) || []
+          ).filter(hasFolder)
           const found = await Promise.all(
             current.map(
               async (page) =>
-                (await primary.exec(['test', '-d', rootOf(page)])).exitCode ===
-                0,
+                (await primary.exec(['test', '-d', rootOf(page.source)]))
+                  .exitCode === 0,
             ),
           )
           const missing = current.filter((_, i) => !found[i])
@@ -205,7 +221,13 @@ const mountpoints = {
   nextexplorer: '/mnt/nextexplorer',
 }
 
-const rootOf = ({ source }: StoreConfig['pages'][number]) =>
+type Page = StoreConfig['pages'][number]
+type FolderSource = Exclude<Page['source'], { selection: 'redirect' }>
+
+const hasFolder = (page: Page): page is Page & { source: FolderSource } =>
+  page.source.selection !== 'redirect'
+
+const rootOf = (source: FolderSource) =>
   source.selection === 'nextcloud'
     ? `${mountpoints.nextcloud}/data/${source.value.user}/files/${source.value.path}`
     : `${mountpoints[source.selection]}/${source.value.path}`

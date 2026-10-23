@@ -13,7 +13,7 @@ const dict = {
   Name: 9,
   'A unique name to identify this website (e.g. "Marketing Site")': 10,
   Source: 11,
-  "Where this website's files are stored. Start9 Pages serves them from there, read-only, and never copies them.\n- NextExplorer: a folder in one of its locations\n- Nextcloud: a folder in one Nextcloud user's files\n- FileBrowser Quantum: a folder in its file storage": 12,
+  "Where this website's files are stored. Start9 Pages serves them from there, read-only, and never copies them.\n- NextExplorer: a folder in one of its locations\n- Nextcloud: a folder in one Nextcloud user's files\n- FileBrowser Quantum: a folder in its file storage\n- Redirect: no files; every request is sent on to another URL": 12,
   Nextcloud: 13,
   'Nextcloud User': 14,
   'The account name, not the display name, of the Nextcloud user whose files hold the website.': 15,
@@ -29,6 +29,14 @@ const dict = {
   'Website Folders': 25,
   'All website folders found': 26,
   'Folder not found for ${sites}': 27,
+  Redirect: 28,
+  'Target URL': 29,
+  'Where visitors are sent, e.g. https://example.com': 30,
+  'Must start with http:// or https://, with no spaces, quotes, $, backslashes, braces or semicolons': 31,
+  'Keep Path': 32,
+  'Send each visitor to the same path and query on the target, so /docs?page=2 goes to the target URL followed by /docs?page=2. Off sends every request to the target URL as written.': 33,
+  Permanent: 34,
+  'Answer with 301 (permanent), which browsers and search engines remember. Off answers with 302 (temporary), for a move that may still change.': 35,
 } as const
 
 export type I18nKey = keyof typeof dict
