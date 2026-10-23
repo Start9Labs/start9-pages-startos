@@ -36,6 +36,7 @@ const dict = {
   'Keep Path': 32,
   'Send each visitor to the same path and query on the target, so /docs?page=2 goes to the target URL followed by /docs?page=2. Off sends every request to the target URL as written.': 33,
   Permanent: 34,
+  'Every website needs a name and every field of its source filled in': 36,
   'Answer with 301 (permanent), which browsers and search engines remember. Off answers with 302 (temporary), for a move that may still change.': 35,
 } as const
 

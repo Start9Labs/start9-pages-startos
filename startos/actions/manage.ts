@@ -29,6 +29,7 @@ const folderLocation = (description: string, placeholder: string) =>
   Value.text({
     name: i18n('Folder Location'),
     required: true,
+    minLength: 1,
     default: null,
     description,
     placeholder,
@@ -53,6 +54,7 @@ export const inputSpec = InputSpec.of({
           port: Value.hidden(z.number().nullable()),
           name: Value.text({
             name: i18n('Name'),
+            minLength: 1,
             description: i18n(
               'A unique name to identify this website (e.g. "Marketing Site")',
             ),
@@ -84,6 +86,7 @@ export const inputSpec = InputSpec.of({
                   user: Value.text({
                     name: i18n('Nextcloud User'),
                     required: true,
+                    minLength: 1,
                     default: 'admin',
                     description: i18n(
                       'The account name, not the display name, of the Nextcloud user whose files hold the website.',
@@ -169,12 +172,17 @@ export const manage = sdk.Action.withInput(
 
   // the execution function
   async ({ effects, input }) => {
+    // The SDK's validator lets an empty string past `required` and `patterns`.
     if (
       input.pages.some(
-        ({ source }) => source.selection === 'redirect' && !source.value.target,
+        ({ name, source }) => !name || Object.values(source.value).includes(''),
       )
     ) {
-      throw new Error(targetPattern.description)
+      throw new Error(
+        i18n(
+          'Every website needs a name and every field of its source filled in',
+        ),
+      )
     }
 
     const usedPorts = new Set(

@@ -38,6 +38,7 @@ export default {
     33: 'Envía a cada visitante a la misma ruta y consulta en el destino, de modo que /docs?page=2 va a la URL de destino seguida de /docs?page=2. Desactivado envía todas las solicitudes a la URL de destino tal como está escrita.',
     34: 'Permanente',
     35: 'Responde con 301 (permanente), que los navegadores y buscadores recuerdan. Desactivado responde con 302 (temporal), para un traslado que aún puede cambiar.',
+    36: 'Cada sitio web necesita un nombre y todos los campos de su fuente completados',
   },
   de_DE: {
     0: 'Start9 Pages wird gestartet...',
@@ -76,6 +77,7 @@ export default {
     33: 'Leitet jeden Besucher zum selben Pfad und derselben Abfrage am Ziel weiter, sodass /docs?page=2 zur Ziel-URL gefolgt von /docs?page=2 führt. Aus leitet jede Anfrage an die Ziel-URL wie angegeben weiter.',
     34: 'Dauerhaft',
     35: 'Antwortet mit 301 (dauerhaft), was Browser und Suchmaschinen sich merken. Aus antwortet mit 302 (vorübergehend), für einen Umzug, der sich noch ändern kann.',
+    36: 'Jede Website braucht einen Namen und alle Felder ihrer Quelle ausgefüllt',
   },
   pl_PL: {
     0: 'Uruchamianie Start9 Pages...',
@@ -114,6 +116,7 @@ export default {
     33: 'Kieruje każdego odwiedzającego do tej samej ścieżki i zapytania w miejscu docelowym, więc /docs?page=2 trafia pod docelowy adres URL z dopisanym /docs?page=2. Wyłączone kieruje każde żądanie pod docelowy adres URL dokładnie tak, jak go wpisano.',
     34: 'Stałe',
     35: 'Odpowiada kodem 301 (stałe), który przeglądarki i wyszukiwarki zapamiętują. Wyłączone odpowiada kodem 302 (tymczasowe), dla przeniesienia, które może się jeszcze zmienić.',
+    36: 'Każda strona musi mieć nazwę i wypełnione wszystkie pola źródła',
   },
   fr_FR: {
     0: 'Démarrage de Start9 Pages...',
@@ -152,5 +155,6 @@ export default {
     33: 'Envoie chaque visiteur vers le même chemin et la même requête sur la cible : /docs?page=2 mène à l’URL cible suivie de /docs?page=2. Désactivé envoie chaque requête vers l’URL cible telle qu’elle est écrite.',
     34: 'Permanente',
     35: 'Répond par 301 (permanente), que les navigateurs et les moteurs de recherche retiennent. Désactivé répond par 302 (temporaire), pour un déplacement qui peut encore changer.',
+    36: 'Chaque site web doit avoir un nom et tous les champs de sa source remplis',
   },
 } satisfies Record<string, LangDict>
