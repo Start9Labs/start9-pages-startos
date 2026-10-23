@@ -18,6 +18,13 @@ const userPattern = {
   ),
 }
 
+const targetPattern = {
+  regex: '^https?://[^\\s"$\\\\{};]+$',
+  description: i18n(
+    'Must start with http:// or https://, with no spaces, quotes, $, backslashes, braces or semicolons',
+  ),
+}
+
 const folderLocation = (description: string, placeholder: string) =>
   Value.text({
     name: i18n('Folder Location'),
@@ -99,19 +106,13 @@ export const inputSpec = InputSpec.of({
                   target: Value.text({
                     name: i18n('Target URL'),
                     required: true,
+                    minLength: 1,
                     default: null,
                     description: i18n(
                       'Where visitors are sent, e.g. https://example.com',
                     ),
                     placeholder: 'https://example.com',
-                    patterns: [
-                      {
-                        regex: '^https?://[^\\s"$\\\\{};]+$',
-                        description: i18n(
-                          'Must start with http:// or https://, with no spaces, quotes, $, backslashes, braces or semicolons',
-                        ),
-                      },
-                    ],
+                    patterns: [targetPattern],
                   }),
                   keepPath: Value.toggle({
                     name: i18n('Keep Path'),
@@ -168,6 +169,14 @@ export const manage = sdk.Action.withInput(
 
   // the execution function
   async ({ effects, input }) => {
+    if (
+      input.pages.some(
+        ({ source }) => source.selection === 'redirect' && !source.value.target,
+      )
+    ) {
+      throw new Error(targetPattern.description)
+    }
+
     const usedPorts = new Set(
       input.pages.filter((p) => !!p.port).map((p) => p.port as number),
     )
