@@ -2,7 +2,7 @@
   "name": "start9-pages-startos",
   "dependencies": {
     "@start9labs/start-sdk": "4.0.0",
-    "filebrowser-startos": "github:Start9Labs/filebrowser-startos#next",
+    "filebrowser-quantum-startos": "github:Start9Labs/filebrowser-quantum-startos#next",
     "nextcloud-startos": "github:Start9Labs/nextcloud-startos#next",
     "nextexplorer-startos": "github:Start9Labs/nextexplorer-startos#next"
   },
