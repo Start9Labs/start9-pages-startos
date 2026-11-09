@@ -1,5 +1,5 @@
 import { createHash } from 'crypto'
-import { manifest as FilebrowserManifest } from 'filebrowser-startos/startos/manifest'
+import { manifest as FilebrowserManifest } from 'filebrowser-quantum-startos/startos/manifest'
 import { manifest as NextcloudManifest } from 'nextcloud-startos/startos/manifest'
 import { manifest as NextexplorerManifest } from 'nextexplorer-startos/startos/manifest'
 import { StoreConfig, storeJson } from './fileModels/store.json'

@@ -89,13 +89,11 @@ What the generated config does that is worth knowing:
 
 Three, all optional, defined in `startos/dependencies.ts`, and each enabled only while a site actually uses it — a disabled one imposes nothing. NextExplorer is the default source for a new site.
 
-| Dependency     | Kind     | Version       | Enabled when                                 |
-| -------------- | -------- | ------------- | -------------------------------------------- |
-| `filebrowser`  | `exists` | `>=2.63.18:3` | Any site is sourced from FileBrowser Quantum |
-| `nextcloud`    | `exists` | `>=33.0.6:1`  | Any site is sourced from Nextcloud           |
-| `nextexplorer` | `exists` | `>=2.2.7:0`   | Any site is sourced from NextExplorer        |
-
-The `filebrowser` range admits File Browser and its FileBrowser Quantum flavor alike.
+| Dependency     | Kind     | Version                     | Enabled when                                 |
+| -------------- | -------- | --------------------------- | -------------------------------------------- |
+| `filebrowser`  | `exists` | `>=#quantum:2.0.2-stable:3` | Any site is sourced from FileBrowser Quantum |
+| `nextcloud`    | `exists` | `>=33.0.6:1`                | Any site is sourced from Nextcloud           |
+| `nextexplorer` | `exists` | `>=2.2.7:0`                 | Any site is sourced from NextExplorer        |
 
 Every source volume is mounted **read-only**: this package can serve those files but never modify them.
 
@@ -199,7 +197,7 @@ file_models:
 startos_managed_env_vars:
   - CONF_HASH # sha256 of the effective nginx config; drives the reconcile
 dependencies: # all optional, each enabled only while a site uses it; all mounted read-only
-  - filebrowser # exists, >=2.63.18:3
+  - filebrowser # exists, >=#quantum:2.0.2-stable:3
   - nextcloud # exists, >=33.0.6:1
   - nextexplorer # exists, >=2.2.7:0
 interfaces: {} # one ui interface per configured site, on that site's port
