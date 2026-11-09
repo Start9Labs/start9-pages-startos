@@ -1,18 +1,18 @@
 import { VersionInfo, IMPOSSIBLE } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '1.1.0:0',
+  version: '1.1.0:1',
   releaseNotes: {
-    en_US: `- A website can be a redirect: choose Redirect as its source in Manage Websites to send every visitor to its address on to another URL.
-- Updates nginx to 1.30.6 with security fixes.`,
-    es_ES: `- Un sitio web puede ser una redirección: elija Redirección como su fuente en Administrar sitios web para enviar a cada visitante de su dirección a otra URL.
-- Actualiza nginx a 1.30.6 con correcciones de seguridad.`,
-    de_DE: `- Eine Website kann eine Weiterleitung sein: Wählen Sie in „Websites verwalten“ Weiterleitung als Quelle, um jeden Besucher ihrer Adresse an eine andere URL weiterzuleiten.
-- Aktualisiert nginx auf 1.30.6 mit Sicherheitskorrekturen.`,
-    pl_PL: `- Strona może być przekierowaniem: wybierz Przekierowanie jako jej źródło w Zarządzaj stronami, aby kierować każdego odwiedzającego jej adres pod inny adres URL.
-- Aktualizuje nginx do wersji 1.30.6 z poprawkami bezpieczeństwa.`,
-    fr_FR: `- Un site web peut être une redirection : choisissez Redirection comme source dans Gérer les sites web pour envoyer chaque visiteur de son adresse vers une autre URL.
-- Met à jour nginx vers 1.30.6 avec des correctifs de sécurité.`,
+    en_US:
+      "Requires StartOS 0.4.1 or later. Start9 Pages now sees only Nextcloud's user files, not its configuration.",
+    es_ES:
+      'Requiere StartOS 0.4.1 o posterior. Start9 Pages ahora solo ve los archivos de usuario de Nextcloud, no su configuración.',
+    de_DE:
+      'Erfordert StartOS 0.4.1 oder neuer. Start9 Pages sieht jetzt nur noch die Benutzerdateien von Nextcloud, nicht dessen Konfiguration.',
+    pl_PL:
+      'Wymaga StartOS 0.4.1 lub nowszego. Start9 Pages widzi teraz tylko pliki użytkowników Nextcloud, a nie jego konfigurację.',
+    fr_FR:
+      'Nécessite StartOS 0.4.1 ou une version ultérieure. Start9 Pages ne voit désormais que les fichiers utilisateur de Nextcloud, et non sa configuration.',
   },
   migrations: {
     up: async ({ effects }) => {},

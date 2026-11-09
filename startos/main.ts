@@ -47,8 +47,8 @@ export const main = sdk.setupMain(async ({ effects }) => {
       mounts = mounts.mountDependency<typeof NextcloudManifest>({
         dependencyId: 'nextcloud',
         volumeId: 'nextcloud',
-        subpath: null,
-        mountpoint: mountpoints.nextcloud,
+        subpath: 'data',
+        mountpoint: `${mountpoints.nextcloud}/data`,
         readonly: true,
       })
     }
