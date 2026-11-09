@@ -63,7 +63,7 @@ One volume of its own, plus a read-only view of whichever source each site uses.
 | ------ | ----------- | ------------------------------------------- |
 | `main` | `/data`     | `store.json` and the generated nginx config |
 
-**None of the website content is here.** Each site's files stay on the source service's own volume, mounted read-only into this container — FileBrowser Quantum's at `/mnt/filebrowser`, Nextcloud's at `/mnt/nextcloud`, NextExplorer's at `/mnt/nextexplorer`. This package serves them; it never copies them.
+**None of the website content is here.** Each site's files stay on the source service's own volume, mounted read-only into this container — FileBrowser Quantum's at `/mnt/filebrowser`, Nextcloud's user files (its `data` directory, not its configuration) at `/mnt/nextcloud/data`, NextExplorer's at `/mnt/nextexplorer`. This package serves them; it never copies them.
 
 ## File Models
 
@@ -151,9 +151,9 @@ Checked on every init rather than only at install. `critical` because with no si
 
 Two checks.
 
-| Check     | Displayed         | Method                                        |
-| --------- | ----------------- | --------------------------------------------- |
-| `primary` | "Hosting"         | Port 80 is listening                          |
+| Check     | Displayed         | Method                                               |
+| --------- | ----------------- | ---------------------------------------------------- |
+| `primary` | "Hosting"         | Port 80 is listening                                 |
 | `folders` | "Website Folders" | Every folder site's folder exists, polled every 30 s |
 
 The port checked is the catch-all block's, not any site's, so "Hosting" reports that nginx came up rather than that a given site works. A failure means nginx rejected the generated config, and the service logs name the directive.
