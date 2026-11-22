@@ -150,10 +150,10 @@ Checked on every init rather than only at install. `critical` because with no si
 
 "Hosting", plus one check per folder site.
 
-| Check         | Displayed         | Method                                                        |
-| ------------- | ----------------- | ------------------------------------------------------------- |
-| `primary`     | "Hosting"         | Port 80 is listening                                          |
-| `site-<port>` | "Website: <name>" | Walks the site's source and folder, every 30 s (10 s failing) |
+| Check         | Displayed         | Method                                         |
+| ------------- | ----------------- | ---------------------------------------------- |
+| `primary`     | "Hosting"         | Port 80 is listening                           |
+| `site-<port>` | "Website: <name>" | Walks the site's source and folder, every 30 s |
 
 The port checked is the catch-all block's, not any site's, so "Hosting" reports that nginx came up rather than that a given site works. A failure means nginx rejected the generated config, and the service logs name the directive.
 

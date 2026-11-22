@@ -194,10 +194,23 @@ export const main = sdk.setupMain(async ({ effects }) => {
       all = all.addHealthCheck(`site-${page.port}`, {
         ready: {
           display: i18n('Website: ${name}', { name: page.name }),
-          trigger: sdk.trigger.statusTrigger(30_000, { failure: 10_000 }),
+          trigger: sdk.trigger.cooldownTrigger(30_000),
           fn: () =>
             installed[page.source.selection]
-              ? diagnose(folder, page.source)
+              ? diagnose(folder, page.source).catch((e) => {
+                  console.error(e)
+                  return {
+                    result: 'failure' as const,
+                    message: i18n(
+                      'Could not check "${path}" in ${source}: ${error}',
+                      {
+                        path: page.source.value.path,
+                        source: sourceName(page.source),
+                        error: String(e?.message ?? e),
+                      },
+                    ),
+                  }
+                })
               : {
                   result: 'failure' as const,
                   message: i18n(
@@ -226,15 +239,24 @@ const sourceName = (source: FolderSource) =>
 class FolderProbe {
   constructor(private readonly sub: { exec: SubContainer<any>['exec'] }) {}
 
+  private async run(cmd: string[], answers: (number | null)[]) {
+    const res = await this.sub.exec(cmd)
+    if (!answers.includes(res.exitCode))
+      throw new Error(
+        `${cmd.join(' ')} exited ${res.exitCode ?? res.exitSignal}: ${String(res.stderr).trim()}`,
+      )
+    return res
+  }
+
   private async ok(cmd: string[]) {
-    return (await this.sub.exec(cmd)).exitCode === 0
+    return (await this.run(cmd, [0, 1])).exitCode === 0
   }
 
   private async lines(cmd: string[]) {
-    const res = await this.sub.exec(cmd)
-    return res.exitCode === 0
-      ? String(res.stdout).split('\n').filter(Boolean).sort()
-      : []
+    return String((await this.run(cmd, [0])).stdout)
+      .split('\n')
+      .filter(Boolean)
+      .sort()
   }
 
   isDir = (path: string) => this.ok(['test', '-d', path])
@@ -361,6 +383,13 @@ async function diagnose(
       ? ` ${i18n('Did you mean "${match}"? Folder names are case-sensitive.', { match })}`
       : ''
     const parent = segments.slice(0, i).join('/')
+
+    if (i === 0 && source.selection === 'nextexplorer' && !siblings.length)
+      return failure(
+        i18n(
+          "NextExplorer has no locations yet. Start NextExplorer, which creates its Files location, then upload this website's files there.",
+        ),
+      )
 
     if (i === 0 && source.selection === 'nextexplorer')
       return failure(

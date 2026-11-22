@@ -52,6 +52,8 @@ const dict = {
   '"${path}" in ${source} has "${file}", but only a lowercase index.html or index.htm is served as the home page. Rename it in ${source}.': 55,
   '"${path}" in ${source} has no index.html, so visitors see a list of its files. The website\'s home page is at "${nested}" inside it: set Folder Location to "${target}" in Manage Websites.': 56,
   'Serving "${path}" from ${source} as a list of its files, since it has no index.html or index.htm': 57,
+  'Could not check "${path}" in ${source}: ${error}': 58,
+  "NextExplorer has no locations yet. Start NextExplorer, which creates its Files location, then upload this website's files there.": 59,
 } as const
 
 export type I18nKey = keyof typeof dict

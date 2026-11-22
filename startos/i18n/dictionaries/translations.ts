@@ -53,6 +53,8 @@ export default {
     55: '"${path}" en ${source} tiene "${file}", pero solo un index.html o index.htm en minúsculas se sirve como página de inicio. Cámbiele el nombre en ${source}.',
     56: '"${path}" en ${source} no tiene index.html, así que los visitantes ven una lista de sus archivos. La página de inicio del sitio web está en "${nested}" dentro de ella: ponga "${target}" en Ubicación de la carpeta en Administrar sitios web.',
     57: 'Sirviendo "${path}" desde ${source} como una lista de sus archivos, ya que no tiene index.html ni index.htm',
+    58: 'No se pudo comprobar "${path}" en ${source}: ${error}',
+    59: 'NextExplorer aún no tiene ubicaciones. Inicie NextExplorer, que crea su ubicación Files, y luego suba allí los archivos de este sitio web.',
   },
   de_DE: {
     0: 'Start9 Pages wird gestartet...',
@@ -106,6 +108,8 @@ export default {
     55: '"${path}" in ${source} enthält "${file}", aber nur eine kleingeschriebene index.html oder index.htm wird als Startseite ausgeliefert. Benennen Sie sie in ${source} um.',
     56: '"${path}" in ${source} hat keine index.html, daher sehen Besucher eine Liste seiner Dateien. Die Startseite der Website liegt darin unter "${nested}": Setzen Sie den Ordnerspeicherort unter Websites verwalten auf "${target}".',
     57: '"${path}" wird aus ${source} als Liste seiner Dateien bereitgestellt, da es keine index.html oder index.htm enthält',
+    58: '"${path}" in ${source} konnte nicht geprüft werden: ${error}',
+    59: 'NextExplorer hat noch keine Speicherorte. Starten Sie NextExplorer, das seinen Speicherort Files anlegt, und laden Sie dann die Dateien dieser Website dorthin hoch.',
   },
   pl_PL: {
     0: 'Uruchamianie Start9 Pages...',
@@ -159,6 +163,8 @@ export default {
     55: '"${path}" w ${source} zawiera "${file}", ale jako strona główna serwowany jest tylko plik index.html lub index.htm zapisany małymi literami. Zmień jego nazwę w ${source}.',
     56: '"${path}" w ${source} nie ma pliku index.html, więc odwiedzający widzą listę jego plików. Strona główna znajduje się w nim pod "${nested}": ustaw Lokalizację folderu na "${target}" w Zarządzaj stronami.',
     57: 'Serwowanie "${path}" z ${source} jako listy jego plików, ponieważ nie ma pliku index.html ani index.htm',
+    58: 'Nie udało się sprawdzić "${path}" w ${source}: ${error}',
+    59: 'NextExplorer nie ma jeszcze lokalizacji. Uruchom NextExplorer, który utworzy lokalizację Files, a potem prześlij tam pliki tej strony.',
   },
   fr_FR: {
     0: 'Démarrage de Start9 Pages...',
@@ -212,5 +218,7 @@ export default {
     55: '"${path}" dans ${source} contient "${file}", mais seul un index.html ou index.htm en minuscules est servi comme page d\'accueil. Renommez-le dans ${source}.',
     56: '"${path}" dans ${source} n\'a pas de index.html, les visiteurs voient donc la liste de ses fichiers. La page d\'accueil du site se trouve dans "${nested}" à l\'intérieur : indiquez "${target}" comme Emplacement du dossier dans Gérer les sites web.',
     57: 'Diffusion de "${path}" depuis ${source} sous forme de liste de ses fichiers, car il n\'a ni index.html ni index.htm',
+    58: 'Impossible de vérifier "${path}" dans ${source} : ${error}',
+    59: "NextExplorer n'a encore aucun emplacement. Démarrez NextExplorer, qui crée son emplacement Files, puis téléversez-y les fichiers de ce site.",
   },
 } satisfies Record<string, LangDict>
