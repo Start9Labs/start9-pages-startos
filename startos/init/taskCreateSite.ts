@@ -8,7 +8,9 @@ export const taskCreateSite = sdk.setupOnInit(async (effects) => {
 
   if (!pages?.length) {
     await sdk.action.createOwnTask(effects, manage, 'critical', {
-      reason: i18n('Add your first website!'),
+      reason: i18n(
+        'Add your first website! Upload its files to NextExplorer, FileBrowser Quantum or Nextcloud first, or choose Redirect.',
+      ),
     })
   }
 })

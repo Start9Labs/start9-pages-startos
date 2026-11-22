@@ -113,9 +113,9 @@ None are masked. A fresh install with no sites publishes nothing at all.
 
 ## Installation and First-Run Flow
 
-Install starts nginx with no sites and raises a `critical` task: add your first website.
+Install starts nginx with no sites and raises a `critical` task: add your first website, with its files already in NextExplorer, FileBrowser Quantum or Nextcloud.
 
-Before that is useful, the content has to exist somewhere this package can read — a folder in FileBrowser Quantum, Nextcloud, or NextExplorer with an `index.html` in it. Then Manage Websites points a port at that folder.
+Before that is useful, the content has to exist somewhere this package can read — a folder in FileBrowser Quantum, Nextcloud, or NextExplorer with an `index.html` in it. Those are separate services the user installs themselves. Then Manage Websites points a port at that folder.
 
 The task is checked on every start, so removing every site brings it back.
 
@@ -133,6 +133,7 @@ Add, edit, and remove the sites this package serves.
 - **Removing a site removes its interface and its address.** The files themselves are untouched, since they live on the source service.
 - **CORS is per site**, off unless you turn it on. Turn it on only for a site whose assets are meant to be fetched from another origin.
 - **Each site needs its own port**, and that port is what its address is built from.
+- **The Source field marks each source service that isn't installed** with "(not installed)", and preselects the first installed one in the order NextExplorer, FileBrowser Quantum, Nextcloud; with none installed, nothing is preselected. Saving a site whose source isn't installed is allowed: its health check says so until the service is installed.
 - **Folder paths, Nextcloud account names and redirect targets are checked on save**, from `start-cli` as well as the form. A path may use letters, digits, spaces, `_`, `.`, `-` and `/`, and an account name the characters Nextcloud allows in one; a target must start with `http://` or `https://` and may not contain whitespace, `"`, `$`, `\`, braces or `;`. Anything else is refused.
 
 ## Tasks
@@ -147,18 +148,30 @@ Checked on every init rather than only at install. `critical` because with no si
 
 ## Health Checks
 
-Two checks.
+"Hosting", plus one check per folder site.
 
-| Check     | Displayed         | Method                                               |
-| --------- | ----------------- | ---------------------------------------------------- |
-| `primary` | "Hosting"         | Port 80 is listening                                 |
-| `folders` | "Website Folders" | Every folder site's folder exists, polled every 30 s |
+| Check         | Displayed         | Method                                                        |
+| ------------- | ----------------- | ------------------------------------------------------------- |
+| `primary`     | "Hosting"         | Port 80 is listening                                          |
+| `site-<port>` | "Website: <name>" | Walks the site's source and folder, every 30 s (10 s failing) |
 
 The port checked is the catch-all block's, not any site's, so "Hosting" reports that nginx came up rather than that a given site works. A failure means nginx rejected the generated config, and the service logs name the directive.
 
-**"Website Folders" fails naming each site whose folder is gone** — never created, renamed, or deleted in the source service — with the path as entered in Manage Websites, preceded by the account name for a Nextcloud site. A wrong account name therefore shows here as a missing folder. It tests existence only, through the container's read-only mounts, ignores redirect sites, and is absent while no site serves a folder.
+**A source service that isn't installed is not mounted**, so nginx still starts and serves every other site; that site answers 404 until the service is installed, which re-mounts it without a restart.
 
-**Both checks green with a page returning 404** means the file is not in that folder: nothing at that path, as `<path>.html`, or as a folder.
+**Each site's check reports the first thing wrong, in this order**, with the path as entered in Manage Websites:
+
+1. The source service isn't installed.
+2. Nextcloud has no account by that name. It lists the accounts that have files.
+3. A folder on the path is missing. It names the missing folder, lists the folders beside it (NextExplorer's first segment is its location, so there it lists the locations), and suggests a name that differs only in case.
+4. The path is a file, not a folder.
+5. The folder is empty.
+6. The folder holds `index.html` in other letter case. nginx serves only the lowercase name.
+7. The folder has no `index.html`, but a subfolder up to three levels down does. It names the Folder Location that would serve it.
+
+**A folder with no `index.html` or `index.htm` anywhere passes**, saying visitors get a file listing, since that is a supported way to share a folder. Redirect sites have no check.
+
+**All checks green with a page returning 404** means the file is not in that folder: nothing at that path, as `<path>.html`, or as a folder.
 
 ## Backups and Restore
 
@@ -207,5 +220,5 @@ tasks:
   - { action: manage, severity: critical } # re-raises whenever no site exists
 health_checks:
   - primary # displayed "Hosting"; the catch-all block's port
-  - folders # displayed "Website Folders"; fails naming each site whose folder is missing; absent with no folder site
+  - site-<port> # one per folder site, displayed "Website: <name>"; names what is missing: the source service, the account, a folder, or the index.html
 ```

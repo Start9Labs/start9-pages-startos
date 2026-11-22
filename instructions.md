@@ -14,14 +14,14 @@ Start9 Pages is a static website host. Point it at folders that already live in 
 
 ## Getting set up
 
-**To host files, you need one of NextExplorer, FileBrowser Quantum, or Nextcloud installed and running first**, with your website files already uploaded there. A redirect needs none of them. NextExplorer is the recommended one. Install whichever you plan to use, then place each site's files in a folder you can name.
+**To host files, you need one of NextExplorer, FileBrowser Quantum, or Nextcloud installed first**, with your website files already uploaded there. These are separate services, not part of Start9 Pages: install the one you choose from the Marketplace. A redirect needs none of them. NextExplorer is the recommended one. Upload each site's files to a folder of their own, with the site's `index.html` directly inside it.
 
 After install, Start9 Pages posts a critical task — **Add your first website!** — which opens the **Manage Websites** action. To add a site:
 
 1. Click **Add** under **Websites**.
 2. Give the site a **Name** — this labels its interface in StartOS.
-3. Choose a **Source** — NextExplorer (the default), FileBrowser Quantum, Nextcloud, or Redirect (see [Redirecting an address](#redirecting-an-address)). For Nextcloud, also enter the **Nextcloud User** whose files you want served: the **Account name** Nextcloud lists for them, not their display name (default `admin`).
-4. Enter the **Folder Location** — the path to the folder, relative to the source's data root. For NextExplorer, start with the location name, e.g. `Files/websites/marketing-site`. For FileBrowser Quantum this is e.g. `websites/marketing-site`. For Nextcloud, it's the path inside that user's files (Start9 Pages resolves it to `data/<user>/files/<path>` under the hood).
+3. Choose a **Source** — NextExplorer, FileBrowser Quantum, Nextcloud, or Redirect. A source you haven't installed is marked **(not installed)** (see [Redirecting an address](#redirecting-an-address)). For Nextcloud, also enter the **Nextcloud User** whose files you want served: the **Account name** Nextcloud lists for them, not their display name (default `admin`).
+4. Enter the **Folder Location** — the path to the folder that holds the site's `index.html`, relative to the source's data root. For NextExplorer, start with the location name, e.g. `Files/websites/marketing-site`. For FileBrowser Quantum this is e.g. `websites/marketing-site`. For Nextcloud, it's the path inside that user's files (Start9 Pages resolves it to `data/<user>/files/<path>` under the hood).
 5. _(Optional)_ Toggle **Allow CORS** on if the site needs to be readable by browsers running on other domains — most commonly for **Nostr NIP-05 identity verification**, where clients fetch `/.well-known/nostr.json` from your site. Off is the right default; only enable it on sites where you specifically need cross-origin access.
 6. Save. Start9 Pages auto-assigns a port (starting at 8000), regenerates its nginx config, and exposes the site as a new interface.
 
@@ -63,8 +63,12 @@ You can also switch a site between sources (or change the Nextcloud user) withou
 
 Ports start at 8000 and increment as you add sites. Once assigned, a site keeps its port even if you reorder or rename it; removing a site frees its port for the next one you add.
 
+### When a site doesn't load
+
+Each site you add gets its own health check on the service page, named **Website: <name>**. When something is wrong it says what and how to fix it: the source service isn't installed, the Nextcloud account or a folder on the path doesn't exist (with the names that do), the folder is empty, or the site's `index.html` is missing or sits in a subfolder (with the Folder Location to use instead).
+
 ## Limitations
 
 - **Static files only.** There is no server-side runtime — no PHP, Node, CGI, or rewrites. Build dynamic sites to plain HTML/CSS/JS before uploading.
 - **Files live in NextExplorer, FileBrowser Quantum, or Nextcloud, not in Start9 Pages.** Start9 Pages only stores the website list (which folder, which source, which port). Backups of Start9 Pages preserve that list; the file contents are backed up wherever they live.
-- **Start9 Pages does not create folders.** If a site's folder doesn't exist in the source service — never created, renamed, or deleted — the site returns 404 and the **Website Folders** health check fails, naming the site.
+- **Start9 Pages does not create folders.** If a site's folder doesn't exist in the source service — never created, renamed, or deleted — the site returns 404.

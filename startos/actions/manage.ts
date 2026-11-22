@@ -36,12 +36,13 @@ const folderLocation = (description: string, placeholder: string) =>
     patterns: [pathPattern],
   })
 
-const path = folderLocation(
-  i18n(
-    'The full path to the folder you want to host. If the folder contains an index.html or index.htm file, that web page will be served.',
-  ),
-  'e.g. websites/marketing-site',
-)
+const sources = ['nextexplorer', 'filebrowser', 'nextcloud'] as const
+
+const sourceNames = {
+  nextexplorer: i18n('NextExplorer'),
+  filebrowser: i18n('FileBrowser Quantum'),
+  nextcloud: i18n('Nextcloud'),
+}
 
 export const inputSpec = InputSpec.of({
   pages: Value.list(
@@ -62,78 +63,109 @@ export const inputSpec = InputSpec.of({
             required: true,
             default: null,
           }),
-          source: Value.union({
-            name: i18n('Source'),
-            default: 'nextexplorer',
-            description: i18n(
-              "Where this website's files are stored. Start9 Pages serves them from there, read-only, and never copies them.\n- NextExplorer: a folder in one of its locations\n- Nextcloud: a folder in one Nextcloud user's files\n- FileBrowser Quantum: a folder in its file storage\n- Redirect: no files; every request is sent on to another URL",
-            ),
-            variants: Variants.of({
-              nextexplorer: {
-                name: i18n('NextExplorer'),
-                spec: InputSpec.of({
-                  path: folderLocation(
-                    i18n(
-                      'The full path to the folder you want to host, starting with the location name (usually Files). If the folder contains an index.html or index.htm file, that web page will be served.',
+          source: Value.dynamicUnion(async ({ effects }) => {
+            const installed = Object.fromEntries(
+              await Promise.all(
+                sources.map(
+                  async (id) =>
+                    [
+                      id,
+                      await sdk
+                        .getServiceManifest(effects, id, (m) => m !== null)
+                        .once(),
+                    ] as const,
+                ),
+              ),
+            ) as Record<(typeof sources)[number], boolean>
+            const name = (id: (typeof sources)[number]) =>
+              installed[id]
+                ? sourceNames[id]
+                : i18n('${name} (not installed)', { name: sourceNames[id] })
+
+            return {
+              name: i18n('Source'),
+              default: sources.find((id) => installed[id]) ?? null,
+              description: i18n(
+                "Where this website's files are stored. NextExplorer, FileBrowser Quantum and Nextcloud are separate services: install the one you choose and upload the website's files to it before you add the website here. Start9 Pages serves the files from there, read-only, and never copies them.\n- NextExplorer: a folder in one of its locations\n- FileBrowser Quantum: a folder in its file storage\n- Nextcloud: a folder in one Nextcloud user's files\n- Redirect: no files; every request is sent on to another URL",
+              ),
+              disabled: false,
+              variants: Variants.of({
+                nextexplorer: {
+                  name: name('nextexplorer'),
+                  spec: InputSpec.of({
+                    path: folderLocation(
+                      i18n(
+                        "The folder that holds the website's index.html, starting with the NextExplorer location name (usually Files). If the folder has no index.html or index.htm, visitors see a list of its files.",
+                      ),
+                      'e.g. Files/websites/marketing-site',
                     ),
-                    'e.g. Files/websites/marketing-site',
-                  ),
-                }),
-              },
-              nextcloud: {
-                name: i18n('Nextcloud'),
-                spec: InputSpec.of({
-                  user: Value.text({
-                    name: i18n('Nextcloud User'),
-                    required: true,
-                    minLength: 1,
-                    default: 'admin',
-                    description: i18n(
-                      'The account name, not the display name, of the Nextcloud user whose files hold the website.',
-                    ),
-                    placeholder: 'e.g. admin',
-                    patterns: [userPattern],
                   }),
-                  path,
-                }),
-              },
-              filebrowser: {
-                name: i18n('FileBrowser Quantum'),
-                spec: InputSpec.of({
-                  path,
-                }),
-              },
-              redirect: {
-                name: i18n('Redirect'),
-                spec: InputSpec.of({
-                  target: Value.text({
-                    name: i18n('Target URL'),
-                    required: true,
-                    minLength: 1,
-                    default: null,
-                    description: i18n(
-                      'Where visitors are sent, e.g. https://example.com',
+                },
+                filebrowser: {
+                  name: name('filebrowser'),
+                  spec: InputSpec.of({
+                    path: folderLocation(
+                      i18n(
+                        "The folder that holds the website's index.html, as a path from the top of FileBrowser Quantum's files. If the folder has no index.html or index.htm, visitors see a list of its files.",
+                      ),
+                      'e.g. websites/marketing-site',
                     ),
-                    placeholder: 'https://example.com',
-                    patterns: [targetPattern],
                   }),
-                  keepPath: Value.toggle({
-                    name: i18n('Keep Path'),
-                    description: i18n(
-                      'Send each visitor to the same path and query on the target, so /docs?page=2 goes to the target URL followed by /docs?page=2. Off sends every request to the target URL as written.',
+                },
+                nextcloud: {
+                  name: name('nextcloud'),
+                  spec: InputSpec.of({
+                    user: Value.text({
+                      name: i18n('Nextcloud User'),
+                      required: true,
+                      minLength: 1,
+                      default: 'admin',
+                      description: i18n(
+                        'The account name, not the display name, of the Nextcloud user whose files hold the website.',
+                      ),
+                      placeholder: 'e.g. admin',
+                      patterns: [userPattern],
+                    }),
+                    path: folderLocation(
+                      i18n(
+                        "The folder that holds the website's index.html, as a path inside that user's Nextcloud files. If the folder has no index.html or index.htm, visitors see a list of its files.",
+                      ),
+                      'e.g. websites/marketing-site',
                     ),
-                    default: true,
                   }),
-                  permanent: Value.toggle({
-                    name: i18n('Permanent'),
-                    description: i18n(
-                      'Answer with 301 (permanent), which browsers and search engines remember. Off answers with 302 (temporary), for a move that may still change.',
-                    ),
-                    default: true,
+                },
+                redirect: {
+                  name: i18n('Redirect'),
+                  spec: InputSpec.of({
+                    target: Value.text({
+                      name: i18n('Target URL'),
+                      required: true,
+                      minLength: 1,
+                      default: null,
+                      description: i18n(
+                        'Where visitors are sent, e.g. https://example.com',
+                      ),
+                      placeholder: 'https://example.com',
+                      patterns: [targetPattern],
+                    }),
+                    keepPath: Value.toggle({
+                      name: i18n('Keep Path'),
+                      description: i18n(
+                        'Send each visitor to the same path and query on the target, so /docs?page=2 goes to the target URL followed by /docs?page=2. Off sends every request to the target URL as written.',
+                      ),
+                      default: true,
+                    }),
+                    permanent: Value.toggle({
+                      name: i18n('Permanent'),
+                      description: i18n(
+                        'Answer with 301 (permanent), which browsers and search engines remember. Off answers with 302 (temporary), for a move that may still change.',
+                      ),
+                      default: true,
+                    }),
                   }),
-                }),
-              },
-            }),
+                },
+              }),
+            }
           }),
           cors: Value.toggle({
             name: i18n('Allow CORS'),
