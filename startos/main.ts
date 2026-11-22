@@ -2,6 +2,7 @@ import { createHash } from 'crypto'
 import { manifest as FilebrowserManifest } from 'filebrowser-quantum-startos/startos/manifest'
 import { manifest as NextcloudManifest } from 'nextcloud-startos/startos/manifest'
 import { manifest as NextexplorerManifest } from 'nextexplorer-startos/startos/manifest'
+import { SubContainer, T } from '@start9labs/start-sdk'
 import { StoreConfig, storeJson } from './fileModels/store.json'
 import { i18n } from './i18n'
 import { sdk } from './sdk'
@@ -34,7 +35,17 @@ export const main = sdk.setupMain(async ({ effects }) => {
       readonly: false,
     })
 
-    if (pages.some((p) => p.source.selection === 'filebrowser')) {
+    const used = (source: FolderSource['selection']) =>
+      pages.some((p) => p.source.selection === source)
+    const installed = {
+      filebrowser:
+        used('filebrowser') && (await isInstalled(effects, 'filebrowser')),
+      nextcloud: used('nextcloud') && (await isInstalled(effects, 'nextcloud')),
+      nextexplorer:
+        used('nextexplorer') && (await isInstalled(effects, 'nextexplorer')),
+    }
+
+    if (installed.filebrowser) {
       mounts = mounts.mountDependency<typeof FilebrowserManifest>({
         dependencyId: 'filebrowser',
         volumeId: 'data',
@@ -43,7 +54,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
         readonly: true,
       })
     }
-    if (pages.some((p) => p.source.selection === 'nextcloud')) {
+    if (installed.nextcloud) {
       mounts = mounts.mountDependency<typeof NextcloudManifest>({
         dependencyId: 'nextcloud',
         volumeId: 'nextcloud',
@@ -52,7 +63,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
         readonly: true,
       })
     }
-    if (pages.some((p) => p.source.selection === 'nextexplorer')) {
+    if (installed.nextexplorer) {
       mounts = mounts.mountDependency<typeof NextexplorerManifest>({
         dependencyId: 'nextexplorer',
         volumeId: 'data',
@@ -176,44 +187,280 @@ export const main = sdk.setupMain(async ({ effects }) => {
       requires: [],
     })
 
-    if (!pages.some(hasFolder)) return daemons
+    const folder = new FolderProbe(primary)
 
-    return daemons.addHealthCheck('folders', {
-      ready: {
-        display: i18n('Website Folders'),
-        trigger: sdk.trigger.cooldownTrigger(30_000),
-        fn: async () => {
-          const current = (
-            (await storeJson.read((s) => s.pages).once()) || []
-          ).filter(hasFolder)
-          const found = await Promise.all(
-            current.map(
-              async (page) =>
-                (await primary.exec(['test', '-d', rootOf(page.source)]))
-                  .exitCode === 0,
-            ),
-          )
-          const missing = current.filter((_, i) => !found[i])
-          return missing.length
-            ? {
-                result: 'failure',
-                message: i18n('Folder not found for ${sites}', {
-                  sites: missing
-                    .map(({ name, source }) =>
-                      source.selection === 'nextcloud'
-                        ? `${name} (${source.value.user}: ${source.value.path})`
-                        : `${name} (${source.value.path})`,
-                    )
-                    .join(', '),
-                }),
-              }
-            : { result: 'success', message: i18n('All website folders found') }
+    let all: ReturnType<typeof daemons.addHealthCheck> = daemons
+    for (const page of pages.filter(hasFolder)) {
+      all = all.addHealthCheck(`site-${page.port}`, {
+        ready: {
+          display: i18n('Website: ${name}', { name: page.name }),
+          trigger: sdk.trigger.cooldownTrigger(30_000),
+          fn: () =>
+            installed[page.source.selection]
+              ? diagnose(folder, page.source).catch((e) => {
+                  console.error(e)
+                  return {
+                    result: 'failure' as const,
+                    message: i18n(
+                      'Could not check "${path}" in ${source}: ${error}',
+                      {
+                        path: page.source.value.path,
+                        source: sourceName(page.source),
+                        error: String(e?.message ?? e),
+                      },
+                    ),
+                  }
+                })
+              : {
+                  result: 'failure' as const,
+                  message: i18n(
+                    "${source} is not installed. Install it and upload this website's files to it, or choose a different Source in Manage Websites.",
+                    { source: sourceName(page.source) },
+                  ),
+                },
         },
-      },
-      requires: ['primary'],
-    })
+        requires: ['primary'],
+      })
+    }
+    return all
   })
 })
+
+const isInstalled = (effects: T.Effects, id: FolderSource['selection']) =>
+  sdk.getServiceManifest(effects, id, (m) => m !== null).const()
+
+const sourceName = (source: FolderSource) =>
+  ({
+    filebrowser: i18n('FileBrowser Quantum'),
+    nextcloud: i18n('Nextcloud'),
+    nextexplorer: i18n('NextExplorer'),
+  })[source.selection]
+
+class FolderProbe {
+  constructor(private readonly sub: { exec: SubContainer<any>['exec'] }) {}
+
+  private async run(cmd: string[], answers: (number | null)[]) {
+    const res = await this.sub.exec(cmd)
+    if (!answers.includes(res.exitCode))
+      throw new Error(
+        `${cmd.join(' ')} exited ${res.exitCode ?? res.exitSignal}: ${String(res.stderr).trim()}`,
+      )
+    return res
+  }
+
+  private async ok(cmd: string[]) {
+    return (await this.run(cmd, [0, 1])).exitCode === 0
+  }
+
+  private async lines(cmd: string[]) {
+    return String((await this.run(cmd, [0])).stdout)
+      .split('\n')
+      .filter(Boolean)
+      .sort()
+  }
+
+  isDir = (path: string) => this.ok(['test', '-d', path])
+  exists = (path: string) => this.ok(['test', '-e', path])
+  entries = (path: string) => this.lines(['ls', '-1A', path])
+
+  async folders(path: string) {
+    return (
+      await this.lines([
+        'find',
+        path,
+        '-mindepth',
+        '1',
+        '-maxdepth',
+        '1',
+        '-type',
+        'd',
+      ])
+    )
+      .map((p) => p.slice(path.length + 1))
+      .filter((name) => !name.startsWith('.'))
+  }
+
+  async nestedIndex(path: string) {
+    const found = await this.lines([
+      'find',
+      path,
+      '-mindepth',
+      '2',
+      '-maxdepth',
+      '4',
+      '-type',
+      'f',
+      '(',
+      '-name',
+      'index.html',
+      '-o',
+      '-name',
+      'index.htm',
+      ')',
+    ])
+    return found
+      .map((p) => p.slice(path.length + 1))
+      .sort((a, b) => a.split('/').length - b.split('/').length)[0]
+  }
+
+  async nextcloudAccounts() {
+    return (
+      await this.lines([
+        'find',
+        `${mountpoints.nextcloud}/data`,
+        '-mindepth',
+        '2',
+        '-maxdepth',
+        '2',
+        '-type',
+        'd',
+        '-name',
+        'files',
+      ])
+    ).map((p) => p.split('/').slice(-2)[0])
+  }
+}
+
+const shown = (names: string[]) =>
+  names.length === 0
+    ? i18n('none')
+    : names.length <= 10
+      ? names.map((n) => `"${n}"`).join(', ')
+      : `${names
+          .slice(0, 10)
+          .map((n) => `"${n}"`)
+          .join(
+            ', ',
+          )} ${i18n('and ${count} more', { count: names.length - 10 })}`
+
+async function diagnose(
+  folder: FolderProbe,
+  source: FolderSource,
+): Promise<{ result: 'success' | 'failure'; message: string }> {
+  const name = sourceName(source)
+  const failure = (message: string) => ({ result: 'failure' as const, message })
+
+  if (source.selection === 'nextcloud') {
+    const user = source.value.user
+    if (!(await folder.isDir(`${mountpoints.nextcloud}/data/${user}/files`)))
+      return failure(
+        i18n(
+          'Nextcloud has no account named "${user}". Accounts on this server: ${accounts}. In Manage Websites, enter the account name, not the display name.',
+          { user, accounts: shown(await folder.nextcloudAccounts()) },
+        ),
+      )
+  }
+
+  const base =
+    source.selection === 'nextcloud'
+      ? `${mountpoints.nextcloud}/data/${source.value.user}/files`
+      : mountpoints[source.selection]
+  const segments = source.value.path
+    .split('/')
+    .filter((s) => s !== '' && s !== '.')
+  const path = segments.join('/') || '.'
+
+  let dir = base
+  for (const [i, segment] of segments.entries()) {
+    const next = `${dir}/${segment}`
+    if (await folder.isDir(next)) {
+      dir = next
+      continue
+    }
+    if (i === segments.length - 1 && (await folder.exists(next)))
+      return failure(
+        i18n(
+          '"${path}" in ${source} is a file, not a folder. Set Folder Location to the folder that holds the website\'s files.',
+          { path, source: name },
+        ),
+      )
+
+    const siblings = await folder.folders(dir)
+    const match = siblings.find(
+      (s) => s.toLowerCase() === segment.toLowerCase(),
+    )
+    const hint = match
+      ? ` ${i18n('Did you mean "${match}"? Folder names are case-sensitive.', { match })}`
+      : ''
+    const parent = segments.slice(0, i).join('/')
+
+    if (i === 0 && source.selection === 'nextexplorer' && !siblings.length)
+      return failure(
+        i18n(
+          "NextExplorer has no locations yet. Start NextExplorer, which creates its Files location, then upload this website's files there.",
+        ),
+      )
+
+    if (i === 0 && source.selection === 'nextexplorer')
+      return failure(
+        i18n(
+          'NextExplorer has no location named "${location}". Its locations: ${found}. Start Folder Location with the location name, e.g. Files/websites/my-site.',
+          { location: segment, found: shown(siblings) },
+        ) + hint,
+      )
+
+    return failure(
+      (parent
+        ? i18n(
+            '"${path}" not found in ${source}: "${parent}" has no folder "${folder}". Its folders: ${found}. Create the folder in ${source} and upload the website\'s files to it, or correct Folder Location in Manage Websites.',
+            {
+              path,
+              source: name,
+              parent,
+              folder: segment,
+              found: shown(siblings),
+            },
+          )
+        : i18n(
+            '"${path}" not found in ${source}: it has no top-level folder "${folder}". Its top-level folders: ${found}. Create the folder in ${source} and upload the website\'s files to it, or correct Folder Location in Manage Websites.',
+            { path, source: name, folder: segment, found: shown(siblings) },
+          )) + hint,
+    )
+  }
+
+  const entries = await folder.entries(dir)
+  if (entries.length === 0)
+    return failure(
+      i18n(
+        'The folder "${path}" in ${source} is empty. Upload the website\'s files to it.',
+        { path, source: name },
+      ),
+    )
+
+  if (entries.includes('index.html') || entries.includes('index.htm'))
+    return {
+      result: 'success',
+      message: i18n('Serving "${path}" from ${source}', { path, source: name }),
+    }
+
+  const miscased = entries.find((e) => /^index\.html?$/i.test(e))
+  if (miscased)
+    return failure(
+      i18n(
+        '"${path}" in ${source} has "${file}", but only a lowercase index.html or index.htm is served as the home page. Rename it in ${source}.',
+        { path, source: name, file: miscased },
+      ),
+    )
+
+  const nested = await folder.nestedIndex(dir)
+  if (nested) {
+    const target = [...segments, ...nested.split('/').slice(0, -1)].join('/')
+    return failure(
+      i18n(
+        '"${path}" in ${source} has no index.html, so visitors see a list of its files. The website\'s home page is at "${nested}" inside it: set Folder Location to "${target}" in Manage Websites.',
+        { path, source: name, nested, target },
+      ),
+    )
+  }
+
+  return {
+    result: 'success',
+    message: i18n(
+      'Serving "${path}" from ${source} as a list of its files, since it has no index.html or index.htm',
+      { path, source: name },
+    ),
+  }
+}
 
 const mountpoints = {
   filebrowser: '/mnt/filebrowser',
